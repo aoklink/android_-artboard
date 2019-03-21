@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/user_item_bg"
+    tools:ignore="PxUsage">
+
+    <LinearLayout
+        android:id="@+id/user_sport_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingLeft="17px"
+        android:paddingTop="18px"
+        android:paddingBottom="12px"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:background="@drawable/user_sport_detail_item_bg">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/calories_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="231"
+                android:textColor="#fff5f5f5"
+                android:textSize="28sp"
+                android:maxLines="1"
+                android:drawableLeft="@drawable/ic_calories" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/kcal"
+                android:textColor="#fff5f5f5"
+                android:textSize="10sp"
+                android:layout_marginLeft="12dp"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:id="@+id/heart_rate_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="231"
+                android:textColor="#fff5f5f5"
+                android:textSize="28sp"
+                android:drawableStart="@drawable/ic_heart_rate"
+                android:maxLines="1"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bpm"
+                android:textColor="#fff5f5f5"
+                android:textSize="10sp"
+                android:layout_marginLeft="12dp"
+                android:maxLines="1"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <ImageView
+            android:id="@+id/user_icon_iv"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="14px"
+            android:src="@drawable/ic_user_icon"/>
+
+        <TextView
+            android:id="@+id/user_name_tv"
+            android:layout_width="wrap_content"
+            android:maxWidth="216px"
+            android:layout_marginLeft="16px"
+            android:layout_height="wrap_content"
+            android:text="@string/user_name_example"
+            android:textColor="#fff5f5f5"
+            android:textSize="10dp"
+            android:maxLines="1"/>
+    </LinearLayout>
+
+</LinearLayout>

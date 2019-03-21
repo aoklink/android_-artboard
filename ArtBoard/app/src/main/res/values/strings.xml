@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ArtBoard</string>
+    <string name="service_provider_manifest">领客菲力提供方案技术服务</string>
+    <string name="label_now_people_count">当前人数</string>
+    <string name="label_now_people_count_name">人</string>
+    <string name="sport_summary_item_text_example">激活\n放松</string>
+    <string name="user_name_example">这是最多的字数了</string>
+    <string name="bpm">bpm</string>
+    <string name="kcal">kcal</string>
+</resources>

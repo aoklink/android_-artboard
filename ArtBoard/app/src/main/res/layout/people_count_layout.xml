@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="PxUsage">
+
+    <ImageView
+        android:layout_width="28px"
+        android:layout_height="28px"
+        android:layout_margin="6px"
+        android:src="@drawable/ic_user_icon"
+        android:layout_gravity="bottom" />
+
+    <TextView
+        android:id="@+id/label_now_people_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_now_people_count"
+        android:textColor="#F5F5F5"
+        android:textSize="28px"
+        android:layout_gravity="bottom"/>
+
+    <TextView
+        android:id="@+id/people_count_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-6px"
+        android:gravity="bottom"
+        android:text="24"
+        android:textAlignment="gravity"
+        android:textColor="#f5f5f5"
+        android:textSize="48px"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/last_people_count_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_now_people_count_name"
+        android:textColor="#F5F5F5"
+        android:textSize="28px"
+        android:layout_gravity="bottom"/>
+</LinearLayout>
