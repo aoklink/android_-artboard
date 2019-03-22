@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="231"
                 android:textColor="#fff5f5f5"
-                android:textSize="28sp"
+                android:textSize="24sp"
                 android:maxLines="1"
                 android:drawableLeft="@drawable/ic_calories" />
 
@@ -41,7 +41,7 @@
                 android:text="@string/kcal"
                 android:textColor="#fff5f5f5"
                 android:textSize="10sp"
-                android:layout_marginLeft="12dp"
+                android:layout_marginLeft="6dp"
                 android:maxLines="1" />
         </LinearLayout>
 
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:text="231"
                 android:textColor="#fff5f5f5"
-                android:textSize="28sp"
+                android:textSize="24sp"
                 android:drawableStart="@drawable/ic_heart_rate"
                 android:maxLines="1"
                 />
@@ -68,7 +68,7 @@
                 android:text="@string/bpm"
                 android:textColor="#fff5f5f5"
                 android:textSize="10sp"
-                android:layout_marginLeft="12dp"
+                android:layout_marginLeft="6dp"
                 android:maxLines="1"
                 />
         </LinearLayout>

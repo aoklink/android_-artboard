@@ -27,12 +27,12 @@ public class SportSummaryWorker {
     public void init(){
         sportSummaryItemList = new ArrayList<>();
         sportSummaryItemList.add(new SportSummaryItem("激活\n放松","0-39%"));
-        sportSummaryItemList.add(new SportSummaryItem("动态\n热身","0-39%"));
-        sportSummaryItemList.add(new SportSummaryItem("脂肪\n燃烧","0-39%"));
+        sportSummaryItemList.add(new SportSummaryItem("动态\n热身","40-55%"));
+        sportSummaryItemList.add(new SportSummaryItem("脂肪\n燃烧","56-69%"));
 
-        sportSummaryItemList.add(new SportSummaryItem("糖分\n消耗","10-39%"));
-        sportSummaryItemList.add(new SportSummaryItem("心肺\n训练","0-39%"));
-        sportSummaryItemList.add(new SportSummaryItem("极限\n锻炼","0-39%"));
+        sportSummaryItemList.add(new SportSummaryItem("有氧\n耐力","70-79%"));
+        sportSummaryItemList.add(new SportSummaryItem("无氧\n耐力","80-89%"));
+        sportSummaryItemList.add(new SportSummaryItem("峰值\n锻炼","90-100%"));
         sportSummaryRecyclerView.setLayoutManager(new LinearLayoutManager(sportSummaryRecyclerView.getContext(),
                 LinearLayoutManager.VERTICAL,false));
         sportSummaryRecyclerView.addItemDecoration(new RecyclerViewVerticalItemDecoration(30));
@@ -47,7 +47,7 @@ public class SportSummaryWorker {
 
             @Override
             public void onBindViewHolder(@NonNull SportSummaryItemHolder sportSummaryItemHolder, int i) {
-                sportSummaryItemHolder.drawItem(sportSummaryItemList.get(i));
+                sportSummaryItemHolder.drawItem(sportSummaryItemList.get(i),i);
             }
 
             @Override
@@ -82,10 +82,10 @@ public class SportSummaryWorker {
             labelView = itemView.findViewById(R.id.sport_summary_item_label);
         }
 
-        public void drawItem(SportSummaryItem sportSummaryItem) {
+        public void drawItem(SportSummaryItem sportSummaryItem,int index) {
             nameTv.setText(sportSummaryItem.getName());
             valueTv.setText(sportSummaryItem.getValue());
-            labelView.setBackground(BackgroundProvider.get(BackgroundProvider.AT_USER_SPORT_SUMMARY,sportSummaryItem.getName()));
+            labelView.setBackground(BackgroundProvider.get(BackgroundProvider.AT_USER_SPORT_SUMMARY,sportSummaryItem.getName(),index));
         }
     }
 }

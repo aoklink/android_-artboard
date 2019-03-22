@@ -17,8 +17,8 @@ public class UserSportSummaryItemBgProvider implements IBackgroundDrawableProvid
     };
 
     @Override
-    public Drawable provide(String name) {
-        return newItem(colorArray[Math.abs(name.hashCode()%colorArray.length)]);
+    public Drawable provide(String name,int index) {
+        return newItem(colorArray[index]);
     }
 
     private GradientDrawable newItem(int color){

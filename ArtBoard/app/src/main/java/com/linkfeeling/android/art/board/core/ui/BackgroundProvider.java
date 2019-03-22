@@ -15,8 +15,8 @@ public class BackgroundProvider {
 
     private static Map<String,IBackgroundDrawableProvider> backgroundDrawableProviderMap = new HashMap<>();
 
-    public static Drawable get(String where, String name){
-       return ensure(where).provide(name);
+    public static Drawable get(String where, String name,int index){
+       return ensure(where).provide(name,index);
     }
 
     private static IBackgroundDrawableProvider ensure(String where){

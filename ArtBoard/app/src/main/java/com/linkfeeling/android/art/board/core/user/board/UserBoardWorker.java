@@ -10,35 +10,42 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.linkfeeling.android.art.board.R;
+import com.linkfeeling.android.art.board.core.data.trans.UserBoardItemTrans;
+import com.linkfeeling.android.art.board.core.event.IEventManifest;
 import com.linkfeeling.android.art.board.core.ui.BackgroundProvider;
+import com.linkfeeling.android.art.board.core.user.board.bean.support.UserBoardItemBeanFactory;
+import com.linkfeeling.android.art.board.event.EventEngine;
+import com.linkfeeling.android.art.board.event.IEventListener;
 import com.linkfeeling.android.art.board.third.img.ImgUtil;
 import com.linkfeeling.android.art.board.widget.support.RecyclerViewGridItemDecoration;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class UserBoardWorker {
+public class UserBoardWorker implements IEventListener<JSONObject> {
     private RecyclerView recyclerView;
 
     private List<UserBoardItem> userBoardItemList;
 
     private RecyclerView.Adapter adapter;
 
+    private LoadingViewWorker loadingViewWorker;
+
     public void setRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
     }
 
+    public void setLoadingViewWorker(LoadingViewWorker loadingViewWorker) {
+        this.loadingViewWorker = loadingViewWorker;
+    }
+
     public void init() {
         userBoardItemList = new ArrayList<>();
-        userBoardItemList.add(new UserBoardItem(200,300,"","这是最长的名字了"));
-        userBoardItemList.add(new UserBoardItem(200,300,"","这个"));
-        userBoardItemList.add(new UserBoardItem(200,300,"","这是最长的"));
-        userBoardItemList.add(new UserBoardItem(200,300,"","这是名字了"));
-
-        userBoardItemList.add(new UserBoardItem(200,300,"","最长的名字了"));
-        userBoardItemList.add(new UserBoardItem(200,300,"","最长的名字"));
-        userBoardItemList.add(new UserBoardItem(200,300,"","名字了"));
-        userBoardItemList.add(new UserBoardItem(200,300,"","长的名字了"));
 
         recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(),4));
         recyclerView.addItemDecoration(new RecyclerViewGridItemDecoration(48,30));
@@ -52,7 +59,7 @@ public class UserBoardWorker {
 
             @Override
             public void onBindViewHolder(@NonNull UserSportItemHolder userSportItemHolder, int i) {
-                userSportItemHolder.drawItem(userBoardItemList.get(i));
+                userSportItemHolder.drawItem(userBoardItemList.get(i),i);
             }
 
             @Override
@@ -62,12 +69,35 @@ public class UserBoardWorker {
         };
 
         recyclerView.setAdapter(adapter);
+
+        EventEngine.listen(IEventManifest.REFRESH_USER_BOARD,this);
+        loadingViewWorker.show();
     }
 
     public void refresh(List<UserBoardItem> userBoardItems){
+        UserBoardItemBeanFactory.recycle(new ArrayList<>(userBoardItemList));
         this.userBoardItemList.clear();
         this.userBoardItemList.addAll(userBoardItems);
         adapter.notifyDataSetChanged();
+        if(loadingViewWorker.isShowing()){
+            loadingViewWorker.hide();
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void on(JSONObject data) {
+        try {
+            if("200".equals(data.getString("code"))){
+                JSONArray jsonArray = data.getJSONArray("data");
+                refresh(UserBoardItemTrans.fromJsonArray(jsonArray));
+                EventEngine.postOnUI(IEventManifest.REFRESH_USER_COUNT, userBoardItemList.size());
+            }else{
+                loadingViewWorker.error();
+            }
+        } catch (JSONException e) {
+            loadingViewWorker.error();
+        }
     }
 
     private static class UserSportItemHolder extends RecyclerView.ViewHolder{
@@ -91,12 +121,12 @@ public class UserBoardWorker {
             contentHeadLayout = itemView.findViewById(R.id.user_sport_content_layout);
         }
 
-        public void drawItem(UserBoardItem userBoardItem) {
+        public void drawItem(UserBoardItem userBoardItem,int index) {
             caloriesTv.setText(String.valueOf(userBoardItem.getCalories()));
             heartRateTv.setText(String.valueOf(userBoardItem.getHeartRate()));
             ImgUtil.drawImg(userIconIv,userBoardItem.getUserIcon());
             userNameTv.setText(userBoardItem.getUserNick());
-            contentHeadLayout.setBackground(BackgroundProvider.get(BackgroundProvider.AT_USER_SPORT,userBoardItem.getUserNick()));
+            contentHeadLayout.setBackground(BackgroundProvider.get(BackgroundProvider.AT_USER_SPORT,userBoardItem.getUserNick(),userBoardItem.getResult()));
         }
     }
 }

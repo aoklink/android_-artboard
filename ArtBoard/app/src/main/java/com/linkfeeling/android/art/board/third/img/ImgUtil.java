@@ -1,6 +1,7 @@
 package com.linkfeeling.android.art.board.third.img;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -15,6 +16,10 @@ public class ImgUtil {
             .error(R.drawable.icon_user_default);//图片加载失败后，显示的图片
 
     public static void drawImg(ImageView view, String url) {
-        Glide.with(view).load(Uri.parse(url)).apply(options).into(view);
+        if(TextUtils.isEmpty(url)){
+            view.setImageResource(R.drawable.icon_user_default);
+        }else{
+            Glide.with(view).load(Uri.parse(url)).apply(options).into(view);
+        }
     }
 }

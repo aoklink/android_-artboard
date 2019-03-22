@@ -25,3 +25,19 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task buildApks(dependsOn:tasks.getByPath(':app:build')){
+    copy{
+        from "app/build/outputs/apk/debug"
+        include "*.apk"
+        into "product/"
+        rename("app-debug.apk","artboard-"+GYM_NAME+"-"+GYM_DEVICE_NAME+"-debug.apk")
+    }
+
+    copy{
+        from "app/build/outputs/apk/release"
+        include "*.apk"
+        into "product/"
+        rename("app-release.apk","artboard-"+GYM_NAME+"-"+GYM_DEVICE_NAME+"-release.apk")
+    }
+}

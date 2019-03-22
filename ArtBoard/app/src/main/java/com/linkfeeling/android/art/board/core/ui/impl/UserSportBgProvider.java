@@ -15,14 +15,12 @@ public class UserSportBgProvider implements IBackgroundDrawableProvider {
 
       new ColorPair(0xffffa27b,0xffff8d7e),
       new ColorPair(0xffff7e7e,0xffff4e4e),
-      new ColorPair(0xffffa079,0xffff8e7e),
-            new ColorPair(0xff9ac8ff,0xff7aadff),
     };
 
 
-    public Drawable provide(String name){
+    public Drawable provide(String name,int index){
         GradientDrawable gradientDrawable = newCommon();
-        ColorPair colorPair = colorPairs[Math.abs(name.hashCode()%colorPairs.length)];
+        ColorPair colorPair = colorPairs[index%colorPairs.length];
         gradientDrawable.setColors(colorPair.getPair());
         return gradientDrawable;
     }

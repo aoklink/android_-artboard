@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="PxUsage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/ic_app_background"
     tools:context=".ArtBoardActivity"
-    android:background="@drawable/ic_app_background">
-
+    tools:ignore="PxUsage">
 
 
     <LinearLayout
@@ -23,16 +21,18 @@
             android:layout_width="139dp"
             android:layout_height="28dp"
             android:layout_marginTop="31px"
-            android:src="@drawable/ic_app_logo"/>
+            android:src="@drawable/ic_app_logo" />
+
         <View
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-        <include layout="@layout/people_count_layout"
+        <include
+            layout="@layout/people_count_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"/>
+            android:layout_gravity="bottom" />
 
 
     </LinearLayout>
@@ -42,10 +42,12 @@
         android:id="@+id/user_board_recycler_view"
         android:layout_width="1350px"
         android:layout_height="match_parent"
+        android:layout_below="@+id/title_layout"
         android:layout_marginStart="119px"
         android:layout_marginTop="24px"
-        android:layout_below="@+id/title_layout"
+        android:layout_marginBottom="24px"
         android:overScrollMode="never"
+        android:visibility="invisible"
         tools:ignore="PxUsage">
 
     </android.support.v7.widget.RecyclerView>
@@ -54,10 +56,10 @@
         android:id="@+id/user_sport_summary_recycler_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="96px"
         android:layout_marginEnd="46px"
         android:layout_marginBottom="8dp"
-        android:layout_alignParentEnd="true"
         android:overScrollMode="never"
         tools:ignore="PxUsage">
 
@@ -68,24 +70,61 @@
         android:id="@+id/imageView"
         android:layout_width="92dp"
         android:layout_height="18dp"
+        android:layout_above="@+id/service_provider_manifest_tv"
+        android:layout_alignParentEnd="true"
         android:layout_marginEnd="46px"
         android:layout_marginBottom="16px"
-        android:src="@drawable/ic_app_logo_mini"
-        android:layout_above="@+id/service_provider_manifest_tv"
-        android:layout_alignParentEnd="true"/>
+        android:src="@drawable/ic_app_logo_mini" />
 
 
     <TextView
         android:id="@+id/service_provider_manifest_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="13px"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="46px"
         android:layout_marginBottom="64px"
-        android:textSize="8dp"
-        android:textColor="#F5F5F5"
-        android:text="@string/service_provider_manifest"
         android:background="@drawable/service_provider_manifest_bg"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"/>
+        android:padding="13px"
+        android:text="@string/service_provider_manifest"
+        android:textColor="#F5F5F5"
+        android:textSize="8dp" />
+
+
+    <FrameLayout
+        android:id="@+id/loading_layout"
+        android:layout_width="1350px"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_layout"
+        android:layout_marginStart="119px"
+        android:layout_marginTop="24px"
+        android:layout_marginBottom="24px"
+        android:overScrollMode="never"
+        android:visibility="invisible"
+        tools:ignore="PxUsage">
+        <LinearLayout
+            android:id="@+id/reload_click_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center">
+            <ImageView
+                android:id="@+id/loading_image_view"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@mipmap/ic_loading" />
+
+            <TextView
+                android:id="@+id/loading_tip_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/loading_tip"
+                android:textColor="#dddddd"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+    </FrameLayout>
 </RelativeLayout>
