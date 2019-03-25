@@ -35,7 +35,7 @@ public class UserBoardItemBeanFactory {
      * @return
      */
     private static UserBoardItem clean(UserBoardItem userBoardItem){
-        userBoardItem.setCalories(0);
+        userBoardItem.setCalorie(0);
         userBoardItem.setHeartRate(0);
         userBoardItem.setUserIcon("");
         userBoardItem.setUserNick("");

@@ -25,7 +25,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class UserBoardWorker implements IEventListener<JSONObject> {
     private RecyclerView recyclerView;
@@ -89,7 +88,7 @@ public class UserBoardWorker implements IEventListener<JSONObject> {
     public void on(JSONObject data) {
         try {
             if("200".equals(data.getString("code"))){
-                JSONArray jsonArray = data.getJSONArray("data");
+                JSONArray jsonArray = data.getJSONObject("data").getJSONArray("gym_data");
                 refresh(UserBoardItemTrans.fromJsonArray(jsonArray));
                 EventEngine.postOnUI(IEventManifest.REFRESH_USER_COUNT, userBoardItemList.size());
             }else{
@@ -122,7 +121,7 @@ public class UserBoardWorker implements IEventListener<JSONObject> {
         }
 
         public void drawItem(UserBoardItem userBoardItem,int index) {
-            caloriesTv.setText(String.valueOf(userBoardItem.getCalories()));
+            caloriesTv.setText(String.valueOf(userBoardItem.getCalorie()));
             heartRateTv.setText(String.valueOf(userBoardItem.getHeartRate()));
             ImgUtil.drawImg(userIconIv,userBoardItem.getUserIcon());
             userNameTv.setText(userBoardItem.getUserNick());

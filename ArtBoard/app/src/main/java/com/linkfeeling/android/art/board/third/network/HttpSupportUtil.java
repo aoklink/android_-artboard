@@ -18,13 +18,16 @@ public class HttpSupportUtil extends HttpUtil{
 
 
     public static String postJson(String url,String body)throws Exception{
-        if(!test){
-            String result =  post(url,"application/json",body);
-            return result;
-        }else{
-            Thread.sleep(new Random().nextInt(3000));
-            return testJson();
-        }
+
+        String result =  post(url,"application/json",body);
+        return result;
+//        if(!test){
+//            String result =  post(url,"application/json",body);
+//            return result;
+//        }else{
+//            Thread.sleep(new Random().nextInt(3000));
+//            return testJson();
+//        }
     }
 
 

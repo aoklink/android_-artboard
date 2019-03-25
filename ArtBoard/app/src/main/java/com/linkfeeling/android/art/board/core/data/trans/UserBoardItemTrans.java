@@ -41,7 +41,7 @@ public class UserBoardItemTrans {
         userBoardItem.setUserNick(getString(jsonObject,"user_name"));
         userBoardItem.setUserIcon(getString(jsonObject,"head_icon"));
         userBoardItem.setHeartRate(getInt(jsonObject,"heart_rate"));
-        userBoardItem.setCalories(getInt(jsonObject,"kc"));
+        userBoardItem.setCalorie(getInt(jsonObject,"calorie"));
         userBoardItem.setResult(getInt(jsonObject,"result"));
         return userBoardItem;
     }

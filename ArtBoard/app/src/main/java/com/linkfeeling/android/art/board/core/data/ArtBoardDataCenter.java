@@ -22,10 +22,11 @@ public class ArtBoardDataCenter {
         getDataPeriodOperator = EventEngine.postPeriod(IEventManifest.PERIOD_GET_DATA, 1000, new Runnable() {
             @Override
             public void run() {
+                JSONObject jsonObject=null;
                 try {
                     String result = HttpSupportUtil.postJson("https://ll.linkfeeling.cn/api/gym/artboard/data",
                             getRequestBody());
-                    JSONObject jsonObject = new JSONObject(result);
+                    jsonObject = new JSONObject(result);
                     EventEngine.postOnUI(IEventManifest.REFRESH_USER_BOARD,jsonObject);
                     if("200".equals(jsonObject.getString("code"))){
                         if(stillFail){
@@ -33,14 +34,15 @@ public class ArtBoardDataCenter {
                         }
                     }
                 } catch (Exception e) {
-                    JSONObject jsonObject = new JSONObject();
+                    jsonObject = new JSONObject();
                     try {
                         jsonObject.put("exception",e.getMessage());
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }
-                    EventEngine.postOnUI(IEventManifest.REFRESH_USER_BOARD,jsonObject);
+
                 }
+                EventEngine.postOnUI(IEventManifest.REFRESH_USER_BOARD,jsonObject);
             }
         },false);
     }
