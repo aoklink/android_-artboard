@@ -1,5 +1,7 @@
 package com.linkfeeling.android.art.board.core.data;
 
+import android.util.Log;
+
 import com.linkfeeling.android.art.board.BuildConfig;
 import com.linkfeeling.android.art.board.core.event.IEventManifest;
 import com.linkfeeling.android.art.board.event.EventEngine;
@@ -16,47 +18,48 @@ public class ArtBoardDataCenter {
     private boolean stillFail = true;
     private boolean executeOnce = false;
 
-    public void install(){
+    public void install() {
         stillFail = true;
         executeOnce = false;
-        getDataPeriodOperator = EventEngine.postPeriod(IEventManifest.PERIOD_GET_DATA, 1000, new Runnable() {
+        getDataPeriodOperator = EventEngine.postPeriod(IEventManifest.PERIOD_GET_DATA, 800, new Runnable() {
             @Override
             public void run() {
-                JSONObject jsonObject=null;
+                JSONObject jsonObject;
+
                 try {
                     String result = HttpSupportUtil.postJson("https://ll.linkfeeling.cn/api/gym/artboard/data",
                             getRequestBody());
                     jsonObject = new JSONObject(result);
-                    EventEngine.postOnUI(IEventManifest.REFRESH_USER_BOARD,jsonObject);
-                    if("200".equals(jsonObject.getString("code"))){
-                        if(stillFail){
+                    if ("200".equals(jsonObject.getString("code"))) {
+                        if (stillFail) {
                             stillFail = false;
                         }
                     }
                 } catch (Exception e) {
                     jsonObject = new JSONObject();
                     try {
-                        jsonObject.put("exception",e.getMessage());
+                        jsonObject.put("exception", e.getMessage());
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }
 
                 }
-                EventEngine.postOnUI(IEventManifest.REFRESH_USER_BOARD,jsonObject);
+                EventEngine.postOnUI(IEventManifest.REFRESH_USER_BOARD, jsonObject);
+
             }
-        },false);
+        }, true);
     }
 
-    public void tryAgain(){
+    public void tryAgain() {
         getDataPeriodOperator.reCall();
     }
 
-    public void resume(){
-        if(!executeOnce){
+    public void resume() {
+        if (!executeOnce) {
             getDataPeriodOperator.reCall();
             executeOnce = true;
-        }else{
-            if(!stillFail){
+        } else {
+            if (!stillFail) {
                 getDataPeriodOperator.reCall();
             }
         }
@@ -67,18 +70,18 @@ public class ArtBoardDataCenter {
         getDataPeriodOperator.pause();
     }
 
-    private String getRequestBody(){
+    private String getRequestBody() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("gym_name",BuildConfig.GYM_NAME);
-            jsonObject.put("device_name",BuildConfig.DEVICE_NAME);
+            jsonObject.put("gym_name", BuildConfig.GYM_NAME);
+            jsonObject.put("device_name", BuildConfig.DEVICE_NAME);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return jsonObject.toString();
     }
 
-    public void stop(){
+    public void stop() {
         getDataPeriodOperator.cancel();
     }
 }
