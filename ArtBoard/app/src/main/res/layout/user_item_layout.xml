@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="50dp"
     android:background="@drawable/user_item_bg"
     android:orientation="vertical"
     tools:ignore="PxUsage">
@@ -32,7 +33,7 @@
                 android:maxLines="1"
                 android:text="231"
                 android:textColor="#fff5f5f5"
-                android:textSize="72sp" />
+                android:textSize="48sp" />
 
             <com.linkfeeling.android.art.board.widget.NumberFontTextView
                 android:layout_width="wrap_content"
@@ -47,7 +48,6 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:orientation="horizontal">
 
             <com.linkfeeling.android.art.board.widget.NumberFontTextView
@@ -58,7 +58,7 @@
                 android:maxLines="1"
                 android:text="231"
                 android:textColor="#fff5f5f5"
-                android:textSize="72sp" />
+                android:textSize="48sp" />
 
             <com.linkfeeling.android.art.board.widget.NumberFontTextView
                 android:layout_width="wrap_content"
@@ -75,6 +75,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 

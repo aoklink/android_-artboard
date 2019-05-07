@@ -24,13 +24,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:overScrollMode="never"
-        android:layout_marginEnd="70dp"
+        android:layout_marginEnd="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.65"
+        app:layout_constraintHeight_percent="0.75"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35"
-        app:layout_constraintWidth_percent="0.15" />
+        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintWidth_percent="0.17" />
 
 
     <android.support.constraint.Guideline
@@ -64,7 +64,7 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:src="@drawable/ic_app_logo_mini"
         app:layout_constraintEnd_toEndOf="@id/user_sport_summary_recycler_view"
         app:layout_constraintTop_toBottomOf="@id/user_sport_summary_recycler_view" />

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'bugly'
 
 android {
     compileSdkVersion 28
@@ -6,7 +7,7 @@ android {
         applicationId "com.linkfeeling.android.art.board"
         ndk {
             // 设置支持的SO库架构
-            abiFilters 'x86'
+            abiFilters 'x86','x86-64','armeabi','armeabi-v7a', 'arm64-v8a'
         }
         minSdkVersion 19
         targetSdkVersion 28
@@ -56,4 +57,11 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:latest.release'
     implementation 'com.tencent.bugly:nativecrashreport:latest.release'
 
+}
+
+bugly {
+    appId = "70a5d3e5c7"
+    appKey = "9a9e4993-0a80-4844-9ca1-837f6271ebca"
+    // 插件开关
+    execute = true
 }

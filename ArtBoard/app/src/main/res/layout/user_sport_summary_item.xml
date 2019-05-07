@@ -18,7 +18,7 @@
             android:id="@+id/sport_summary_item_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="30dp"
             android:gravity="center"
             android:lines="2"
             android:text="@string/sport_summary_item_text_example"
@@ -30,10 +30,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="8dp"
-            android:layout_marginEnd="50dp"
             android:gravity="center"
             android:maxLines="1"
             android:text="0-39%"
+            android:layout_marginEnd="15dp"
             android:textColor="#fff5f5f5"
             android:textSize="40sp" />
     </LinearLayout>

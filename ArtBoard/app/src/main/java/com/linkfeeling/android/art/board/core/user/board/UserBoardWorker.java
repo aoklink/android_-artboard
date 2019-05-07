@@ -23,6 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,19 +48,19 @@ public class UserBoardWorker implements IEventListener<JSONObject> {
     public void init() {
         userBoardItemList = new ArrayList<>();
 
-        recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(),4));
-        recyclerView.addItemDecoration(new RecyclerViewGridItemDecoration(48,30));
+        recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), 4));
+        recyclerView.addItemDecoration(new RecyclerViewGridItemDecoration(48, 30));
         adapter = new RecyclerView.Adapter<UserSportItemHolder>() {
 
             @NonNull
             @Override
             public UserSportItemHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                return UserSportItemHolder.create(viewGroup.getContext());
+                return UserSportItemHolder.create(viewGroup.getContext(), viewGroup);
             }
 
             @Override
             public void onBindViewHolder(@NonNull UserSportItemHolder userSportItemHolder, int i) {
-                userSportItemHolder.drawItem(userBoardItemList.get(i),i);
+                userSportItemHolder.drawItem(userBoardItemList.get(i), i);
             }
 
             @Override
@@ -69,16 +71,16 @@ public class UserBoardWorker implements IEventListener<JSONObject> {
 
         recyclerView.setAdapter(adapter);
 
-        EventEngine.listen(IEventManifest.REFRESH_USER_BOARD,this);
+        EventEngine.listen(IEventManifest.REFRESH_USER_BOARD, this);
         loadingViewWorker.show();
     }
 
-    public void refresh(List<UserBoardItem> userBoardItems){
+    public void refresh(List<UserBoardItem> userBoardItems) {
         UserBoardItemBeanFactory.recycle(new ArrayList<>(userBoardItemList));
         this.userBoardItemList.clear();
         this.userBoardItemList.addAll(userBoardItems);
         adapter.notifyDataSetChanged();
-        if(loadingViewWorker.isShowing()){
+        if (loadingViewWorker.isShowing()) {
             loadingViewWorker.hide();
             recyclerView.setVisibility(View.VISIBLE);
         }
@@ -87,11 +89,11 @@ public class UserBoardWorker implements IEventListener<JSONObject> {
     @Override
     public void on(JSONObject data) {
         try {
-            if("200".equals(data.getString("code"))){
+            if ("200".equals(data.getString("code"))) {
                 JSONArray jsonArray = data.getJSONObject("data").getJSONArray("gym_data");
                 refresh(UserBoardItemTrans.fromJsonArray(jsonArray));
                 EventEngine.postOnUI(IEventManifest.REFRESH_USER_COUNT, userBoardItemList.size());
-            }else{
+            } else {
                 loadingViewWorker.error();
             }
         } catch (JSONException e) {
@@ -99,10 +101,10 @@ public class UserBoardWorker implements IEventListener<JSONObject> {
         }
     }
 
-    private static class UserSportItemHolder extends RecyclerView.ViewHolder{
+    private static class UserSportItemHolder extends RecyclerView.ViewHolder {
 
-        public static UserSportItemHolder create(Context context) {
-            return new UserSportItemHolder(View.inflate(context,R.layout.user_item_layout,null));
+        public static UserSportItemHolder create(Context context, ViewGroup viewGroup) {
+            return new UserSportItemHolder(View.inflate(context, R.layout.user_item_layout, viewGroup));
         }
 
         private TextView caloriesTv;
@@ -120,12 +122,16 @@ public class UserBoardWorker implements IEventListener<JSONObject> {
             contentHeadLayout = itemView.findViewById(R.id.user_sport_content_layout);
         }
 
-        public void drawItem(UserBoardItem userBoardItem,int index) {
+        public void drawItem(UserBoardItem userBoardItem, int index) {
             caloriesTv.setText(String.valueOf(userBoardItem.getCalorie()));
             heartRateTv.setText(String.valueOf(userBoardItem.getHeartRate()));
-            ImgUtil.drawImg(userIconIv,userBoardItem.getUserIcon());
-            userNameTv.setText(userBoardItem.getUserNick());
-            contentHeadLayout.setBackground(BackgroundProvider.get(BackgroundProvider.AT_USER_SPORT,userBoardItem.getUserNick(),userBoardItem.getResult()));
+            ImgUtil.drawImg(userIconIv, userBoardItem.getUserIcon());
+            try {
+                userNameTv.setText(URLDecoder.decode(userBoardItem.getUserNick(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            contentHeadLayout.setBackground(BackgroundProvider.get(BackgroundProvider.AT_USER_SPORT, userBoardItem.getUserNick(), userBoardItem.getResult()));
         }
     }
 }
