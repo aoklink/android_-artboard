@@ -23,8 +23,8 @@
         android:id="@+id/user_sport_summary_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:overScrollMode="never"
         android:layout_marginEnd="60dp"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.75"
@@ -34,11 +34,11 @@
 
 
     <android.support.constraint.Guideline
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.75"
         android:id="@+id/people_count_line"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
 
     <include
         layout="@layout/people_count_layout"
@@ -74,6 +74,7 @@
         android:id="@+id/service_provider_manifest_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:background="@drawable/service_provider_manifest_bg"
         android:padding="6dp"
         android:text="@string/service_provider_manifest"
