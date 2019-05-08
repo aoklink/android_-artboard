@@ -12,9 +12,8 @@ public final class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        //        if (!BuildConfig.ENABLE_DEBUG) {
-        //bugly
-        CrashReport.initCrashReport(getApplicationContext(), "40cc86aadc", false);
-//        }
+        if (!BuildConfig.DEBUG) {
+            CrashReport.initCrashReport(getApplicationContext(), "40cc86aadc", false);
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.linkfeeling.android.art.board.core.user.board;
 
 public class UserBoardItem {
-    private int calorie;
+    private float calorie;
     private int heartRate;
     private String userIcon;
     private String userNick;
@@ -28,11 +28,11 @@ public class UserBoardItem {
 
     }
 
-    public int getCalorie() {
+    public float getCalorie() {
         return calorie;
     }
 
-    public void setCalorie(int calorie) {
+    public void setCalorie(float calorie) {
         this.calorie = calorie;
     }
 
