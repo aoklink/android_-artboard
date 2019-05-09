@@ -7,7 +7,7 @@
         android:id="@+id/sport_summary_item_ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="15dp"
         android:background="@drawable/user_sport_summary_item_bg"
         android:orientation="horizontal"
         android:paddingTop="2dp"
@@ -23,7 +23,7 @@
             android:lines="2"
             android:text="@string/sport_summary_item_text_example"
             android:textColor="#fff5f5f5"
-            android:textSize="24sp" />
+            android:textSize="16sp" />
 
         <com.linkfeeling.android.art.board.widget.NumberFontTextView
             android:id="@+id/sport_summary_item_value_tv"
@@ -35,13 +35,13 @@
             android:text="0-39%"
             android:layout_marginEnd="15dp"
             android:textColor="#fff5f5f5"
-            android:textSize="40sp" />
+            android:textSize="26sp" />
     </LinearLayout>
 
     <View
         android:id="@+id/sport_summary_item_label"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_gravity="center_vertical"
         android:background="@drawable/user_sport_summary_item_label_bg"
        />

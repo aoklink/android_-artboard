@@ -13,8 +13,8 @@
         android:id="@+id/logo_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="50dp"
         android:src="@drawable/icon_gym_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,6 +23,7 @@
         android:id="@+id/user_sport_summary_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+       android:paddingTop="50dp"
         android:layout_marginEnd="60dp"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
