@@ -23,12 +23,12 @@
         android:id="@+id/user_sport_summary_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-       android:paddingTop="50dp"
-        android:layout_marginEnd="60dp"
         android:overScrollMode="never"
+        android:paddingTop="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.75"
+        app:layout_constraintStart_toEndOf="@id/people_count_line"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.4"
         app:layout_constraintWidth_percent="0.17" />
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.75" />
+        app:layout_constraintGuide_percent="0.8" />
 
     <include
         layout="@layout/people_count_layout"
@@ -65,7 +65,7 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:src="@drawable/ic_app_logo_mini"
         app:layout_constraintEnd_toEndOf="@id/user_sport_summary_recycler_view"
         app:layout_constraintTop_toBottomOf="@id/user_sport_summary_recycler_view" />
@@ -75,7 +75,7 @@
         android:id="@+id/service_provider_manifest_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/service_provider_manifest_bg"
         android:padding="6dp"
         android:text="@string/service_provider_manifest"
@@ -86,6 +86,13 @@
         tools:ignore="SmallSp" />
 
 
+    <com.linkfeeling.android.art.board.widget.WaveView
+        android:layout_width="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="25dp"
+         />
+
+
     <FrameLayout
         android:id="@+id/loading_layout"
         android:layout_width="0dp"
@@ -94,8 +101,10 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/user_sport_summary_recycler_view"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/logo_image_view"
         app:layout_constraintTop_toBottomOf="@id/logo_image_view"
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="PxUsage">
 
         <LinearLayout

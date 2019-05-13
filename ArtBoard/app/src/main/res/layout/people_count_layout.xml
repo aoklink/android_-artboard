@@ -1,41 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     tools:ignore="PxUsage">
 
     <ImageView
         android:layout_width="28px"
         android:layout_height="28px"
+        android:layout_gravity="bottom"
         android:layout_margin="6px"
-        android:src="@drawable/ic_user_icon"
-        android:layout_gravity="bottom" />
+        android:src="@drawable/ic_user_icon" />
 
     <TextView
         android:id="@+id/label_now_people_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:text="@string/label_now_people_count"
         android:textColor="#F5F5F5"
-        android:textSize="28px"
-        android:layout_gravity="bottom"/>
+        android:textSize="28px" />
 
     <TextSwitcher
         android:id="@+id/people_count_text_switcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="6px"
+        android:layout_marginBottom="-8px"
         android:inAnimation="@anim/push_up_in"
-        android:outAnimation="@anim/push_up_out"
-        android:layout_marginBottom="-8px"/>
+        android:minWidth="6px"
+        android:outAnimation="@anim/push_up_out" />
 
     <TextView
         android:id="@+id/last_people_count_name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:text="@string/label_now_people_count_name"
         android:textColor="#F5F5F5"
-        android:textSize="28px"
-        android:layout_gravity="bottom"/>
+        android:textSize="28px" />
 </LinearLayout>
