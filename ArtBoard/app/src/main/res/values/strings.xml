@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">FITTINGGYM</string>
     <string name="service_provider_manifest">领客菲力提供方案技术服务</string>
     <string name="label_now_people_count">当前人数</string>
     <string name="label_now_people_count_name">人</string>

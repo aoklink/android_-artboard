@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/ic_app_background"
-    tools:context=".ArtBoardActivity"
+    tools:context=".ui.HomeActivity"
     tools:ignore="PxUsage">
 
 
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_sport_summary_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -34,7 +34,7 @@
         app:layout_constraintWidth_percent="0.17" />
 
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/people_count_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +50,8 @@
         app:layout_constraintTop_toTopOf="@id/logo_image_view" />
 
 
-    <android.support.v7.widget.RecyclerView
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_board_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -61,6 +62,12 @@
         app:layout_constraintTop_toBottomOf="@id/logo_image_view" />
 
 
+
+
+
+
+
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
@@ -69,7 +76,6 @@
         android:src="@drawable/ic_app_logo_mini"
         app:layout_constraintEnd_toEndOf="@id/user_sport_summary_recycler_view"
         app:layout_constraintTop_toBottomOf="@id/user_sport_summary_recycler_view" />
-
 
     <TextView
         android:id="@+id/service_provider_manifest_tv"
@@ -85,20 +91,12 @@
         app:layout_constraintTop_toBottomOf="@id/imageView"
         tools:ignore="SmallSp" />
 
-
-    <com.linkfeeling.android.art.board.widget.WaveView
-        android:layout_width="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_height="25dp"
-         />
-
-
     <FrameLayout
         android:id="@+id/loading_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:overScrollMode="never"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/user_sport_summary_recycler_view"
         app:layout_constraintHorizontal_bias="0.0"
@@ -119,7 +117,7 @@
                 android:id="@+id/loading_image_view"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@mipmap/ic_loading" />
+                 />
 
             <TextView
                 android:id="@+id/loading_tip_text_view"
@@ -132,4 +130,4 @@
         </LinearLayout>
 
     </FrameLayout>
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

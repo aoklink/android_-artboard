@@ -14,7 +14,7 @@
         android:paddingBottom="2dp"
        >
 
-        <com.linkfeeling.android.art.board.widget.NumberFontTextView
+        <com.link.feeling.framework.widgets.NumberFontTextView
             android:id="@+id/sport_summary_item_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -25,7 +25,7 @@
             android:textColor="#fff5f5f5"
             android:textSize="18sp" />
 
-        <com.linkfeeling.android.art.board.widget.NumberFontTextView
+        <com.link.feeling.framework.widgets.NumberFontTextView
             android:id="@+id/sport_summary_item_value_tv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

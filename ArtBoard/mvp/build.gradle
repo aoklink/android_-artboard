@@ -1,0 +1,11 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation rootProject.ext.dependencies["junit"]
+    api rootProject.ext.dependencies["kotlin-stdlib-jdk8"]
+    api rootProject.ext.dependencies["support_v7"]
+    api rootProject.ext.dependencies["support_v4"]
+}

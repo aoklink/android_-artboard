@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    tools:ignore="HardcodedText">
+
+
+    <LinearLayout
+        android:id="@+id/item1_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/item1_top_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:background="#331A78FF">
+
+            <ImageView
+                android:id="@+id/item1_avatar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <com.link.feeling.framework.widgets.NumberFontTextView
+                android:id="@+id/item1_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="技术硬过皮卡丘"
+                android:textColor="#fff5f5f5"
+                android:textSize="32sp"
+                app:layout_constraintBottom_toBottomOf="@id/item1_avatar"
+                app:layout_constraintStart_toEndOf="@id/item1_avatar"
+                app:layout_constraintTop_toTopOf="@id/item1_avatar" />
+
+
+            <com.linkfeeling.android.art.board.widget.WaveView
+                android:id="@+id/item1_wave"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.2"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.link.feeling.framework.widgets.NumberFontTextView
+                android:id="@+id/item1_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24%"
+                android:textColor="#fff5f5f5"
+                android:textSize="60sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_bias="0.88"
+                app:layout_constraintStart_toStartOf="@id/item1_avatar" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:background="#FF3F3D5B">
+
+
+            <ImageView
+                android:id="@+id/item1_calorie_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:baselineAlignBottom="true"
+                android:src="@drawable/ic_calories"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.6"
+                tools:ignore="ContentDescription" />
+
+            <com.link.feeling.framework.widgets.NumberFontTextView
+                android:id="@+id/item1_calorie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:includeFontPadding="false"
+                android:text="200"
+                android:textColor="#fff5f5f5"
+                android:textSize="45sp"
+                app:layout_constraintBottom_toBottomOf="@id/item1_calorie_iv"
+                app:layout_constraintStart_toEndOf="@id/item1_calorie_iv" />
+
+
+            <com.link.feeling.framework.widgets.NumberFontTextView
+                android:id="@+id/item1_calorie_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="kcal"
+                android:textColor="#fff5f5f5"
+                android:textSize="18sp"
+                app:layout_constraintBaseline_toBaselineOf="@id/item1_calorie"
+                app:layout_constraintStart_toEndOf="@id/item1_calorie" />
+
+
+            <ImageView
+                android:id="@+id/item1_bpm_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:baselineAlignBottom="true"
+                android:src="@drawable/ic_heart_rate"
+                app:layout_constraintBottom_toBottomOf="@id/item1_calorie_iv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.55"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <com.link.feeling.framework.widgets.NumberFontTextView
+                android:id="@+id/item1_bpm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="120"
+                android:textColor="#fff5f5f5"
+                android:textSize="45sp"
+                app:layout_constraintBottom_toBottomOf="@id/item1_calorie_iv"
+                app:layout_constraintStart_toEndOf="@id/item1_bpm_iv" />
+
+
+            <com.link.feeling.framework.widgets.NumberFontTextView
+                android:id="@+id/item1_bpm_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="bpm"
+                android:textColor="#fff5f5f5"
+                android:textSize="18sp"
+                app:layout_constraintBaseline_toBaselineOf="@id/item1_bpm"
+                app:layout_constraintStart_toEndOf="@id/item1_bpm" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+</FrameLayout>

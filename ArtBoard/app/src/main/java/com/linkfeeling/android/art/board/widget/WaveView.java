@@ -5,15 +5,19 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
-import android.support.annotation.ColorInt;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import java.util.Random;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
 
 /**
  * Created on 2019/5/13  10:21
  * chenpan pan.chen@linkfeeling.cn
  */
+@SuppressWarnings("all")
 public final class WaveView extends View {
     private PaintFlagsDrawFilter mDrawFilter;
     private Paint mWavePaint;
@@ -22,23 +26,25 @@ public final class WaveView extends View {
     @ColorInt
     private int mColor1 = Color.parseColor("#FF1A78FF");
     @ColorInt
-    private int mColor2 = Color.parseColor("#7F1A78FF");
+    private int mColor2 = Color.parseColor("#CC1A78FF");
     @ColorInt
-    private int mColor3 = Color.parseColor("#331A78FF");
+    private int mColor3 = Color.parseColor("#7F1A78FF");
 
     private float mOffset1 = 0.0f;
     private float mOffset2 = 0.0f;
     private float mOffset3 = 0.0f;
 
-    private float mSpeed1 = -0.2f;
-    private float mSpeed2 = -0.3f;
-    private float mSpeed3 = -0.4f;
+    private float mSpeed1 = -0.5f;
+    private float mSpeed2 = -0.6f;
+    private float mSpeed3 = -0.7f;
 
     private float mEndY = 0.0f;
     private float mEndY1 = 0.0f;
     private float mEndY2 = 0.0f;
 
-    private float mMeasureHeigth;
+    private Random mRandom;
+
+    private float mMeasureHeight;
     private float mMeasureWidth;
 
     private float mWaveHeight;
@@ -73,14 +79,16 @@ public final class WaveView extends View {
         mWavePaint2.setStyle(Paint.Style.FILL);
         mWavePaint2.setColor(mColor3);
         mDrawFilter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+
+        mRandom = new Random();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mMeasureHeigth = getMeasuredHeight();
+        mMeasureHeight = getMeasuredHeight();
         mMeasureWidth = getMeasuredWidth();
-        mWaveHeight = mMeasureHeigth / 2;
+        mWaveHeight = mMeasureHeight / 2;
     }
 
     @Override
@@ -90,17 +98,17 @@ public final class WaveView extends View {
 //        canvas.setDrawFilter(mDrawFilter);
         for (int i = 0; i < mMeasureWidth; i++) {
             // y = A * sin( wx + b) + h ; A： 浪高； w：周期；b：初相；
-            mEndY = (float) (mWaveHeight * Math.sin(5 * Math.PI / mMeasureWidth * i + mOffset1)) + mMeasureHeigth / 2;
+            mEndY = (float) (mWaveHeight * Math.sin(5 * Math.PI / mMeasureWidth * i + mOffset1)) + mMeasureHeight / 2;
             //画第一条波浪
-            canvas.drawLine(i, mMeasureHeigth, i, mEndY, mWavePaint);
+            canvas.drawLine(i, mMeasureHeight, i, mEndY, mWavePaint);
 //
             //画第二条波浪
-            mEndY1 = (float) (mWaveHeight * Math.sin(5 * Math.PI / mMeasureWidth * i + mOffset2)) + mMeasureHeigth / 2;
-            canvas.drawLine(i, mMeasureHeigth, i, mEndY1, mWavePaint1);
+            mEndY1 = (float) (mWaveHeight * Math.sin(5 * Math.PI / mMeasureWidth * i + mOffset2)) + mMeasureHeight / 2;
+            canvas.drawLine(i, mMeasureHeight, i, mEndY1, mWavePaint1);
 
             //画第二条波浪
-            mEndY2 = (float) (mWaveHeight * Math.sin(5 * Math.PI / mMeasureWidth * i + mOffset3)) + mMeasureHeigth / 2;
-            canvas.drawLine(i, mMeasureHeigth, i, mEndY2, mWavePaint2);
+            mEndY2 = (float) (mWaveHeight * Math.sin(5 * Math.PI / mMeasureWidth * i + mOffset3)) + mMeasureHeight / 2;
+            canvas.drawLine(i, mMeasureHeight, i, mEndY2, mWavePaint2);
         }
 
         if (mOffset1 < -Float.MAX_VALUE + 1) {//防止数值超过浮点型的最大值
@@ -117,6 +125,11 @@ public final class WaveView extends View {
             mOffset3 = 0;
         }
         mOffset3 += mSpeed3;
+
+//        mSpeed1 = -(float) Math.random();
+//        mSpeed2 = -(float) Math.random();
+//        mSpeed3 = -(float) Math.random();
+
         //刷新
         postInvalidate();
     }
