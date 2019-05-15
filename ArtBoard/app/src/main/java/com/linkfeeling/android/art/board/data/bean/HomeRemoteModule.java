@@ -1,5 +1,10 @@
 package com.linkfeeling.android.art.board.data.bean;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.linkfeeling.android.art.board.widget.Base64Utils;
+
+import java.util.Objects;
+
 /**
  * Created on 2019/5/14  11:38
  * chenpan pan.chen@linkfeeling.cn
@@ -14,22 +19,26 @@ public final class HomeRemoteModule {
      * uid : xxxxx
      * user_name : jack
      * head_icon : https://img.linkfeeling.cn/img/oo.png
-     * result : 1
+     * result : 1`````````````````````````````````
      */
 
-    private String kc;
+    @JSONField(name = "calorie")
+    private String calorie;
+    @JSONField(name = "heart_rate")
     private String heart_rate;
-    private String uid;
+    @JSONField(name = "user_name")
     private String user_name;
+    @JSONField(name = "head_icon")
     private String head_icon;
-    private String result;
+    @JSONField(name = "ratio")
+    private int ratio;
 
     public String getKc() {
-        return kc;
+        return calorie;
     }
 
     public void setKc(String kc) {
-        this.kc = kc;
+        this.calorie = kc;
     }
 
     public String getHeart_rate() {
@@ -40,16 +49,8 @@ public final class HomeRemoteModule {
         this.heart_rate = heart_rate;
     }
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
     public String getUser_name() {
-        return user_name;
+        return Base64Utils.URLDecoder(user_name);
     }
 
     public void setUser_name(String user_name) {
@@ -64,11 +65,35 @@ public final class HomeRemoteModule {
         this.head_icon = head_icon;
     }
 
-    public String getResult() {
-        return result;
+    public int getPercent() {
+        return ratio;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+
+    public String getPercentStr() {
+        return ratio+"%";
+    }
+
+
+    public void setPercent(int percent) {
+        this.ratio = percent;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HomeRemoteModule module = (HomeRemoteModule) o;
+        return ratio == module.ratio &&
+                Objects.equals(calorie, module.calorie) &&
+                Objects.equals(heart_rate, module.heart_rate) &&
+                Objects.equals(user_name, module.user_name) &&
+                Objects.equals(head_icon, module.head_icon);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(calorie, heart_rate, user_name, head_icon, ratio);
     }
 }

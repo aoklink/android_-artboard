@@ -1,6 +1,7 @@
 package com.linkfeeling.android.art.board.ui;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.TextSwitcher;
 import android.widget.ViewSwitcher;
@@ -8,9 +9,11 @@ import android.widget.ViewSwitcher;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
+import com.link.feeling.framework.utils.data.L;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.data.bean.HomePartModule;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
+import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 import com.linkfeeling.android.art.board.widget.RecyclerViewVerticalItemDecoration;
 
 import java.util.ArrayList;
@@ -25,6 +28,8 @@ import butterknife.BindView;
 
 public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeContract.Presenter> implements HomeContract.View, ViewSwitcher.ViewFactory {
 
+    public static List<OffsetModule> sOffsetCache = new ArrayList<>();
+
     @BindView(R.id.user_board_recycler_view)
     RecyclerView mRvBoard;
 
@@ -37,10 +42,13 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private HomeAdapter mAdapter;
     private PartAdapter mPartAdapter;
     private GridLayoutManager mGridManager;
-
     private List<HomePartModule> mPartModules;
-
     private String mCurrentCount;
+
+    private int mTotalPage;
+    private int mCurrentPage = 1;
+
+    private CountDownTimer mTimer;
 
     @Override
     protected int getLayoutRes() {
@@ -53,6 +61,35 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         initRecyclerView();
         getPresenter().request();
         getPresenter().interval();
+        initTimerTask();
+    }
+
+    private void initTimerTask() {
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+        mTimer = new CountDownTimer(Long.MAX_VALUE, 10000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (mTotalPage <= 1) {
+                    smoothScrollToPosition(0);
+                    return;
+                }
+                if (mCurrentPage < mTotalPage) {
+                    smoothScrollToPosition(mCurrentPage * 8);
+                    mCurrentPage++;
+                } else {
+                    smoothScrollToPosition(0);
+                    mCurrentPage = 1;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                initTimerTask();
+            }
+        };
+        mTimer.start();
     }
 
     private void initRecyclerView() {
@@ -110,10 +147,34 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             mCurrentCount = String.valueOf(CollectionsUtil.size(modules));
             mTsCount.setText(String.valueOf(CollectionsUtil.size(modules)));
         }
+        mTotalPage = (CollectionsUtil.size(modules) / 8) + (CollectionsUtil.size(modules) % 8 > 0 ? 1 : 0);
+        L.e("loading", mTotalPage + "");
     }
 
     @Override
     public View makeView() {
         return View.inflate(mTsCount.getContext(), R.layout.people_count_text_view, null);
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+        super.onDestroy();
+    }
+
+    private void smoothScrollToPosition(int position) {
+        if (mRvBoard != null) {
+            mRvBoard.smoothScrollToPosition(position);
+        }
     }
 }

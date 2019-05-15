@@ -15,13 +15,16 @@ import com.link.feeling.framework.component.image.transformation.CircleTransform
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
 import com.linkfeeling.android.art.board.R;
+import com.linkfeeling.android.art.board.constants.ColorConstants;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
+import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 import com.linkfeeling.android.art.board.widget.WaveView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
@@ -31,23 +34,31 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * Created on 2019/5/14  10:59
  * chenpan pan.chen@linkfeeling.cn
  */
-public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements WaveView.PostOffset {
 
     private Context mContext;
 
     private List<HomeRemoteModule> mModules;
+    private OffsetModule mCurrentOffset;
+    private OffsetModule mInflateOffset;
+    private HomeRemoteModule mModule;
+    private HomeHolder mHolder;
+
 
     private int mRecyclerViewHeight;
     private int mRecyclerViewWidth;
 
     private int DP10 = (int) DisplayUtils.dp2px(10);
+    private int DP20 = (int) DisplayUtils.dp2px(20);
     private int DP30 = (int) DisplayUtils.dp2px(30);
     private int DP45 = (int) DisplayUtils.dp2px(45);
-    private int DP50 = (int) DisplayUtils.dp2px(50);
+
+    private CircleTransform mCircleTransform;
 
     HomeAdapter(Context mContext) {
         this.mContext = mContext;
         mModules = new ArrayList<>();
+        mCircleTransform = new CircleTransform();
     }
 
     void setModules(List<HomeRemoteModule> mModules) {
@@ -56,11 +67,11 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyDataSetChanged();
     }
 
-    public void setRecyclerViewHeight(float mRecyclerViewHeight) {
+    void setRecyclerViewHeight(float mRecyclerViewHeight) {
         this.mRecyclerViewHeight = (int) mRecyclerViewHeight;
     }
 
-    public void setRecyclerViewWidth(float mRecyclerViewWidth) {
+    void setRecyclerViewWidth(float mRecyclerViewWidth) {
         this.mRecyclerViewWidth = (int) mRecyclerViewWidth;
     }
 
@@ -73,31 +84,47 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        HomeRemoteModule module = mModules.get(position);
-        HomeHolder homeHolder = (HomeHolder)holder;
-        LinkImageLoader.INSTANCE.load(module.getHead_icon() , homeHolder.mIvAvatar , new CircleTransform());
+        mModule = mModules.get(position);
+        mHolder = (HomeHolder) holder;
+        mInflateOffset = HomeActivity.sOffsetCache.get(position);
+        LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
+        mHolder.mTvName.setText(mModule.getUser_name());
+        mHolder.mTvCalorie.setText(mModule.getKc());
+        mHolder.mTvBpm.setText(mModule.getHeart_rate());
+        mHolder.mTvPercent.setText(mModule.getPercentStr());
 
-        ViewGroup.LayoutParams params = homeHolder.mLlRoot.getLayoutParams();
-        ViewGroup.LayoutParams rootParams = homeHolder.itemView.getLayoutParams();
-        ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) homeHolder.itemView.getLayoutParams();
-        ViewGroup.LayoutParams ivParams = homeHolder.mIvAvatar.getLayoutParams();
+        mHolder.mClTop.setBackgroundColor(ColorConstants.loadColor(mModule.getPercent()));
+
+        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()));
+
+        ViewGroup.LayoutParams params = mHolder.mLlRoot.getLayoutParams();
+        ViewGroup.LayoutParams rootParams = mHolder.itemView.getLayoutParams();
+        ViewGroup.LayoutParams ivParams = mHolder.mIvAvatar.getLayoutParams();
+
+        ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) mHolder.itemView.getLayoutParams();
+        ViewGroup.MarginLayoutParams nameMarginParams = (ViewGroup.MarginLayoutParams) mHolder.mTvName.getLayoutParams();
+        ViewGroup.MarginLayoutParams avatarMarginParams = (ViewGroup.MarginLayoutParams) mHolder.mIvAvatar.getLayoutParams();
 
         switch (CollectionsUtil.size(mModules)) {
             case 1:
-                params.height = (int) (mRecyclerViewHeight*0.9);
-                params.width = (int) (mRecyclerViewWidth*0.9);
-                homeHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                homeHolder. mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60);
-                homeHolder.  mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 45);
-                homeHolder. mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 45);
+                params.height = (int) (mRecyclerViewHeight * 0.9);
+                params.width = (int) (mRecyclerViewWidth * 0.9);
+                nameMarginParams.leftMargin = DP30;
+                avatarMarginParams.leftMargin = DP30;
+                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60);
+                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 45);
+                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 45);
                 break;
             case 2:
                 params.height = (int) (mRecyclerViewHeight * 0.75);
                 params.width = (int) (mRecyclerViewWidth * 0.45);
-                homeHolder. mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                homeHolder. mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 42);
-                homeHolder.  mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                homeHolder.  mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                nameMarginParams.leftMargin = DP20;
+                avatarMarginParams.leftMargin = DP20;
+                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 42);
+                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
                 break;
             case 3:
             case 4:
@@ -107,10 +134,12 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 params.width = (int) (mRecyclerViewWidth * 0.47);
                 ivParams.width = DP45;
                 ivParams.height = DP45;
-                homeHolder.  mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                homeHolder.  mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 42);
-                homeHolder.   mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                homeHolder.  mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                nameMarginParams.leftMargin = DP20;
+                avatarMarginParams.leftMargin = DP20;
+                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 42);
+                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
                 break;
             case 5:
             case 6:
@@ -122,10 +151,12 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 marginParams.topMargin = DP30;
                 ivParams.width = DP30;
                 ivParams.height = DP30;
-                homeHolder.  mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                homeHolder.  mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
-                homeHolder.   mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-                homeHolder.   mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                nameMarginParams.leftMargin = DP10;
+                avatarMarginParams.leftMargin = DP10;
+                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                 break;
         }
     }
@@ -133,6 +164,14 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         return CollectionsUtil.size(mModules);
+    }
+
+    @Override
+    public void offset(int position, float offset1, float offset2, float offset3) {
+        mCurrentOffset = HomeActivity.sOffsetCache.get(position);
+        mCurrentOffset.setOffset1(offset1);
+        mCurrentOffset.setOffset2(offset2);
+        mCurrentOffset.setOffset3(offset3);
     }
 
     class HomeHolder extends BaseViewHolder {
@@ -152,8 +191,13 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @BindView(R.id.item1_root)
         LinearLayout mLlRoot;
 
+        @BindView(R.id.item1_top_layout)
+        ConstraintLayout mClTop;
+
         HomeHolder(View itemView) {
             super(itemView);
         }
     }
+
+
 }

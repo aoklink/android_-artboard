@@ -19,16 +19,18 @@ import androidx.annotation.Nullable;
  */
 @SuppressWarnings("all")
 public final class WaveView extends View {
+
+
     private PaintFlagsDrawFilter mDrawFilter;
     private Paint mWavePaint;
     private Paint mWavePaint1;
     private Paint mWavePaint2;
     @ColorInt
-    private int mColor1 = Color.parseColor("#FF1A78FF");
+    private int mColor1 = Color.TRANSPARENT;
     @ColorInt
-    private int mColor2 = Color.parseColor("#CC1A78FF");
+    private int mColor2 = Color.TRANSPARENT;
     @ColorInt
-    private int mColor3 = Color.parseColor("#7F1A78FF");
+    private int mColor3 = Color.TRANSPARENT;
 
     private float mOffset1 = 0.0f;
     private float mOffset2 = 0.0f;
@@ -49,6 +51,12 @@ public final class WaveView extends View {
 
     private float mWaveHeight;
 
+    private PostOffset mPostOffset;
+
+    private int mCurrentPosition = -1;
+
+    private int mCurrentPeriod = 2;
+
     public WaveView(Context context) {
         this(context, null);
     }
@@ -62,7 +70,7 @@ public final class WaveView extends View {
         init();
     }
 
-    public void init() {
+    private void init() {
         // 初始绘制波纹的画笔
         mWavePaint = new Paint();
         mWavePaint.setAntiAlias(true);
@@ -88,26 +96,27 @@ public final class WaveView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mMeasureHeight = getMeasuredHeight();
         mMeasureWidth = getMeasuredWidth();
-        mWaveHeight = mMeasureHeight / 2;
+        mWaveHeight = mMeasureHeight / 3;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         // 从canvas层面去除绘制时锯齿
 //        canvas.setDrawFilter(mDrawFilter);
         for (int i = 0; i < mMeasureWidth; i++) {
             // y = A * sin( wx + b) + h ; A： 浪高； w：周期；b：初相；
-            mEndY = (float) (mWaveHeight * Math.sin(5 * Math.PI / mMeasureWidth * i + mOffset1)) + mMeasureHeight / 2;
+            mEndY = (float) (mWaveHeight * Math.sin(mCurrentPeriod * Math.PI / mMeasureWidth * i + mOffset1)) + mMeasureHeight / 3;
             //画第一条波浪
             canvas.drawLine(i, mMeasureHeight, i, mEndY, mWavePaint);
 //
             //画第二条波浪
-            mEndY1 = (float) (mWaveHeight * Math.sin(5 * Math.PI / mMeasureWidth * i + mOffset2)) + mMeasureHeight / 2;
+            mEndY1 = (float) (mWaveHeight * Math.sin(mCurrentPeriod * Math.PI / mMeasureWidth * i + mOffset2)) + mMeasureHeight / 3;
             canvas.drawLine(i, mMeasureHeight, i, mEndY1, mWavePaint1);
 
             //画第二条波浪
-            mEndY2 = (float) (mWaveHeight * Math.sin(5 * Math.PI / mMeasureWidth * i + mOffset3)) + mMeasureHeight / 2;
+            mEndY2 = (float) (mWaveHeight * Math.sin(mCurrentPeriod * Math.PI / mMeasureWidth * i + mOffset3)) + mMeasureHeight / 3;
             canvas.drawLine(i, mMeasureHeight, i, mEndY2, mWavePaint2);
         }
 
@@ -126,13 +135,32 @@ public final class WaveView extends View {
         }
         mOffset3 += mSpeed3;
 
-//        mSpeed1 = -(float) Math.random();
-//        mSpeed2 = -(float) Math.random();
-//        mSpeed3 = -(float) Math.random();
-
+        if (mPostOffset != null && mCurrentPosition >= 0) {
+            mPostOffset.offset(mCurrentPosition, mOffset1, mOffset2, mOffset3);
+        }
         //刷新
+        postInvalidateDelayed(50);
+    }
+
+    public interface PostOffset {
+        void offset(int position, float offset1, float offset2, float offset3);
+    }
+
+    public void initValueManager(int position, PostOffset offset, float offset1, float offset2, float offset3 , @ColorInt int[] colors) {
+        this.mCurrentPosition = position;
+        this.mPostOffset = offset;
+        this.mOffset1 = offset1;
+        this.mOffset2 = offset2;
+        this.mOffset3 = offset3;
+
+        this.mColor1 = colors[0];
+        this.mColor2 = colors[1];
+        this.mColor3 = colors[2];
+
+        this.mWavePaint.setColor(mColor1);
+        this.mWavePaint1.setColor(mColor2);
+        this.mWavePaint2.setColor(mColor3);
         postInvalidate();
     }
 
-//    private void initParams
 }

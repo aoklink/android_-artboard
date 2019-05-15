@@ -1,8 +1,13 @@
 package com.linkfeeling.android.art.board.ui;
 
-import com.alibaba.fastjson.JSON;
 import com.link.feeling.framework.base.BasePresenter;
+import com.link.feeling.framework.component.rx.BaseSingleObserver;
+import com.link.feeling.framework.utils.data.CollectionsUtil;
+import com.linkfeeling.android.art.board.data.LinkDataRepositories;
+import com.linkfeeling.android.art.board.data.bean.HomeRemoteBean;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
+import com.linkfeeling.android.art.board.data.bean.HomeRequest;
+import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,31 +32,35 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
     @Override
     public void request() {
         mIsLoading = false;
-//        LinkDataRepositories.getInstance()
-//                .home(new HomeRequest())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new BaseSingleObserver<HomeRemoteBean>(this) {
-//                    @Override
-//                    public void onSuccess(HomeRemoteBean module) {
-//                        super.onSuccess(module);
-//                        mModules.clear();
-//                        mModules.addAll(module.getGym_data());
-//                        onceViewAttached(view -> {
-//                            view.loading(mModules);
-//                        });
-//                    }
-//                });
-//        mModules.clear();
-        mModules.addAll(JSON.parseArray(json , HomeRemoteModule.class));
-        onceViewAttached(view -> {
-            view.loading(mModules);
-        });
+        LinkDataRepositories.getInstance()
+                .home(new HomeRequest())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSingleObserver<HomeRemoteBean>(this) {
+                    @Override
+                    public void onSuccess(HomeRemoteBean module) {
+                        super.onSuccess(module);
+                        if (module == null || CollectionsUtil.isEmpty(module.getGym_data())) {
+                            return;
+                        }
+                        mModules.clear();
+                        mModules.addAll(module.getGym_data());
+
+                        if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {
+                            for (int i = 0; i < CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache); i++) {
+                                HomeActivity.sOffsetCache.add(new OffsetModule());
+                            }
+                        }
+                        onceViewAttached(view -> {
+                            view.loading(mModules);
+                        });
+                    }
+                });
     }
 
     @Override
     public void interval() {
         mDisposable = Flowable
-                .interval(10, 10, TimeUnit.SECONDS)
+                .interval(1, 2, TimeUnit.SECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(view -> {
@@ -59,15 +68,5 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
                 }));
         addDisposable(mDisposable);
     }
-
-
-    public static String json = "[{\n" +
-            "                    \"kc\": \"1240\",\n" +
-            "                    \"heart_rate\":\"130\",\n" +
-            "                    \"uid\": \"xxxxx\",\n" +
-            "                    \"user_name\":\"Evanzhang\",\n" +
-            "                    \"head_icon\":\"https:\\/\\/thirdwx.qlogo.cn\\/mmopen\\/vi_32\\/DYAIOgq83eplgxNfNiaVRh78WetPoZE1OyhMGiby9eeUgUJicafAywSBBoWlvRhcSko0jrUc3ZBuIbWOOQlC5LJqA\\/132\",\n" +
-            "                    \"result\":\"1\"\n" +
-            "                }]";
 
 }
