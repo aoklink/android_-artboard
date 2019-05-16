@@ -28,6 +28,8 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
     // 注册监听
     private Disposable mDisposable;
 
+    private int mTempSize;
+
     @SuppressWarnings("unchecked")
     @Override
     public void request() {
@@ -40,13 +42,17 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
                     public void onSuccess(HomeRemoteBean module) {
                         super.onSuccess(module);
                         if (module == null || CollectionsUtil.isEmpty(module.getGym_data())) {
+                            onceViewAttached(view -> {
+                                mModules.clear();
+                                view.loading(mModules);
+                            });
                             return;
                         }
                         mModules.clear();
                         mModules.addAll(module.getGym_data());
-
                         if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {
-                            for (int i = 0; i < CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache); i++) {
+                            mTempSize = CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache);
+                            for (int i = 0; i < mTempSize; i++) {
                                 HomeActivity.sOffsetCache.add(new OffsetModule());
                             }
                         }
@@ -60,7 +66,7 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
     @Override
     public void interval() {
         mDisposable = Flowable
-                .interval(1, 2, TimeUnit.SECONDS)
+                .interval(1, 12, TimeUnit.SECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(view -> {

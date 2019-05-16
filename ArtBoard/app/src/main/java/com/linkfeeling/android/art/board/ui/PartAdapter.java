@@ -40,7 +40,7 @@ public final class PartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PartHolder(LayoutInflater.from(mContext).inflate(R.layout.user_sport_summary_item, null));
+        return new PartHolder(LayoutInflater.from(mContext).inflate(R.layout.user_sport_summary_item,parent, false));
     }
 
     @Override

@@ -14,7 +14,6 @@ import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.data.bean.HomePartModule;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.OffsetModule;
-import com.linkfeeling.android.art.board.widget.RecyclerViewVerticalItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private PartAdapter mPartAdapter;
     private GridLayoutManager mGridManager;
     private List<HomePartModule> mPartModules;
-    private String mCurrentCount;
+    private String mCurrentCount ;
 
     private int mTotalPage;
     private int mCurrentPage = 1;
@@ -111,7 +110,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
         mPartAdapter = new PartAdapter(this);
         mRvPart.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        mRvPart.addItemDecoration(new RecyclerViewVerticalItemDecoration(30));
+//        mRvPart.addItemDecoration(new RecyclerViewVerticalItemDecoration(30));
         mRvPart.setAdapter(mPartAdapter);
         mPartAdapter.setPartModules(mPartModules);
 

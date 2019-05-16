@@ -13,8 +13,8 @@
         android:id="@+id/logo_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/icon_gym_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,13 +24,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:overScrollMode="never"
-        android:paddingTop="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.75"
+        app:layout_constraintHeight_percent="0.8"
         app:layout_constraintStart_toEndOf="@id/people_count_line"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintVertical_bias="0.3"
         app:layout_constraintWidth_percent="0.17" />
 
 
@@ -50,7 +49,6 @@
         app:layout_constraintTop_toTopOf="@id/logo_image_view" />
 
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_board_recycler_view"
         android:layout_width="0dp"
@@ -62,17 +60,11 @@
         app:layout_constraintTop_toBottomOf="@id/logo_image_view" />
 
 
-
-
-
-
-
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:src="@drawable/ic_app_logo_mini"
         app:layout_constraintEnd_toEndOf="@id/user_sport_summary_recycler_view"
         app:layout_constraintTop_toBottomOf="@id/user_sport_summary_recycler_view" />
@@ -116,8 +108,7 @@
             <ImageView
                 android:id="@+id/loading_image_view"
                 android:layout_width="48dp"
-                android:layout_height="48dp"
-                 />
+                android:layout_height="48dp" />
 
             <TextView
                 android:id="@+id/loading_tip_text_view"

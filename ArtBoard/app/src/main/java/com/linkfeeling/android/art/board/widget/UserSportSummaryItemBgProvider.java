@@ -4,13 +4,14 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 
 public class UserSportSummaryItemBgProvider implements IBackgroundDrawableProvider {
+
     private int[] colorArray = new int[]{
-            0xff86b7ff,
-            0xff9185ff,
-            0xff50ceaa,
-            0xffffc47d,
-            0xffff957c,
-            0xffff5d5d
+            0xFF1A78FF,
+            0xFFAB49FC,
+            0xFF3FC193,
+            0xFFFFA941,
+            0xFFFF704E,
+            0xFFF54646
     };
 
     @Override
