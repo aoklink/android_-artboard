@@ -9,7 +9,6 @@ import android.widget.ViewSwitcher;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
-import com.link.feeling.framework.utils.data.L;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.data.bean.HomePartModule;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
@@ -42,9 +41,13 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private PartAdapter mPartAdapter;
     private GridLayoutManager mGridManager;
     private List<HomePartModule> mPartModules;
-    private String mCurrentCount ;
+
+    private String mCurrentCount = "0";
+
+    private String mTempCount = "0";
 
     private int mTotalPage;
+
     private int mCurrentPage = 1;
 
     private CountDownTimer mTimer;
@@ -141,13 +144,16 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
                 break;
         }
         mAdapter.setModules(modules);
-
         if (CollectionsUtil.isNotEmpty(modules) && !String.valueOf(CollectionsUtil.size(modules)).equals(mCurrentCount)) {
-            mCurrentCount = String.valueOf(CollectionsUtil.size(modules));
-            mTsCount.setText(String.valueOf(CollectionsUtil.size(modules)));
+            mTempCount = String.valueOf(CollectionsUtil.size(modules));
+        } else {
+            mTempCount = String.valueOf(0);
+        }
+        if (!mCurrentCount.equals(mTempCount)) {
+            mCurrentCount = mTempCount;
+            mTsCount.setText(mCurrentCount);
         }
         mTotalPage = (CollectionsUtil.size(modules) / 8) + (CollectionsUtil.size(modules) % 8 > 0 ? 1 : 0);
-        L.e("loading", mTotalPage + "");
     }
 
     @Override
