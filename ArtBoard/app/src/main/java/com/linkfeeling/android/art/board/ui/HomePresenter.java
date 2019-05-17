@@ -48,6 +48,9 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
                             });
                             return;
                         }
+                        if (mModules.equals(module.getGym_data())){
+                            return;
+                        }
                         mModules.clear();
                         mModules.addAll(module.getGym_data());
                         if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {

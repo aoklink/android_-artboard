@@ -160,7 +160,8 @@ public final class WaveView extends View {
         this.mWavePaint.setColor(mColor1);
         this.mWavePaint1.setColor(mColor2);
         this.mWavePaint2.setColor(mColor3);
-        postInvalidate();
+        //刷新
+        postInvalidateDelayed(50);
     }
 
 }

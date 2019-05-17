@@ -93,13 +93,14 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         mModule = mModules.get(position);
         mHolder = (HomeHolder) holder;
+
+        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()));
+
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
         LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
         mHolder.mTvName.setText(mModule.getUser_name());
         mHolder.mTvPercent.setText(mModule.getPercentStr());
         mHolder.mClTop.setBackgroundColor(ColorConstants.loadColor(mModule.getPercent()));
-
-        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()));
 
         ViewGroup.LayoutParams params = mHolder.mLlRoot.getLayoutParams();
         ViewGroup.LayoutParams rootParams = mHolder.itemView.getLayoutParams();
