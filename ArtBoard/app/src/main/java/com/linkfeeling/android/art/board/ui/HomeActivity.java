@@ -144,11 +144,9 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
                 break;
         }
         mAdapter.setModules(modules);
-        if (CollectionsUtil.isNotEmpty(modules) && !String.valueOf(CollectionsUtil.size(modules)).equals(mCurrentCount)) {
-            mTempCount = String.valueOf(CollectionsUtil.size(modules));
-        } else {
-            mTempCount = String.valueOf(0);
-        }
+
+        mTempCount = String.valueOf(CollectionsUtil.size(modules));
+
         if (!mCurrentCount.equals(mTempCount)) {
             mCurrentCount = mTempCount;
             mTsCount.setText(mCurrentCount);
