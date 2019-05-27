@@ -41,11 +41,15 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
                     @Override
                     public void onSuccess(HomeRemoteBean module) {
                         super.onSuccess(module);
+
                         if (module == null || CollectionsUtil.isEmpty(module.getGym_data())) {
                             onceViewAttached(view -> {
                                 mModules.clear();
                                 view.loading(mModules);
                             });
+                            return;
+                        }
+                        if (mModules.equals(module.getGym_data())) {
                             return;
                         }
                         mModules.clear();
