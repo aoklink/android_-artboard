@@ -61,6 +61,11 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private int DP60 = (int) DisplayUtils.dp2px(60);
 
     private CircleTransform mCircleTransform;
+//    private PropertyValuesHolder holder1 = PropertyValuesHolder.ofFloat("scaleX", 1, 1.5f, 1);
+//    private PropertyValuesHolder holder2 = PropertyValuesHolder.ofFloat("scaleY", 1, 1.5f, 1);
+//    private ObjectAnimator mAnimatorBpm;
+//    private ObjectAnimator mAnimatorCalorie;
+//    private ObjectAnimator mAnimatorPercent;
 
     HomeAdapter(Context mContext) {
         this.mContext = mContext;
@@ -100,7 +105,12 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
         mHolder.mTvName.setText(mModule.getUser_name());
-        mHolder.mTvPercent.setText(mModule.getPercentStr());
+
+        if (!mHolder.mTvPercent.getText().equals(mModule.getPercentStr())) {
+            mHolder.mTvPercent.setText(mModule.getPercentStr());
+//            mAnimatorPercent.start();
+        }
+
         mHolder.mClTop.setBackgroundColor(ColorConstants.loadColor(mModule.getPercent()));
 
         ViewGroup.LayoutParams params = mHolder.mLlRoot.getLayoutParams();
@@ -116,8 +126,6 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         switch (CollectionsUtil.size(mModules)) {
             case 1:
-                mHolder.mTvCalorie.setText(mModule.getKc());
-                mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
                 params.height = (int) (mRecyclerViewHeight * 0.9);
                 params.width = (int) (mRecyclerViewWidth * 0.9);
@@ -131,10 +139,17 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 88);
                 mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
                 mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
+
+                if (!mHolder.mTvBpm.getText().equals(mModule.getHeart_rate())) {
+                    mHolder.mTvBpm.setText(mModule.getHeart_rate());
+//                    mAnimatorBpm.start();
+                }
+                if (!mHolder.mTvCalorie.getText().equals(mModule.getKc())) {
+                    mHolder.mTvCalorie.setText(mModule.getKc());
+//                    mAnimatorCalorie.start();
+                }
                 break;
             case 2:
-                mHolder.mTvCalorie.setText(mModule.getKc());
-                mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
                 rootParams.height = MATCH_PARENT;
                 params.height = (int) (mRecyclerViewHeight * 0.75);
@@ -148,6 +163,14 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
                 mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
                 mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+                if (!mHolder.mTvBpm.getText().equals(mModule.getHeart_rate())) {
+                    mHolder.mTvBpm.setText(mModule.getHeart_rate());
+//                    mAnimatorBpm.start();
+                }
+                if (!mHolder.mTvCalorie.getText().equals(mModule.getKc())) {
+                    mHolder.mTvCalorie.setText(mModule.getKc());
+//                    mAnimatorCalorie.start();
+                }
                 break;
             case 3:
             case 4:
@@ -235,7 +258,12 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         HomeHolder(View itemView) {
             super(itemView);
-
+//            mAnimatorBpm = ObjectAnimator.ofPropertyValuesHolder(mTvBpm, holder1, holder2);
+//            mAnimatorCalorie = ObjectAnimator.ofPropertyValuesHolder(mTvCalorie, holder1, holder2);
+//            mAnimatorPercent = ObjectAnimator.ofPropertyValuesHolder(mTvPercent, holder1, holder2);
+//            mAnimatorBpm.setDuration(500);
+//            mAnimatorCalorie.setDuration(500);
+//            mAnimatorPercent.setDuration(500);
         }
     }
 

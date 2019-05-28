@@ -48,7 +48,7 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
                             });
                             return;
                         }
-                        if (mModules.equals(module.getGym_data())){
+                        if (mModules.equals(module.getGym_data())) {
                             return;
                         }
                         mModules.clear();
