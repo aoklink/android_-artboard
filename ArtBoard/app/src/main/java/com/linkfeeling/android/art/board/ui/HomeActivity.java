@@ -8,7 +8,6 @@ import android.widget.ViewSwitcher;
 
 import com.link.feeling.framework.base.FrameworkBaseActivity;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
-import com.link.feeling.framework.utils.data.DeviceUtils;
 import com.link.feeling.framework.utils.data.DisplayUtils;
 import com.link.feeling.framework.utils.data.L;
 import com.linkfeeling.android.art.board.R;
@@ -64,7 +63,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         getPresenter().request();
         getPresenter().interval();
         initTimerTask();
-        L.e(DeviceUtils.getMac());
+//        L.e(DeviceUtils.getMac());
     }
 
     private void initTimerTask() {
