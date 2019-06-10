@@ -3,6 +3,7 @@ package com.linkfeeling.android.art.board.ui;
 import com.link.feeling.framework.base.BasePresenter;
 import com.link.feeling.framework.component.rx.BaseSingleObserver;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
+import com.link.feeling.framework.utils.data.DeviceUtils;
 import com.linkfeeling.android.art.board.data.LinkDataRepositories;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteBean;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
@@ -25,6 +26,8 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
 
     private List<HomeRemoteModule> mModules = new ArrayList<>();
 
+    private String mMac = DeviceUtils.getMac();
+
     // 注册监听
     private Disposable mDisposable;
 
@@ -35,7 +38,7 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
     public void request() {
         mIsLoading = false;
         LinkDataRepositories.getInstance()
-                .home(new HomeRequest())
+                .home(new HomeRequest(mMac))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSingleObserver<HomeRemoteBean>(this) {
                     @Override
@@ -70,7 +73,7 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
     @Override
     public void interval() {
         mDisposable = Flowable
-                .interval(1, 1200, TimeUnit.MILLISECONDS)
+                .interval(3000, 6200, TimeUnit.MILLISECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(view -> {

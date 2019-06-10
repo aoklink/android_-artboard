@@ -33,6 +33,16 @@ public final class HomeRemoteModule {
     @JSONField(name = "ratio")
     private int ratio;
 
+    private boolean isDeleteStyle = false;
+
+    public boolean isDeleteStyle() {
+        return isDeleteStyle;
+    }
+
+    public void setDeleteStyle(boolean deleteStyle) {
+        isDeleteStyle = deleteStyle;
+    }
+
     public String getKc() {
         return calorie;
     }
@@ -71,7 +81,7 @@ public final class HomeRemoteModule {
 
 
     public String getPercentStr() {
-        return ratio+"%";
+        return ratio + "%";
     }
 
 

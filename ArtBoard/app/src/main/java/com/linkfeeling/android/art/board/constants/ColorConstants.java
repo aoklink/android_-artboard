@@ -8,12 +8,12 @@ package com.linkfeeling.android.art.board.constants;
 public final class ColorConstants {
     // FF CC 7F 33
 
-    private static final int COLOR1 = 0x331A78FF;
-    private static final int COLOR2 = 0x33AB49FC;
-    private static final int COLOR3 = 0x333FC193;
-    private static final int COLOR4 = 0x33FFA941;
-    private static final int COLOR5 = 0x33FF704E;
-    private static final int COLOR6 = 0x33F54646;
+    private static final int COLOR1 = 0x661A78FF;
+    private static final int COLOR2 = 0x66AB49FC;
+    private static final int COLOR3 = 0x663FC193;
+    private static final int COLOR4 = 0x66FFA941;
+    private static final int COLOR5 = 0x66FF704E;
+    private static final int COLOR6 = 0x66F54646;
 
     private static final int[] COLORS1 = new int[]{0xFF1A78FF, 0xCC1A78FF, 0x7F1A78FF};
     private static final int[] COLORS2 = new int[]{0xFFAB49FC, 0xCCAB49FC, 0x7FAB49FC};

@@ -41,6 +41,7 @@
         app:layout_constraintGuide_percent="0.8" />
 
     <include
+        android:id="@+id/include_people"
         layout="@layout/people_count_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -82,6 +83,49 @@
         app:layout_constraintEnd_toEndOf="@id/imageView"
         app:layout_constraintTop_toBottomOf="@id/imageView"
         tools:ignore="SmallSp" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/current_style_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="user_sport_summary_recycler_view,include_people,user_board_recycler_view,imageView,service_provider_manifest_tv" />
+
+
+    <TextView
+        android:id="@+id/week_calorie_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="本周累计消耗热量"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@id/logo_image_view"
+        app:layout_constraintTop_toBottomOf="@id/logo_image_view" />
+
+
+    <LinearLayout
+        android:id="@+id/week_calorie_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@id/logo_image_view"
+        app:layout_constraintTop_toBottomOf="@id/week_calorie_title" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rank_rv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
 
     <FrameLayout
         android:id="@+id/loading_layout"
