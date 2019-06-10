@@ -69,7 +69,7 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
     @Override
     public void interval() {
         mDisposable = Flowable
-                .interval(1, 2500, TimeUnit.MILLISECONDS)
+                .interval(1, 1250, TimeUnit.MILLISECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(view -> {
