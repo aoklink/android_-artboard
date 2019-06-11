@@ -57,35 +57,35 @@ public final class ImageConstants {
         switch (num) {
 
             case 1:
-                return R.drawable.rank1;
+                return R.mipmap.rank1;
             case 2:
-                return R.drawable.rank2;
+                return R.mipmap.rank2;
             case 3:
-                return R.drawable.rank3;
+                return R.mipmap.rank3;
             case 4:
-                return R.drawable.rank4;
+                return R.mipmap.rank4;
             case 5:
-                return R.drawable.rank5;
+                return R.mipmap.rank5;
             case 6:
-                return R.drawable.rank6;
+                return R.mipmap.rank6;
             case 7:
-                return R.drawable.rank7;
+                return R.mipmap.rank7;
             case 8:
-                return R.drawable.rank8;
+                return R.mipmap.rank8;
             case 9:
-                return R.drawable.rank9;
+                return R.mipmap.rank9;
             case 10:
-                return R.drawable.rank10;
+                return R.mipmap.rank10;
             case 11:
-                return R.drawable.rank11;
+                return R.mipmap.rank11;
             case 12:
-                return R.drawable.rank2;
+                return R.mipmap.rank2;
             case 13:
-                return R.drawable.rank13;
+                return R.mipmap.rank13;
             case 14:
-                return R.drawable.rank14;
+                return R.mipmap.rank14;
             case 15:
-                return R.drawable.rank15;
+                return R.mipmap.rank15;
         }
         return 0;
     }

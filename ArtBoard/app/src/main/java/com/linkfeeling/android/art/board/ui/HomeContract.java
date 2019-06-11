@@ -14,10 +14,13 @@ public interface HomeContract {
 
     interface View extends BaseMvpView {
         void loading(List<HomeRemoteModule> modules);
+
+        void loadingRank(List<HomeRemoteModule> modules, String total_calorie);
     }
 
     interface Presenter extends BaseMvpPresenter<View> {
         void request();
+
         void interval();
     }
 }

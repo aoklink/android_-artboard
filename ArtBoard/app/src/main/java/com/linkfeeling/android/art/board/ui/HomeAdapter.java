@@ -5,6 +5,8 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
@@ -40,11 +43,11 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Context mContext;
 
     private List<HomeRemoteModule> mModules;
+
     private OffsetModule mCurrentOffset;
     private OffsetModule mInflateOffset;
     private HomeRemoteModule mModule;
     private HomeHolder mHolder;
-
 
     private int mRecyclerViewHeight;
     private int mRecyclerViewWidth;
@@ -57,10 +60,13 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private CircleTransform mCircleTransform;
 
+    private Animation mOfflineAnimation;
+
     HomeAdapter(Context mContext) {
         this.mContext = mContext;
         mModules = new ArrayList<>();
         mCircleTransform = new CircleTransform();
+        mOfflineAnimation = AnimationUtils.loadAnimation(mContext , R.anim.fade_in_out);
     }
 
     void setModules(List<HomeRemoteModule> mModules) {
@@ -79,7 +85,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.home_item1, parent, false);
         return new HomeHolder(v);
     }
@@ -91,7 +97,10 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
-        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()));
+        if (position%2==0) {
+            mHolder.itemView.startAnimation(mOfflineAnimation);
+        }
+        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()),position%2!=0);
 
         LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
         mHolder.mTvName.setText(mModule.getUser_name());
@@ -178,6 +187,9 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mHolder.mTvBpm2.setText(mModule.getHeart_rate());
                 break;
         }
+
+
+
     }
 
     @Override
@@ -223,6 +235,11 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView mTvCalorie2;
         @BindView(R.id.item2_bpm)
         TextView mTvBpm2;
+
+        @BindView(R.id.item1_group)
+        Group mItem1Group;
+        @BindView(R.id.item2_group)
+        Group mItem2Group;
 
         HomeHolder(View itemView) {
             super(itemView);

@@ -2,7 +2,6 @@ package com.linkfeeling.android.art.board.widget;
 
 import com.link.feeling.framework.KeysConstants;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
@@ -22,7 +21,7 @@ public final class Base64Utils {
     public static String URLEncoder(String value) {
         try {
            return URLEncoder.encode(value, KeysConstants.UTF_8);
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
@@ -37,7 +36,7 @@ public final class Base64Utils {
     public static String URLDecoder(String value) {
         try {
            return URLDecoder.decode(value, KeysConstants.UTF_8);
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";

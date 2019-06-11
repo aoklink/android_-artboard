@@ -15,6 +15,8 @@ import android.widget.ViewSwitcher;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
+import com.link.feeling.framework.utils.data.L;
+import com.link.feeling.framework.utils.ui.ViewUtils;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.constants.ImageConstants;
 import com.linkfeeling.android.art.board.data.bean.HomePartModule;
@@ -26,12 +28,14 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
-public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeContract.Presenter> implements HomeContract.View, ViewSwitcher.ViewFactory {
+public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeContract.Presenter> implements HomeContract.View, ViewSwitcher.ViewFactory, Animation.AnimationListener {
 
     public static List<OffsetModule> sOffsetCache = new ArrayList<>();
 
@@ -49,16 +53,14 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @BindView(R.id.rank_rv)
     RecyclerView mRvRank;
-//    @BindView(R.id.rank_item1)
-//    View mRankItem1;
-//    @BindView(R.id.rank_item2)
-//    View mRankItem2;
-//    @BindView(R.id.rank_item3)
-//    View mRankItem3;
-//    @BindView(R.id.rank_item4)
-//    View mRankItem4;
-//    @BindView(R.id.rank_item5)
-//    View mRankItem5;
+
+    @BindView(R.id.current_style_group)
+    Group mCurrentGroup;
+    @BindView(R.id.rank_style_group)
+    Group mRankGroup;
+
+    @BindView(R.id.home_root)
+    ConstraintLayout mClRoot;
 
     private HomeAdapter mAdapter;
     private PartAdapter mPartAdapter;
@@ -71,20 +73,18 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private String mTempCount = "0";
     private CountDownTimer mTimer;
 
-    private List<View> mRankItems;
+    private RankAdapter mRankAdapter;
+    private String mCacheCalorie = "";
+    private Animation mFadeInAnimation;
+    private Animation mFadeOutAnimation;
 
-    private Animation animator;
-
-    private String temp = "987654";
-
-    private RankAdapter rankAdapter;
-    private List<HomeRemoteModule> list = new ArrayList<>();
-
-    private boolean isChange = true;
-
-    private LayoutAnimationController controller1;
-    private LayoutAnimationController controller2;
-
+    private LayoutAnimationController mControllerIn;
+    private LayoutAnimationController mControllerOut;
+    private List<HomeRemoteModule> mRankModules;
+    private int mRankPage = 0;
+    private int mCurrentRankPage = 0;
+    private CountDownTimer mRankTimer;
+    private long mTempDelay = 1350;
 
     @Override
     protected int getLayoutRes() {
@@ -94,7 +94,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
         initRecyclerView();
-//        getPresenter().request();
+        getPresenter().request();
         getPresenter().interval();
         initTimerTask();
     }
@@ -150,23 +150,15 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         mPartAdapter.setPartModules(mPartModules);
         mTsCount.setFactory(this);
 
-        list.add(new HomeRemoteModule());
-        list.add(new HomeRemoteModule());
-        list.add(new HomeRemoteModule());
-        list.add(new HomeRemoteModule());
-        list.add(new HomeRemoteModule());
-//        mRankItems.add(mRankItem1);
-//        mRankItems.add(mRankItem2);
-//        mRankItems.add(mRankItem3);
-//        mRankItems.add(mRankItem4);
-//        mRankItems.add(mRankItem5);
-//        animator = AnimationUtils.loadAnimation(this ,R.anim.item_rank_out);
-        rankAdapter = new RankAdapter(this);
+        mRankAdapter = new RankAdapter(this);
         mRvRank.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        mRvRank.setAdapter(rankAdapter);
-        rankAdapter.setModules(list);
-        controller1 =  AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_in_holder);
-        controller2 =  AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_out_holder);
+        mRvRank.setAdapter(mRankAdapter);
+        mControllerIn = AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_in_holder);
+        mControllerOut = AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_out_holder);
+        mFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        mFadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        mFadeOutAnimation.setAnimationListener(this);
+        mRankModules = new ArrayList<>();
     }
 
     @NonNull
@@ -177,6 +169,14 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     public void loading(List<HomeRemoteModule> modules) {
+        if (mCurrentGroup.getVisibility() == View.GONE) {
+            mClRoot.setBackgroundResource(R.drawable.icon_bg);
+            mCurrentGroup.setVisibility(View.VISIBLE);
+            mCurrentGroup.startAnimation(mFadeInAnimation);
+        }
+        if (mRankGroup.getVisibility() == View.VISIBLE) {
+            mRankGroup.startAnimation(mFadeOutAnimation);
+        }
         switch (CollectionsUtil.size(modules)) {
             case 1:
                 mGridManager.setSpanCount(1);
@@ -203,39 +203,83 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         }
 
         mTotalPage = (CollectionsUtil.size(modules) / 8) + (CollectionsUtil.size(modules) % 8 > 0 ? 1 : 0);
-
-        mCalorieContainer.removeAllViews();
-
-        for (int i = 0; i < temp.length(); i++) {
-            ImageView iv = (ImageView) LayoutInflater.from(this).inflate(R.layout.item_number, mCalorieContainer, false);
-            iv.setBackgroundResource(ImageConstants.matchNumberImage(String.valueOf(temp.charAt(i))));
-            mCalorieContainer.addView(iv);
-        }
-
-        isChange = true;
-
-        for (HomeRemoteModule module : list) {
-            module.setDeleteStyle(false);
-        }
-        mRvRank.setLayoutAnimation(controller2);
-        rankAdapter.setModules(list);
-
-        isChange = false;
-
-        postDelay(new Runnable() {
-            @Override
-            public void run() {
-                for (HomeRemoteModule module : list) {
-                    module.setDeleteStyle(true);
-                }
-                mRvRank.setLayoutAnimation(controller1);
-                rankAdapter.setModules(list);
-            }
-        },1200);
-
     }
 
     @Override
+    public void loadingRank(List<HomeRemoteModule> modules, String total_calorie) {
+        if (mRankGroup.getVisibility() == View.GONE) {
+            mClRoot.setBackgroundResource(R.drawable.rank_bg);
+            mRankGroup.setVisibility(View.VISIBLE);
+            mRankGroup.startAnimation(mFadeInAnimation);
+        }
+        if (mCurrentGroup.getVisibility() == View.VISIBLE) {
+            mCurrentGroup.startAnimation(mFadeOutAnimation);
+        }
+
+        mRankModules.clear();
+        mRankModules.addAll(modules);
+        mRankPage = CollectionsUtil.size(mRankModules) / 5 + (CollectionsUtil.size(mRankModules) % 5 > 0 ? 1 : 0);
+
+        if (!mCacheCalorie.equals(total_calorie)) {
+            mCacheCalorie = total_calorie;
+            mCalorieContainer.removeAllViews();
+            for (int i = 0; i < total_calorie.length(); i++) {
+                ImageView iv = (ImageView) LayoutInflater.from(this).inflate(R.layout.item_number, mCalorieContainer, false);
+                iv.setBackgroundResource(ImageConstants.matchNumberImage(String.valueOf(total_calorie.charAt(i))));
+                mCalorieContainer.addView(iv);
+            }
+            mCalorieContainer.startAnimation(mFadeInAnimation);
+        }
+        mRvRank.setLayoutAnimation(mControllerIn);
+        mCurrentRankPage = 0;
+        if (mRankPage > 1) {
+            mRankAdapter.setModules(mRankModules.subList(0, 5));
+            scheduledRankAnimation();
+        } else {
+            mRankAdapter.setModules(mRankModules);
+            if (mRankTimer != null) {
+                mRankTimer.cancel();
+            }
+        }
+    }
+
+
+    private boolean mIsRankTimerStart = true;
+
+    private void scheduledRankAnimation() {
+        if (mRankTimer != null) {
+            mRankTimer.cancel();
+        }
+        mIsRankTimerStart = true;
+        mRankTimer = new CountDownTimer(Long.MAX_VALUE, 6666) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (mIsRankTimerStart) {
+                    mIsRankTimerStart = false;
+                    return;
+                }
+                mRvRank.setLayoutAnimation(mControllerOut);
+                mRankAdapter.setModules(mRankModules.subList(mCurrentRankPage * 5, mRankPage == (mCurrentRankPage + 1) ? CollectionsUtil.size(mRankModules) : (mCurrentRankPage + 1) * 5));
+                mCurrentRankPage++;
+                if (mCurrentRankPage >= mRankPage) {
+                    mCurrentRankPage = 0;
+                }
+                mTempDelay = 270 * mRankAdapter.getItemCount();
+                postDelay(() -> {
+                    mRvRank.setLayoutAnimation(mControllerIn);
+                    mRankAdapter.setCurrentPage(mCurrentRankPage);
+                    mRankAdapter.setModules(mRankModules.subList(mCurrentRankPage * 5, mRankPage == (mCurrentRankPage + 1) ? CollectionsUtil.size(mRankModules) : (mCurrentRankPage + 1) * 5));
+                }, mTempDelay);
+            }
+
+            @Override
+            public void onFinish() {
+                scheduledRankAnimation();
+            }
+        };
+        mRankTimer.start();
+    }
+
     public View makeView() {
         return View.inflate(mTsCount.getContext(), R.layout.people_count_text_view, null);
     }
@@ -249,16 +293,45 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     }
 
     @Override
-    protected void onDestroy() {
-        if (mTimer != null) {
-            mTimer.cancel();
+    protected void onStop() {
+        super.onStop();
+        if (isFinishing()) {
+            if (mTimer != null) {
+                mTimer.cancel();
+            }
+            if (mRankTimer != null) {
+                mRankTimer.cancel();
+            }
         }
-        super.onDestroy();
     }
 
     private void smoothScrollToPosition(int position) {
         if (mRvBoard != null) {
             mRvBoard.smoothScrollToPosition(position);
         }
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+        if (animation == mFadeOutAnimation) {
+            if (ViewUtils.isVisible(mCurrentGroup)) {
+                ViewUtils.setGone(mRankGroup);
+                L.e("current");
+            }
+            if (ViewUtils.isVisible(mRankGroup)) {
+                ViewUtils.setGone(mCurrentGroup);
+                L.e("rank");
+            }
+        }
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
     }
 }

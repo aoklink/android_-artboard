@@ -6,7 +6,10 @@
     <string name="user_name_example">这是最多的字数了</string>
     <string name="bpm">bpm</string>
     <string name="kcal">kcal</string>
+    <string name="calorie">千卡</string>
     <string name="loading_tip">正在加载...</string>
     <string name="loading_error_tip">加载失败,请点击重试</string>
     <string name="percent">%1$s-%</string>
+    <string name="use">消耗</string>
+    <string name="week">本周累计消耗热量</string>
 </resources>

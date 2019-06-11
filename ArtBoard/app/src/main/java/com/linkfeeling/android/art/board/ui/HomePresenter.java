@@ -44,7 +44,6 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
                     @Override
                     public void onSuccess(HomeRemoteBean module) {
                         super.onSuccess(module);
-
                         if (module == null || CollectionsUtil.isEmpty(module.getGym_data())) {
                             onceViewAttached(view -> {
                                 mModules.clear();
@@ -52,20 +51,28 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
                             });
                             return;
                         }
+
                         if (mModules.equals(module.getGym_data())) {
                             return;
                         }
+
                         mModules.clear();
                         mModules.addAll(module.getGym_data());
-                        if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {
-                            mTempSize = CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache);
-                            for (int i = 0; i < mTempSize; i++) {
-                                HomeActivity.sOffsetCache.add(new OffsetModule());
+                        if (module.isFlag()) {
+                            if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {
+                                mTempSize = CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache);
+                                for (int i = 0; i < mTempSize; i++) {
+                                    HomeActivity.sOffsetCache.add(new OffsetModule());
+                                }
                             }
+                            onceViewAttached(view -> {
+                                view.loading(mModules);
+                            });
+                        } else {
+                            onceViewAttached(view -> {
+                                view.loadingRank(mModules, module.getTotal_calorie());
+                            });
                         }
-                        onceViewAttached(view -> {
-                            view.loading(mModules);
-                        });
                     }
                 });
     }
@@ -73,7 +80,7 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
     @Override
     public void interval() {
         mDisposable = Flowable
-                .interval(3000, 6200, TimeUnit.MILLISECONDS)
+                .interval(1, 1200, TimeUnit.MILLISECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(view -> {
