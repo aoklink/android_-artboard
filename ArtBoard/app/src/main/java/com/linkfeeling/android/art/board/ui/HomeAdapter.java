@@ -1,10 +1,13 @@
 package com.linkfeeling.android.art.board.ui;
 
 import android.content.Context;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,14 +45,16 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Context mContext;
 
     private List<HomeRemoteModule> mModules;
+
     private OffsetModule mCurrentOffset;
     private OffsetModule mInflateOffset;
     private HomeRemoteModule mModule;
     private HomeHolder mHolder;
 
-
     private int mRecyclerViewHeight;
     private int mRecyclerViewWidth;
+
+    private SparseArray<HomeRemoteModule> mSparseArray;
 
     private int DP10 = (int) DisplayUtils.dp2px(10);
     private int DP15 = (int) DisplayUtils.dp2px(15);
@@ -61,16 +66,15 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private int DP60 = (int) DisplayUtils.dp2px(60);
 
     private CircleTransform mCircleTransform;
-//    private PropertyValuesHolder holder1 = PropertyValuesHolder.ofFloat("scaleX", 1, 1.5f, 1);
-//    private PropertyValuesHolder holder2 = PropertyValuesHolder.ofFloat("scaleY", 1, 1.5f, 1);
-//    private ObjectAnimator mAnimatorBpm;
-//    private ObjectAnimator mAnimatorCalorie;
-//    private ObjectAnimator mAnimatorPercent;
+
+    private Animation mOfflineAnimation;
 
     HomeAdapter(Context mContext) {
         this.mContext = mContext;
         mModules = new ArrayList<>();
         mCircleTransform = new CircleTransform();
+        mOfflineAnimation = AnimationUtils.loadAnimation(mContext, R.anim.fade_in_out);
+        mSparseArray = new SparseArray<>();
     }
 
     void setModules(List<HomeRemoteModule> mModules) {
@@ -89,7 +93,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.home_item1, parent, false);
         return new HomeHolder(v);
     }
@@ -101,17 +105,18 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
-        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()));
+        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()), mModule.isOnline());
+
 
         LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
         mHolder.mTvName.setText(mModule.getUser_name());
 
         if (!mHolder.mTvPercent.getText().equals(mModule.getPercentStr())) {
             mHolder.mTvPercent.setText(mModule.getPercentStr());
-//            mAnimatorPercent.start();
         }
 
         mHolder.mClTop.setBackgroundColor(ColorConstants.loadColor(mModule.getPercent()));
+
 
         ViewGroup.LayoutParams params = mHolder.mLlRoot.getLayoutParams();
         ViewGroup.LayoutParams rootParams = mHolder.itemView.getLayoutParams();
@@ -126,6 +131,8 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         switch (CollectionsUtil.size(mModules)) {
             case 1:
+                mHolder.mTvCalorie.setText(mModule.getKc());
+                mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
                 params.height = (int) (mRecyclerViewHeight * 0.9);
                 params.width = (int) (mRecyclerViewWidth * 0.9);
@@ -150,6 +157,8 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 }
                 break;
             case 2:
+                mHolder.mTvCalorie.setText(mModule.getKc());
+                mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
                 rootParams.height = MATCH_PARENT;
                 params.height = (int) (mRecyclerViewHeight * 0.75);
@@ -258,12 +267,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         HomeHolder(View itemView) {
             super(itemView);
-//            mAnimatorBpm = ObjectAnimator.ofPropertyValuesHolder(mTvBpm, holder1, holder2);
-//            mAnimatorCalorie = ObjectAnimator.ofPropertyValuesHolder(mTvCalorie, holder1, holder2);
-//            mAnimatorPercent = ObjectAnimator.ofPropertyValuesHolder(mTvPercent, holder1, holder2);
-//            mAnimatorBpm.setDuration(500);
-//            mAnimatorCalorie.setDuration(500);
-//            mAnimatorPercent.setDuration(500);
+
         }
     }
 

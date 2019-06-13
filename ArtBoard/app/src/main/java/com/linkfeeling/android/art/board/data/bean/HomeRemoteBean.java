@@ -8,30 +8,31 @@ import java.util.List;
  * Created on 2019/5/14  19:02
  * chenpan pan.chen@linkfeeling.cn
  */
+@SuppressWarnings("unused")
 public final class HomeRemoteBean {
 
-    @JSONField(name = "gym_name")
-    private String gym_name;
-    @JSONField(name = "logo_url")
-    private String logo_url;
+    @JSONField(name = "flag")
+    private boolean flag;
+   @JSONField(name = "total_calorie")
+    private String total_calorie;
     @JSONField(name = "gym_data")
     private List<HomeRemoteModule> gym_data;
 
 
-    public String getGym_name() {
-        return gym_name == null ? "" : gym_name;
+    public String getTotal_calorie() {
+        return total_calorie == null ? "" : total_calorie;
     }
 
-    public void setGym_name(String gym_name) {
-        this.gym_name = gym_name;
+    public void setTotal_calorie(String total_calorie) {
+        this.total_calorie = total_calorie;
     }
 
-    public String getLogo_url() {
-        return logo_url == null ? "" : logo_url;
+    public boolean isFlag() {
+        return flag;
     }
 
-    public void setLogo_url(String logo_url) {
-        this.logo_url = logo_url;
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 
     public List<HomeRemoteModule> getGym_data() {

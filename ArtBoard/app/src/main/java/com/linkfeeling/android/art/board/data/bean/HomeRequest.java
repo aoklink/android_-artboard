@@ -5,4 +5,10 @@ package com.linkfeeling.android.art.board.data.bean;
  * chenpan pan.chen@linkfeeling.cn
  */
 public final class HomeRequest {
+
+    private String mac;
+
+    public HomeRequest(String mac) {
+        this.mac = mac;
+    }
 }

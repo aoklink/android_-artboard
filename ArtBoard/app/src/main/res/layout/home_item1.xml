@@ -186,7 +186,6 @@
                 app:layout_constraintTop_toBottomOf="@id/item2_calorie"
                 tools:text="120" />
 
-
             <com.link.feeling.framework.widgets.NumberFontTextView
                 android:id="@+id/item2_bpm_holder"
                 android:layout_width="wrap_content"

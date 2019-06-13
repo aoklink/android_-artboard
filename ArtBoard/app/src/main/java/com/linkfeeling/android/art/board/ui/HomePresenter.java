@@ -3,6 +3,7 @@ package com.linkfeeling.android.art.board.ui;
 import com.link.feeling.framework.base.BasePresenter;
 import com.link.feeling.framework.component.rx.BaseSingleObserver;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
+import com.link.feeling.framework.utils.data.DeviceUtils;
 import com.linkfeeling.android.art.board.data.LinkDataRepositories;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteBean;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
@@ -25,6 +26,8 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
 
     private List<HomeRemoteModule> mModules = new ArrayList<>();
 
+    private String mMac = DeviceUtils.getMac();
+
     // 注册监听
     private Disposable mDisposable;
 
@@ -35,12 +38,13 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
     public void request() {
         mIsLoading = false;
         LinkDataRepositories.getInstance()
-                .home(new HomeRequest())
+                .home(new HomeRequest(mMac))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSingleObserver<HomeRemoteBean>(this) {
                     @Override
                     public void onSuccess(HomeRemoteBean module) {
                         super.onSuccess(module);
+
                         if (module == null || CollectionsUtil.isEmpty(module.getGym_data())) {
                             onceViewAttached(view -> {
                                 mModules.clear();
@@ -48,20 +52,28 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
                             });
                             return;
                         }
+
                         if (mModules.equals(module.getGym_data())) {
                             return;
                         }
+
                         mModules.clear();
                         mModules.addAll(module.getGym_data());
-                        if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {
-                            mTempSize = CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache);
-                            for (int i = 0; i < mTempSize; i++) {
-                                HomeActivity.sOffsetCache.add(new OffsetModule());
+                        if (module.isFlag()) {
+                            if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {
+                                mTempSize = CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache);
+                                for (int i = 0; i < mTempSize; i++) {
+                                    HomeActivity.sOffsetCache.add(new OffsetModule());
+                                }
                             }
+                            onceViewAttached(view -> {
+                                view.loading(mModules);
+                            });
+                        } else {
+                            onceViewAttached(view -> {
+                                view.loadingRank(mModules, module.getTotal_calorie());
+                            });
                         }
-                        onceViewAttached(view -> {
-                            view.loading(mModules);
-                        });
                     }
                 });
     }
