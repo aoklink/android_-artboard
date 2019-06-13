@@ -19,7 +19,7 @@ public final class HomeRemoteModule {
      * uid : xxxxx
      * user_name : jack
      * head_icon : https://img.linkfeeling.cn/img/oo.png
-     * result : 1`````````````````````````````````
+     * result : 1
      */
 
     @JSONField(name = "calorie")
@@ -32,7 +32,17 @@ public final class HomeRemoteModule {
     private String head_icon;
     @JSONField(name = "ratio")
     private int ratio;
+    @JSONField(name = "online")
+    private boolean online;
 
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
 
     public String getKc() {
         return calorie;
@@ -86,6 +96,7 @@ public final class HomeRemoteModule {
         if (o == null || getClass() != o.getClass()) return false;
         HomeRemoteModule module = (HomeRemoteModule) o;
         return ratio == module.ratio &&
+                online == module.online &&
                 Objects.equals(calorie, module.calorie) &&
                 Objects.equals(heart_rate, module.heart_rate) &&
                 Objects.equals(user_name, module.user_name) &&
@@ -95,6 +106,6 @@ public final class HomeRemoteModule {
     @Override
     public int hashCode() {
 
-        return Objects.hash(calorie, heart_rate, user_name, head_icon, ratio);
+        return Objects.hash(calorie, heart_rate, user_name, head_icon, ratio, online);
     }
 }

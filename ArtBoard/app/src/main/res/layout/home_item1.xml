@@ -133,13 +133,6 @@
                 app:layout_constraintBaseline_toBaselineOf="@id/item1_bpm"
                 app:layout_constraintStart_toEndOf="@id/item1_bpm" />
 
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/item1_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="item1_calorie,item1_calorie_holder,item1_bpm,item1_bpm_holder" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -203,12 +196,6 @@
                 android:textSize="16sp"
                 app:layout_constraintBaseline_toBaselineOf="@id/item2_bpm"
                 app:layout_constraintStart_toEndOf="@id/item2_bpm" />
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/item2_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="item2_calorie,item2_calorie_holder,item2_bpm,item2_bpm_holder" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

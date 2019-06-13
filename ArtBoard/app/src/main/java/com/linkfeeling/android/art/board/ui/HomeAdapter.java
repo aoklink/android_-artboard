@@ -1,6 +1,7 @@
 package com.linkfeeling.android.art.board.ui;
 
 import android.content.Context;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
@@ -52,6 +52,8 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private int mRecyclerViewHeight;
     private int mRecyclerViewWidth;
 
+    private SparseArray<HomeRemoteModule> mSparseArray;
+
     private int DP10 = (int) DisplayUtils.dp2px(10);
     private int DP15 = (int) DisplayUtils.dp2px(15);
     private int DP20 = (int) DisplayUtils.dp2px(20);
@@ -66,7 +68,8 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.mContext = mContext;
         mModules = new ArrayList<>();
         mCircleTransform = new CircleTransform();
-        mOfflineAnimation = AnimationUtils.loadAnimation(mContext , R.anim.fade_in_out);
+        mOfflineAnimation = AnimationUtils.loadAnimation(mContext, R.anim.fade_in_out);
+        mSparseArray = new SparseArray<>();
     }
 
     void setModules(List<HomeRemoteModule> mModules) {
@@ -97,10 +100,13 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
-        if (position%2==0) {
-            mHolder.itemView.startAnimation(mOfflineAnimation);
-        }
-        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()),position%2!=0);
+//        if (!mModule.isOnline()) {
+//            mSparseArray.put(position, mModule);
+//        } else {
+//            mHolder.itemView.setAlpha(1);
+//        }
+        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()), mModule.isOnline());
+
 
         LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
         mHolder.mTvName.setText(mModule.getUser_name());
@@ -189,6 +195,15 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
 
+//        if (mModule.isOnline()) {
+//            if (mHolder.itemView.getAnimation() != null) {
+//                mHolder.itemView.getAnimation().cancel();
+//            }
+//        } else {
+//            if (mHolder.itemView.getAnimation() == null || !mHolder.itemView.getAnimation().hasStarted()) {
+//                mHolder.itemView.startAnimation(mOfflineAnimation);
+//            }
+//        }
 
     }
 
@@ -235,11 +250,6 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView mTvCalorie2;
         @BindView(R.id.item2_bpm)
         TextView mTvBpm2;
-
-        @BindView(R.id.item1_group)
-        Group mItem1Group;
-        @BindView(R.id.item2_group)
-        Group mItem2Group;
 
         HomeHolder(View itemView) {
             super(itemView);

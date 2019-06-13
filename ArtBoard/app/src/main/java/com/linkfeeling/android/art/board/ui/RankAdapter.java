@@ -11,6 +11,7 @@ import com.link.feeling.framework.base.BaseViewHolder;
 import com.link.feeling.framework.component.image.LinkImageLoader;
 import com.link.feeling.framework.component.image.transformation.CircleTransform;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
+import com.link.feeling.framework.utils.data.DisplayUtils;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.constants.ImageConstants;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
@@ -36,9 +37,12 @@ public final class RankAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private int mCurrentPage = 0;
 
+    private int mItemHeight;
+
     RankAdapter(Context mContext) {
         this.mContext = mContext;
         mCircleTransform = new CircleTransform();
+        mItemHeight = (int) ((DisplayUtils.getScreenHeight()-DisplayUtils.dp2px(80))/5);
     }
 
     void setModules(List<HomeRemoteModule> mModules) {
@@ -88,6 +92,8 @@ public final class RankAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         RankHolder(View itemView) {
             super(itemView);
+            ViewGroup.LayoutParams params = itemView.getLayoutParams();
+            params.height = mItemHeight;
         }
     }
 }

@@ -15,7 +15,6 @@ import android.widget.ViewSwitcher;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
-import com.link.feeling.framework.utils.data.L;
 import com.link.feeling.framework.utils.ui.ViewUtils;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.constants.ImageConstants;
@@ -169,14 +168,14 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     public void loading(List<HomeRemoteModule> modules) {
-        if (mCurrentGroup.getVisibility() == View.GONE) {
+        if (mCurrentGroup.getVisibility() != View.VISIBLE) {
             mClRoot.setBackgroundResource(R.drawable.icon_bg);
             mCurrentGroup.setVisibility(View.VISIBLE);
             mCurrentGroup.startAnimation(mFadeInAnimation);
         }
-        if (mRankGroup.getVisibility() == View.VISIBLE) {
-            mRankGroup.startAnimation(mFadeOutAnimation);
-        }
+
+        ViewUtils.setGone(mRankGroup);
+
         switch (CollectionsUtil.size(modules)) {
             case 1:
                 mGridManager.setSpanCount(1);
@@ -207,14 +206,12 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     public void loadingRank(List<HomeRemoteModule> modules, String total_calorie) {
-        if (mRankGroup.getVisibility() == View.GONE) {
-            mClRoot.setBackgroundResource(R.drawable.rank_bg);
+        if (mRankGroup.getVisibility() != View.VISIBLE) {
             mRankGroup.setVisibility(View.VISIBLE);
+            mClRoot.setBackgroundResource(R.drawable.rank_bg);
             mRankGroup.startAnimation(mFadeInAnimation);
         }
-        if (mCurrentGroup.getVisibility() == View.VISIBLE) {
-            mCurrentGroup.startAnimation(mFadeOutAnimation);
-        }
+        ViewUtils.setGone(mCurrentGroup);
 
         mRankModules.clear();
         mRankModules.addAll(modules);
@@ -318,16 +315,6 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     public void onAnimationEnd(Animation animation) {
-        if (animation == mFadeOutAnimation) {
-            if (ViewUtils.isVisible(mCurrentGroup)) {
-                ViewUtils.setGone(mRankGroup);
-                L.e("current");
-            }
-            if (ViewUtils.isVisible(mRankGroup)) {
-                ViewUtils.setGone(mCurrentGroup);
-                L.e("rank");
-            }
-        }
     }
 
     @Override
