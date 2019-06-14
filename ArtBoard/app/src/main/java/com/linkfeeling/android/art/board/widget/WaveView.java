@@ -58,6 +58,7 @@ public final class WaveView extends View {
     private int mCurrentPeriod = 2;
 
     private boolean mDrawEnable = true;
+    private boolean mTempEnable = true;
 
     public WaveView(Context context) {
         this(context, null);
@@ -104,7 +105,6 @@ public final class WaveView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         // 从canvas层面去除绘制时锯齿
 //        canvas.setDrawFilter(mDrawFilter);
         for (int i = 0; i < mMeasureWidth; i++) {
@@ -140,6 +140,7 @@ public final class WaveView extends View {
         if (mPostOffset != null && mCurrentPosition >= 0) {
             mPostOffset.offset(mCurrentPosition, mOffset1, mOffset2, mOffset3);
         }
+        mTempEnable = mDrawEnable;
         if (!mDrawEnable) {
             return;
         }
@@ -151,7 +152,7 @@ public final class WaveView extends View {
         void offset(int position, float offset1, float offset2, float offset3);
     }
 
-    public void initValueManager(int position, PostOffset offset, float offset1, float offset2, float offset3, @ColorInt int[] colors ,boolean mDrawEnable) {
+    public void initValueManager(int position, PostOffset offset, float offset1, float offset2, float offset3, @ColorInt int[] colors, boolean mDrawEnable) {
         this.mCurrentPosition = position;
         this.mPostOffset = offset;
         this.mOffset1 = offset1;
@@ -168,6 +169,12 @@ public final class WaveView extends View {
 
         this.mDrawEnable = mDrawEnable;
 
+        if (mDrawEnable) {
+            mTempEnable = true;
+        }
+        if (!mTempEnable) {
+            return;
+        }
         postInvalidate();
     }
 

@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginEnd="30dp"
-    android:layout_marginBottom="20dp"
+    android:layout_marginBottom="10dp"
     android:background="@drawable/rank_shape_item"
     android:paddingTop="15dp"
     android:paddingBottom="15dp">
 
     <ImageView
         android:id="@+id/rank_item_tag"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="10dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,9 +23,9 @@
 
     <ImageView
         android:id="@+id/rank_item_avatar"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="10dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="15dp"
         android:src="@drawable/round_placeholder"
         app:layout_constraintStart_toEndOf="@id/rank_item_tag"
         app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textColor="@color/color_FFF5F5F5"
-        android:textSize="15sp"
+        android:textSize="26sp"
         app:layout_constraintBottom_toBottomOf="@id/rank_item_avatar"
         app:layout_constraintStart_toEndOf="@id/rank_item_avatar"
         app:layout_constraintTop_toTopOf="@id/rank_item_avatar"
@@ -47,9 +47,9 @@
 
     <ImageView
         android:id="@+id/rank_item_iv_calorie"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="15dp"
         android:baselineAlignBottom="true"
         android:src="@drawable/icon_calorie"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:text="@string/use"
         android:textColor="@color/white"
-        android:textSize="12sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@id/rank_item_iv_calorie"
         app:layout_constraintStart_toStartOf="@id/rank_item_name" />
 
@@ -74,11 +74,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
+        android:includeFontPadding="false"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="36sp"
         app:layout_constraintBaseline_toBaselineOf="@id/rank_item_use"
         app:layout_constraintStart_toEndOf="@id/rank_item_use"
-        tools:text="1295" />
+        tools:text="12950" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -86,7 +87,7 @@
         android:layout_marginStart="6dp"
         android:text="@string/calorie"
         android:textColor="@color/white"
-        android:textSize="12sp"
+        android:textSize="20sp"
         app:layout_constraintBaseline_toBaselineOf="@id/rank_item_use"
         app:layout_constraintStart_toEndOf="@id/rank_item_calorie" />
 

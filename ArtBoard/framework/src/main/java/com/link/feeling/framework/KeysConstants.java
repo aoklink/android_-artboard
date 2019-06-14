@@ -43,6 +43,5 @@ public interface KeysConstants {
 
     String GYM_NAME = "gym_name";
 
-//    String GYM = "fitting_gym_xixi"
     String GYM = "link_office";
 }

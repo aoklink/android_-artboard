@@ -1,6 +1,9 @@
 package com.linkfeeling.android.art.board.ui;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,16 +31,17 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * Created on 2019/5/14  10:59
  * chenpan pan.chen@linkfeeling.cn
  */
+@SuppressWarnings("all")
 public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements WaveView.PostOffset {
 
     private Context mContext;
@@ -52,21 +56,28 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private int mRecyclerViewHeight;
     private int mRecyclerViewWidth;
 
+    private SparseArray<HomeRemoteModule> mSparseArray;
+
     private int DP10 = (int) DisplayUtils.dp2px(10);
     private int DP15 = (int) DisplayUtils.dp2px(15);
     private int DP20 = (int) DisplayUtils.dp2px(20);
     private int DP30 = (int) DisplayUtils.dp2px(30);
+    private int DP40 = (int) DisplayUtils.dp2px(40);
     private int DP45 = (int) DisplayUtils.dp2px(45);
+    private int DP50 = (int) DisplayUtils.dp2px(50);
+    private int DP60 = (int) DisplayUtils.dp2px(60);
 
     private CircleTransform mCircleTransform;
 
     private Animation mOfflineAnimation;
 
+
     HomeAdapter(Context mContext) {
         this.mContext = mContext;
         mModules = new ArrayList<>();
         mCircleTransform = new CircleTransform();
-        mOfflineAnimation = AnimationUtils.loadAnimation(mContext , R.anim.fade_in_out);
+        mOfflineAnimation = AnimationUtils.loadAnimation(mContext, R.anim.fade_in_out);
+        mSparseArray = new SparseArray<>();
     }
 
     void setModules(List<HomeRemoteModule> mModules) {
@@ -97,14 +108,17 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
-        if (position%2==0) {
-            mHolder.itemView.startAnimation(mOfflineAnimation);
-        }
-        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()),position%2!=0);
+        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()), mModule.isOnline());
+
 
         LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
+
         mHolder.mTvName.setText(mModule.getUser_name());
-        mHolder.mTvPercent.setText(mModule.getPercentStr());
+
+        if (!mHolder.mTvPercent.getText().equals(mModule.getPercentStr())) {
+            mHolder.mTvPercent.setText(mModule.getPercentStr());
+        }
+
         mHolder.mClTop.setBackgroundColor(ColorConstants.loadColor(mModule.getPercent()));
 
 
@@ -126,44 +140,63 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 ViewUtils.setVisible(mHolder.mClMiddle);
                 params.height = (int) (mRecyclerViewHeight * 0.9);
                 params.width = (int) (mRecyclerViewWidth * 0.9);
+                rootParams.height = MATCH_PARENT;
                 nameMarginParams.leftMargin = DP30;
                 avatarMarginParams.leftMargin = DP30;
                 avatarMarginParams.topMargin = DP30;
+                ivParams.height = DP60;
+                ivParams.width = DP60;
                 mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
-                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 86);
-                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 64);
-                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 64);
+                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 88);
+                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
+                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
+
+                if (!mHolder.mTvBpm.getText().equals(mModule.getHeart_rate())) {
+                    mHolder.mTvBpm.setText(mModule.getHeart_rate());
+                }
+                if (!mHolder.mTvCalorie.getText().equals(mModule.getKc())) {
+                    mHolder.mTvCalorie.setText(mModule.getKc());
+                }
                 break;
             case 2:
                 mHolder.mTvCalorie.setText(mModule.getKc());
                 mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
+                rootParams.height = MATCH_PARENT;
                 params.height = (int) (mRecyclerViewHeight * 0.75);
                 params.width = (int) (mRecyclerViewWidth * 0.45);
                 nameMarginParams.leftMargin = DP20;
                 avatarMarginParams.leftMargin = DP20;
                 avatarMarginParams.topMargin = DP30;
-                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                ivParams.height = DP60;
+                ivParams.width = DP60;
+                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
                 mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
-                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+                if (!mHolder.mTvBpm.getText().equals(mModule.getHeart_rate())) {
+                    mHolder.mTvBpm.setText(mModule.getHeart_rate());
+                }
+                if (!mHolder.mTvCalorie.getText().equals(mModule.getKc())) {
+                    mHolder.mTvCalorie.setText(mModule.getKc());
+                }
                 break;
             case 3:
             case 4:
                 mHolder.mTvCalorie.setText(mModule.getKc());
                 mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
-                marginParams.topMargin = DP30;
+                marginParams.topMargin = DP40;
                 rootParams.height = WRAP_CONTENT;
                 params.height = (int) (mRecyclerViewHeight * 0.45);
                 params.width = (int) (mRecyclerViewWidth * 0.47);
-                ivParams.width = DP45;
-                ivParams.height = DP45;
+                ivParams.width = DP60;
+                ivParams.height = DP60;
                 nameMarginParams.leftMargin = DP20;
                 avatarMarginParams.leftMargin = DP20;
                 avatarMarginParams.topMargin = DP15;
-                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 56);
+                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 58);
                 mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
                 mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
                 break;
@@ -171,25 +204,50 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case 6:
             default:
                 ViewUtils.setVisible(mHolder.mClBottom);
-                marginParams.topMargin = DP10;
+                marginParams.topMargin = DP40;
                 rootParams.height = WRAP_CONTENT;
-                params.height = (int) (mRecyclerViewHeight * 0.4);
+                params.height = (int) (mRecyclerViewHeight * 0.45);
                 params.width = (int) (mRecyclerViewWidth * 0.23);
-                marginParams.topMargin = DP30;
-                ivParams.width = DP30;
-                ivParams.height = DP30;
+                ivParams.width = DP50;
+                ivParams.height = DP50;
                 nameMarginParams.leftMargin = DP10;
                 avatarMarginParams.leftMargin = DP10;
                 avatarMarginParams.topMargin = DP15;
-                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
+                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 56);
                 mHolder.mTvCalorie2.setText(mModule.getKc());
                 mHolder.mTvBpm2.setText(mModule.getHeart_rate());
                 break;
         }
 
-
-
+        ObjectAnimator animator = null;
+        if (!mModule.isOnline()) {
+            if (mSparseArray.get(position) != null) {
+                return;
+            } else {
+                animator = ObjectAnimator.ofFloat(mHolder.itemView, "alpha", 0.8f, 0.1f, 0.8f);
+            }
+            animator.setDuration(1000);
+            animator.setRepeatMode(ValueAnimator.INFINITE);
+            animator.setRepeatCount(Integer.MAX_VALUE);
+            mModule.setAnimator(animator);
+            mSparseArray.put(position, mModule);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    if (mSparseArray.get(position) != null) {
+                        mSparseArray.get(position).setAlpha((Float) animation.getAnimatedValue());
+                    }
+                }
+            });
+            animator.start();
+        } else {
+            if (mSparseArray.get(position) != null) {
+                mSparseArray.get(position).getAnimator().cancel();
+                mSparseArray.remove(position);
+            }
+            mHolder.itemView.setAlpha(1);
+        }
     }
 
     @Override
@@ -235,11 +293,6 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView mTvCalorie2;
         @BindView(R.id.item2_bpm)
         TextView mTvBpm2;
-
-        @BindView(R.id.item1_group)
-        Group mItem1Group;
-        @BindView(R.id.item2_group)
-        Group mItem2Group;
 
         HomeHolder(View itemView) {
             super(itemView);
