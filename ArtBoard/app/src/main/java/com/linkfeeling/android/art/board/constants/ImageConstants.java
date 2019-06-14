@@ -79,7 +79,7 @@ public final class ImageConstants {
             case 11:
                 return R.mipmap.rank11;
             case 12:
-                return R.mipmap.rank2;
+                return R.mipmap.rank12;
             case 13:
                 return R.mipmap.rank13;
             case 14:
