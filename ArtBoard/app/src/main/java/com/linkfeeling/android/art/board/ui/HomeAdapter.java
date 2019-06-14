@@ -1,5 +1,7 @@
 package com.linkfeeling.android.art.board.ui;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -69,6 +71,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Animation mOfflineAnimation;
 
+
     HomeAdapter(Context mContext) {
         this.mContext = mContext;
         mModules = new ArrayList<>();
@@ -109,6 +112,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
         LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
+
         mHolder.mTvName.setText(mModule.getUser_name());
 
         if (!mHolder.mTvPercent.getText().equals(mModule.getPercentStr())) {
@@ -149,11 +153,9 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 if (!mHolder.mTvBpm.getText().equals(mModule.getHeart_rate())) {
                     mHolder.mTvBpm.setText(mModule.getHeart_rate());
-//                    mAnimatorBpm.start();
                 }
                 if (!mHolder.mTvCalorie.getText().equals(mModule.getKc())) {
                     mHolder.mTvCalorie.setText(mModule.getKc());
-//                    mAnimatorCalorie.start();
                 }
                 break;
             case 2:
@@ -174,11 +176,9 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
                 if (!mHolder.mTvBpm.getText().equals(mModule.getHeart_rate())) {
                     mHolder.mTvBpm.setText(mModule.getHeart_rate());
-//                    mAnimatorBpm.start();
                 }
                 if (!mHolder.mTvCalorie.getText().equals(mModule.getKc())) {
                     mHolder.mTvCalorie.setText(mModule.getKc());
-//                    mAnimatorCalorie.start();
                 }
                 break;
             case 3:
@@ -218,6 +218,35 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mHolder.mTvCalorie2.setText(mModule.getKc());
                 mHolder.mTvBpm2.setText(mModule.getHeart_rate());
                 break;
+        }
+
+        ObjectAnimator animator = null;
+        if (!mModule.isOnline()) {
+            if (mSparseArray.get(position) != null) {
+                return;
+            } else {
+                animator = ObjectAnimator.ofFloat(mHolder.itemView, "alpha", 0.8f, 0.1f, 0.8f);
+            }
+            animator.setDuration(1000);
+            animator.setRepeatMode(ValueAnimator.INFINITE);
+            animator.setRepeatCount(Integer.MAX_VALUE);
+            mModule.setAnimator(animator);
+            mSparseArray.put(position, mModule);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    if (mSparseArray.get(position) != null) {
+                        mSparseArray.get(position).setAlpha((Float) animation.getAnimatedValue());
+                    }
+                }
+            });
+            animator.start();
+        } else {
+            if (mSparseArray.get(position) != null) {
+                mSparseArray.get(position).getAnimator().cancel();
+                mSparseArray.remove(position);
+            }
+            mHolder.itemView.setAlpha(1);
         }
     }
 

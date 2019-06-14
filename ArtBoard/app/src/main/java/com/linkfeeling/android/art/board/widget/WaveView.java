@@ -105,10 +105,6 @@ public final class WaveView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        if (!mTempEnable) {
-            return;
-        }
         // 从canvas层面去除绘制时锯齿
 //        canvas.setDrawFilter(mDrawFilter);
         for (int i = 0; i < mMeasureWidth; i++) {
@@ -144,10 +140,10 @@ public final class WaveView extends View {
         if (mPostOffset != null && mCurrentPosition >= 0) {
             mPostOffset.offset(mCurrentPosition, mOffset1, mOffset2, mOffset3);
         }
-//        mTempEnable = mDrawEnable;
-//        if (!mDrawEnable) {
-//            return;
-//        }
+        mTempEnable = mDrawEnable;
+        if (!mDrawEnable) {
+            return;
+        }
         //刷新
         postInvalidateDelayed(50);
     }
@@ -171,11 +167,14 @@ public final class WaveView extends View {
         this.mWavePaint1.setColor(mColor2);
         this.mWavePaint2.setColor(mColor3);
 
-//        this.mDrawEnable = mDrawEnable;
-//
-//        if (mDrawEnable) {
-//            mTempEnable = true;
-//        }
+        this.mDrawEnable = mDrawEnable;
+
+        if (mDrawEnable) {
+            mTempEnable = true;
+        }
+        if (!mTempEnable) {
+            return;
+        }
         postInvalidate();
     }
 
