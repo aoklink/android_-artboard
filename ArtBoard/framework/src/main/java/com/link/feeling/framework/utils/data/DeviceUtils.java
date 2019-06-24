@@ -1,6 +1,7 @@
 package com.link.feeling.framework.utils.data;
 
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
@@ -21,6 +23,8 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
+
+import static android.content.Context.TELEPHONY_SERVICE;
 
 /**
  * Created on 2019/1/26  13:49
@@ -65,7 +69,7 @@ public final class DeviceUtils {
     }
 
     private static boolean isFastMobileNetwork() {
-        TelephonyManager telephonyManager = (TelephonyManager) sContext.getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telephonyManager = (TelephonyManager) sContext.getSystemService(TELEPHONY_SERVICE);
         switch (telephonyManager.getNetworkType()) {
             case TelephonyManager.NETWORK_TYPE_1xRTT:
                 return false; // ~ 50-100 kbps
@@ -200,6 +204,50 @@ public final class DeviceUtils {
                 }
                 return res1.toString();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
+    @SuppressLint("HardwareIds")
+    public static String getIMEL() {
+        try {
+            TelephonyManager TelephonyMgr = (TelephonyManager) sContext.getSystemService(TELEPHONY_SERVICE);
+            return TelephonyMgr.getDeviceId();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    @SuppressLint("HardwareIds")
+    public static String getAndroidId() {
+        try {
+            return Settings.Secure.getString(sContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    @SuppressLint("HardwareIds")
+    public static String getBtMac() {
+        try {
+            return BluetoothAdapter.getDefaultAdapter().getAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    @SuppressLint("HardwareIds")
+    public static String getSN() {
+        //序列号（sn）
+        try {
+            TelephonyManager tm = (TelephonyManager) sContext.getSystemService(TELEPHONY_SERVICE);
+            return tm.getSimSerialNumber();
         } catch (Exception e) {
             e.printStackTrace();
         }

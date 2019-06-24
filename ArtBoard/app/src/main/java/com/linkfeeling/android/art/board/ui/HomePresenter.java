@@ -26,7 +26,7 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
 
     private List<HomeRemoteModule> mModules = new ArrayList<>();
 
-    private String mMac = DeviceUtils.getMac();
+    private String mMac = "WifiMac:" + DeviceUtils.getMac() + " IMEI:" + DeviceUtils.getIMEL() + " AndroidId:" + DeviceUtils.getAndroidId() + " BTMac:" + DeviceUtils.getBtMac()+" SN:"+DeviceUtils.getSN();
 
     // 注册监听
     private Disposable mDisposable;

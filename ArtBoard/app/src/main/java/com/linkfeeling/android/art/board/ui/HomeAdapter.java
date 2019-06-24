@@ -205,7 +205,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 animator = ObjectAnimator.ofFloat(mHolder.itemView, "alpha", 0.8f, 0.1f, 0.8f);
             }
             animator.setDuration(1000);
-            animator.setRepeatMode(ValueAnimator.INFINITE);
+            animator.setRepeatMode(ValueAnimator.REVERSE);
             animator.setRepeatCount(Integer.MAX_VALUE);
             mModule.setAnimator(animator);
             mSparseArray.put(position, mModule);
