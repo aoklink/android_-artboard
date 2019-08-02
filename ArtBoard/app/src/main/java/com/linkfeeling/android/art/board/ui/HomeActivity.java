@@ -149,8 +149,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         mPartModules.add(new HomePartModule("动态\n热身", "40-55%"));
         mPartModules.add(new HomePartModule("脂肪\n燃烧", "56-69%"));
 
-        mPartModules.add(new HomePartModule("糖分\n消耗", "70-79%"));
-        mPartModules.add(new HomePartModule("心肺\n训练", "80-89%"));
+        mPartModules.add(new HomePartModule("心肺\n强化", "70-79%"));
+        mPartModules.add(new HomePartModule("无氧\n挑战", "80-89%"));
         mPartModules.add(new HomePartModule("极限\n锻炼", "90-99%"));
 
         mPartAdapter = new PartAdapter(this);
