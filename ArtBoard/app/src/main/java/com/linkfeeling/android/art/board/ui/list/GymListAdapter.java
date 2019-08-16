@@ -1,6 +1,7 @@
 package com.linkfeeling.android.art.board.ui.list;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,9 @@ public final class GymListAdapter extends RecyclerView.Adapter<RecyclerView.View
         ((Button) gymHolder.itemView).setText(module.getGym());
 
         gymHolder.itemView.setBackgroundColor(ColorConstants.loadingListColor(position));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            gymHolder.itemView.setElevation(15f);
+        }
         gymHolder.itemView.setTag(module);
     }
 
