@@ -37,10 +37,11 @@ public class GymListActivity extends FrameworkBaseActivity {
     protected void init(@Nullable Bundle savedInstanceState) {
         // 状态栏
         mRvList.setPadding(0, DisplayUtils.getStatusBarHeight(this), 0, 0);
-        DisplayUtils.statusBarDarkFont(this);
+        DisplayUtils.statusBarLightFont(this);
         List<GymListModule> mModule = new ArrayList<>();
-        mModule.add(new GymListModule("LINK_OFFICE(东方通信)", "link_office", R.drawable.icon_gym_logo));
-        mModule.add(new GymListModule("FITTING_GYM(西溪银泰)", "fitting_gym_xixi", R.drawable.icon_gym_logo));
+        mModule.add(new GymListModule("LINK_OFFICE(东方通信)", "link_office", R.drawable.link_gym_logo));
+        mModule.add(new GymListModule("FITTING_GYM(西溪银泰)", "fitting_gym_xixi", R.drawable.xixi_gym_logo));
+        mModule.add(new GymListModule("宜人道(万福中心)", "yrd_fitting_office", R.drawable.yrd_gym_logo));
         GymListAdapter mGymAdapter = new GymListAdapter(this);
         mRvList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         mRvList.setAdapter(mGymAdapter);

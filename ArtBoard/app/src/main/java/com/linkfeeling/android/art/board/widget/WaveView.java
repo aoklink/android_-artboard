@@ -122,6 +122,10 @@ public final class WaveView extends View {
             canvas.drawLine(i, mMeasureHeight, i, mEndY2, mWavePaint2);
         }
 
+        if (mPostOffset != null && mCurrentPosition >= 0) {
+            mPostOffset.offset(mCurrentPosition, mOffset1, mOffset2, mOffset3);
+        }
+
         if (mOffset1 < -Float.MAX_VALUE + 1) {//防止数值超过浮点型的最大值
             mOffset1 = 0;
         }
@@ -137,10 +141,7 @@ public final class WaveView extends View {
         }
         mOffset3 += mSpeed3;
 
-        if (mPostOffset != null && mCurrentPosition >= 0) {
-            mPostOffset.offset(mCurrentPosition, mOffset1, mOffset2, mOffset3);
-        }
-        mTempEnable = mDrawEnable;
+//        mTempEnable = mDrawEnable;
         if (!mDrawEnable) {
             return;
         }
@@ -169,10 +170,10 @@ public final class WaveView extends View {
 
         this.mDrawEnable = mDrawEnable;
 
-        if (mDrawEnable) {
-            mTempEnable = true;
-        }
-        if (!mTempEnable) {
+//        if (mDrawEnable) {
+//            mTempEnable = mDrawEnable;
+//        }
+        if (!mDrawEnable) {
             return;
         }
         postInvalidate();

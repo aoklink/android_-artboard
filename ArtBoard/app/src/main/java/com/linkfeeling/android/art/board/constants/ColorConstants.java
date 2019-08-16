@@ -1,5 +1,8 @@
 package com.linkfeeling.android.art.board.constants;
 
+import com.link.feeling.framework.utils.data.DisplayUtils;
+import com.linkfeeling.android.art.board.R;
+
 /**
  * Created on 2019/3/1  15:33
  * chenpan pan.chen@linkfeeling.cn
@@ -61,5 +64,13 @@ public final class ColorConstants {
         }
     }
 
-
+    public static int loadingListColor(int position) {
+        if (position%3 == 0) {
+            return DisplayUtils.getColor(R.color.color_B34B4EB2);
+        } else if (position%3 == 1) {
+            return  DisplayUtils.getColor(R.color.color_B3FF704E);
+        } else {
+            return DisplayUtils.getColor(R.color.color_B33FC193);
+        }
+    }
 }

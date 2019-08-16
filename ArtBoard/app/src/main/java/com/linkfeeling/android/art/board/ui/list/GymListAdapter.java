@@ -4,12 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.link.feeling.framework.base.BaseViewHolder;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.ui.ViewUtils;
 import com.linkfeeling.android.art.board.R;
+import com.linkfeeling.android.art.board.constants.ColorConstants;
 import com.linkfeeling.android.art.board.data.bean.list.GymListModule;
 import com.linkfeeling.android.art.board.ui.home.HomeActivity;
 
@@ -47,7 +48,9 @@ public final class GymListAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         GymListModule module = mModules.get(position);
         GymListHolder gymHolder = (GymListHolder) holder;
-        ((TextView) gymHolder.itemView).setText(module.getGym());
+        ((Button) gymHolder.itemView).setText(module.getGym());
+
+        gymHolder.itemView.setBackgroundColor(ColorConstants.loadingListColor(position));
         gymHolder.itemView.setTag(module);
     }
 

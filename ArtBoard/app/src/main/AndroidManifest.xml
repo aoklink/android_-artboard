@@ -21,7 +21,6 @@
         <activity
             android:name=".ui.home.HomeActivity"
             android:screenOrientation="landscape">
-
         </activity>
         <activity
             android:name=".ui.list.GymListActivity"

@@ -65,6 +65,9 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     @BindView(R.id.home_root)
     ConstraintLayout mClRoot;
 
+    @BindView(R.id.logo_image_view)
+    ImageView mIvLogo;
+
     private HomeAdapter mAdapter;
     private PartAdapter mPartAdapter;
     private GridLayoutManager mGridManager;
@@ -100,6 +103,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
         mGymModule = getIntent().getParcelableExtra(KeysConstants.KEY);
+        mIvLogo.setImageResource(mGymModule.getGymLogo());
         initRecyclerView();
         getPresenter().request(mGymModule.getGymId());
         getPresenter().interval();
