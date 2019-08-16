@@ -1,4 +1,4 @@
-package com.linkfeeling.android.art.board.ui;
+package com.linkfeeling.android.art.board.ui.home;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -22,8 +22,8 @@ import com.link.feeling.framework.utils.data.DisplayUtils;
 import com.link.feeling.framework.utils.ui.ViewUtils;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.constants.ColorConstants;
-import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
-import com.linkfeeling.android.art.board.data.bean.OffsetModule;
+import com.linkfeeling.android.art.board.data.bean.home.HomeRemoteModule;
+import com.linkfeeling.android.art.board.data.bean.home.OffsetModule;
 import com.linkfeeling.android.art.board.widget.WaveView;
 
 import java.util.ArrayList;

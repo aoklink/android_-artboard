@@ -1,4 +1,4 @@
-package com.linkfeeling.android.art.board.data.bean;
+package com.linkfeeling.android.art.board.data.bean.home;
 
 /**
  * Created on 2019/5/15  16:53

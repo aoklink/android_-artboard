@@ -1,8 +1,8 @@
 package com.linkfeeling.android.art.board.data;
 
 import com.link.feeling.framework.component.net.NetResult;
-import com.linkfeeling.android.art.board.data.bean.HomeRemoteBean;
-import com.linkfeeling.android.art.board.data.bean.HomeRequest;
+import com.linkfeeling.android.art.board.data.bean.home.HomeRemoteBean;
+import com.linkfeeling.android.art.board.data.bean.home.HomeRequest;
 import com.linkfeeling.android.art.board.data.network.LinkApi;
 
 import io.reactivex.Single;

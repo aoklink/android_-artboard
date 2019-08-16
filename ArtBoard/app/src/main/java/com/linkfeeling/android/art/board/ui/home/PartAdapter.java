@@ -1,4 +1,4 @@
-package com.linkfeeling.android.art.board.ui;
+package com.linkfeeling.android.art.board.ui.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.link.feeling.framework.base.BaseViewHolder;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.linkfeeling.android.art.board.R;
-import com.linkfeeling.android.art.board.data.bean.HomePartModule;
+import com.linkfeeling.android.art.board.data.bean.home.HomePartModule;
 import com.linkfeeling.android.art.board.widget.BackgroundProvider;
 
 import java.util.List;

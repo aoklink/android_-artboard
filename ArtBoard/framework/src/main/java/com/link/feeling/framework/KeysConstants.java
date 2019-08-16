@@ -29,6 +29,7 @@ public interface KeysConstants {
 
     //  当前网络(3G,4G,5G,wifi)
     String NETWORK = "network";
+    String KEY = "key";
 
     // 	产品id
     String PRODUCT_ID = "product_id";

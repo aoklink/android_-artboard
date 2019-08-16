@@ -1,4 +1,4 @@
-package com.linkfeeling.android.art.board.data.bean;
+package com.linkfeeling.android.art.board.data.bean.home;
 
 import com.alibaba.fastjson.annotation.JSONField;
 

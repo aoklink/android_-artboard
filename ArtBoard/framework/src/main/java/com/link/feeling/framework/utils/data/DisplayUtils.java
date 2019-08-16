@@ -83,7 +83,6 @@ public final class DisplayUtils {
      */
     @SuppressWarnings("WeakerAccess")
     public static void translucentStatusBar(@NonNull Activity activity) {
-
         if (activity.getWindow() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 activity.getWindow().setStatusBarColor(Color.TRANSPARENT);

@@ -1,4 +1,4 @@
-package com.linkfeeling.android.art.board.ui;
+package com.linkfeeling.android.art.board.ui.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,7 +14,7 @@ import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.constants.ImageConstants;
-import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
+import com.linkfeeling.android.art.board.data.bean.home.HomeRemoteModule;
 import com.linkfeeling.android.art.board.widget.Base64Utils;
 
 import java.util.List;

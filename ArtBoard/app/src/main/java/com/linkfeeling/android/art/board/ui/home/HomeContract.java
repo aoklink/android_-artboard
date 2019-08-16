@@ -1,8 +1,8 @@
-package com.linkfeeling.android.art.board.ui;
+package com.linkfeeling.android.art.board.ui.home;
 
 import com.link.feeling.framework.base.BaseMvpPresenter;
 import com.link.feeling.framework.base.BaseMvpView;
-import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
+import com.linkfeeling.android.art.board.data.bean.home.HomeRemoteModule;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface HomeContract {
     }
 
     interface Presenter extends BaseMvpPresenter<View> {
-        void request();
+        void request(String gymId);
 
         void interval();
     }

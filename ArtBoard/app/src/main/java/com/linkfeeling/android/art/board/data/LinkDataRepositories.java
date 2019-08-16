@@ -1,7 +1,7 @@
 package com.linkfeeling.android.art.board.data;
 
 import com.link.feeling.framework.component.net.FrameworkNet;
-import com.linkfeeling.android.art.board.data.bean.HomeRequest;
+import com.linkfeeling.android.art.board.data.bean.home.HomeRequest;
 
 import io.reactivex.Single;
 

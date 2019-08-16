@@ -1,4 +1,4 @@
-package com.linkfeeling.android.art.board.data.bean;
+package com.linkfeeling.android.art.board.data.bean.home;
 
 import android.animation.Animator;
 

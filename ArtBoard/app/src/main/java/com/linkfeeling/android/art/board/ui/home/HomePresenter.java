@@ -1,14 +1,14 @@
-package com.linkfeeling.android.art.board.ui;
+package com.linkfeeling.android.art.board.ui.home;
 
 import com.link.feeling.framework.base.BasePresenter;
 import com.link.feeling.framework.component.rx.BaseSingleObserver;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DeviceUtils;
 import com.linkfeeling.android.art.board.data.LinkDataRepositories;
-import com.linkfeeling.android.art.board.data.bean.HomeRemoteBean;
-import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
-import com.linkfeeling.android.art.board.data.bean.HomeRequest;
-import com.linkfeeling.android.art.board.data.bean.OffsetModule;
+import com.linkfeeling.android.art.board.data.bean.home.HomeRemoteBean;
+import com.linkfeeling.android.art.board.data.bean.home.HomeRemoteModule;
+import com.linkfeeling.android.art.board.data.bean.home.HomeRequest;
+import com.linkfeeling.android.art.board.data.bean.home.OffsetModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +33,15 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
 
     private int mTempSize;
 
+    private String mGymId;
+
     @SuppressWarnings("unchecked")
     @Override
-    public void request() {
+    public void request(String gymId) {
+        mGymId =gymId;
         mIsLoading = false;
         LinkDataRepositories.getInstance()
-                .home(new HomeRequest(mMac))
+                .home(new HomeRequest(mMac ,mGymId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSingleObserver<HomeRemoteBean>(this) {
                     @Override
@@ -85,7 +88,7 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(view -> {
-                    request();
+                    request(mGymId);
                 }));
         addDisposable(mDisposable);
     }

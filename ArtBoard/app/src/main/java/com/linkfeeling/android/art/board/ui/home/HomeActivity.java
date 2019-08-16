@@ -1,8 +1,7 @@
-package com.linkfeeling.android.art.board.ui;
+package com.linkfeeling.android.art.board.ui.home;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -15,15 +14,17 @@ import android.widget.LinearLayout;
 import android.widget.TextSwitcher;
 import android.widget.ViewSwitcher;
 
+import com.link.feeling.framework.KeysConstants;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
 import com.link.feeling.framework.utils.ui.ViewUtils;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.constants.ImageConstants;
-import com.linkfeeling.android.art.board.data.bean.HomePartModule;
-import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
-import com.linkfeeling.android.art.board.data.bean.OffsetModule;
+import com.linkfeeling.android.art.board.data.bean.home.HomePartModule;
+import com.linkfeeling.android.art.board.data.bean.home.HomeRemoteModule;
+import com.linkfeeling.android.art.board.data.bean.home.OffsetModule;
+import com.linkfeeling.android.art.board.data.bean.list.GymListModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Group;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -90,6 +89,9 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private CountDownTimer mRankTimer;
     private long mTempDelay = 1350;
 
+
+    private GymListModule mGymModule;
+
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_art_board;
@@ -97,15 +99,11 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
+        mGymModule = getIntent().getParcelableExtra(KeysConstants.KEY);
         initRecyclerView();
-        getPresenter().request();
+        getPresenter().request(mGymModule.getGymId());
         getPresenter().interval();
         initTimerTask();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {//未开启存储权限
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0x201);
-            }
-        }
     }
 
     private void initTimerTask() {
@@ -330,5 +328,12 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     @Override
     public void onAnimationRepeat(Animation animation) {
 
+    }
+
+
+    public static void launch(Context context, GymListModule module) {
+        Intent intent = new Intent(context, HomeActivity.class);
+        intent.putExtra(KeysConstants.KEY, module);
+        context.startActivity(intent);
     }
 }
