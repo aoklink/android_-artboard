@@ -74,10 +74,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private List<HomePartModule> mPartModules;
     private String mCurrentCount = "";
 
-    private int mTotalPage;
-    private int mCurrentPage = 1;
     private String mTempCount = "0";
-    private CountDownTimer mTimer;
 
     private RankAdapter mRankAdapter;
     private String mCacheCalorie = "";
@@ -107,36 +104,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         initRecyclerView();
         getPresenter().request(mGymModule.getGymId());
         getPresenter().interval();
-        initTimerTask();
     }
 
-    private void initTimerTask() {
-        if (mTimer != null) {
-            mTimer.cancel();
-        }
-        mTimer = new CountDownTimer(Long.MAX_VALUE, 10000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                if (mTotalPage <= 1) {
-                    smoothScrollToPosition(0);
-                    return;
-                }
-                if (mCurrentPage < mTotalPage) {
-                    smoothScrollToPosition(mCurrentPage * 8);
-                    mCurrentPage++;
-                } else {
-                    smoothScrollToPosition(0);
-                    mCurrentPage = 1;
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                initTimerTask();
-            }
-        };
-        mTimer.start();
-    }
 
     private void initRecyclerView() {
         mAdapter = new HomeAdapter(this);
@@ -212,8 +181,6 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             mCurrentCount = mTempCount;
             mTsCount.setText(mCurrentCount);
         }
-
-        mTotalPage = (CollectionsUtil.size(modules) / 8) + (CollectionsUtil.size(modules) % 8 > 0 ? 1 : 0);
     }
 
     @Override
@@ -293,30 +260,14 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         return View.inflate(mTsCount.getContext(), R.layout.people_count_text_view, null);
     }
 
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (mTimer != null) {
-            mTimer.cancel();
-        }
-    }
 
     @Override
     protected void onStop() {
         super.onStop();
         if (isFinishing()) {
-            if (mTimer != null) {
-                mTimer.cancel();
-            }
             if (mRankTimer != null) {
                 mRankTimer.cancel();
             }
-        }
-    }
-
-    private void smoothScrollToPosition(int position) {
-        if (mRvBoard != null) {
-            mRvBoard.smoothScrollToPosition(position);
         }
     }
 
