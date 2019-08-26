@@ -1,6 +1,7 @@
 package com.linkfeeling.android.art.board.data.bean;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.linkfeeling.android.art.board.widget.Base64Utils;
@@ -49,8 +50,8 @@ public final class HomeRemoteModule {
         this.alpha = alpha;
     }
 
-    public Animator getAnimator() {
-        return animator;
+    public ObjectAnimator getAnimator() {
+        return (ObjectAnimator) animator;
     }
 
     public void setAnimator(Animator animator) {

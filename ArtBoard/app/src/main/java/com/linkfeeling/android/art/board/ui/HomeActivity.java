@@ -62,9 +62,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     ConstraintLayout mClRoot;
 
     private HomeAdapter mAdapter;
-    private PartAdapter mPartAdapter;
     private GridLayoutManager mGridManager;
-    private List<HomePartModule> mPartModules;
     private String mCurrentCount = "";
 
     private int mTotalPage;
@@ -75,7 +73,6 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private RankAdapter mRankAdapter;
     private String mCacheCalorie = "";
     private Animation mFadeInAnimation;
-    private Animation mFadeOutAnimation;
 
     private LayoutAnimationController mControllerIn;
     private LayoutAnimationController mControllerOut;
@@ -134,7 +131,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         mRvBoard.setLayoutManager(mGridManager);
         mRvBoard.setAdapter(mAdapter);
 
-        mPartModules = new ArrayList<>();
+        List<HomePartModule> mPartModules = new ArrayList<>();
         mPartModules.add(new HomePartModule("激活\n放松", "01-39%"));
         mPartModules.add(new HomePartModule("动态\n热身", "40-55%"));
         mPartModules.add(new HomePartModule("脂肪\n燃烧", "56-69%"));
@@ -143,7 +140,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         mPartModules.add(new HomePartModule("无氧\n挑战", "80-89%"));
         mPartModules.add(new HomePartModule("极限\n锻炼", "90-99%"));
 
-        mPartAdapter = new PartAdapter(this);
+        PartAdapter mPartAdapter = new PartAdapter(this);
         mRvPart.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         mRvPart.setAdapter(mPartAdapter);
         mPartAdapter.setPartModules(mPartModules);
@@ -155,7 +152,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         mControllerIn = AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_in_holder);
         mControllerOut = AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_out_holder);
         mFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        mFadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        Animation mFadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out);
         mFadeOutAnimation.setAnimationListener(this);
         mRankModules = new ArrayList<>();
     }

@@ -18,6 +18,8 @@ public final class HomeRemoteBean {
     @JSONField(name = "gym_data")
     private List<HomeRemoteModule> gym_data;
 
+    public HomeRemoteBean() {
+    }
 
     public String getTotal_calorie() {
         return total_calorie == null ? "" : total_calorie;

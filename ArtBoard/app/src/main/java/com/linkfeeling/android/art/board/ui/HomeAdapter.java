@@ -220,19 +220,17 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 break;
         }
 
-        ObjectAnimator animator = null;
         if (!mModule.isOnline()) {
             if (mSparseArray.get(position) != null) {
                 return;
             } else {
-                animator = ObjectAnimator.ofFloat(mHolder.itemView, "alpha", 0.8f, 0.1f, 0.8f);
+                mModule.setAnimator(ObjectAnimator.ofFloat(mHolder.itemView, "alpha", 0.8f, 0.1f, 0.8f));
             }
-            animator.setDuration(1000);
-            animator.setRepeatMode(ValueAnimator.INFINITE);
-            animator.setRepeatCount(Integer.MAX_VALUE);
-            mModule.setAnimator(animator);
+            mModule.getAnimator().setDuration(1000);
+            mModule.getAnimator().setRepeatMode(ValueAnimator.INFINITE);
+            mModule.getAnimator().setRepeatCount(Integer.MAX_VALUE);
             mSparseArray.put(position, mModule);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            mModule.getAnimator().addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     if (mSparseArray.get(position) != null) {
@@ -240,7 +238,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 }
             });
-            animator.start();
+            mModule.getAnimator().start();
         } else {
             if (mSparseArray.get(position) != null) {
                 mSparseArray.get(position).getAnimator().cancel();
