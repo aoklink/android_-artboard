@@ -31,7 +31,7 @@
         app:layout_constraintHeight_percent="0.75"
         app:layout_constraintStart_toEndOf="@id/people_count_line"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35"
+        app:layout_constraintVertical_bias="0.25"
         app:layout_constraintWidth_percent="0.17" />
 
 
@@ -68,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="35dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/ic_app_logo_mini"
         app:layout_constraintEnd_toEndOf="@id/user_sport_summary_recycler_view"
         app:layout_constraintTop_toBottomOf="@id/user_sport_summary_recycler_view"

@@ -65,7 +65,10 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private int DP40 = (int) DisplayUtils.dp2px(40);
     private int DP45 = (int) DisplayUtils.dp2px(45);
     private int DP50 = (int) DisplayUtils.dp2px(50);
+    private int DP55 = (int) DisplayUtils.dp2px(55);
     private int DP60 = (int) DisplayUtils.dp2px(60);
+    private int DP70 = (int) DisplayUtils.dp2px(70);
+    private int DP80 = (int) DisplayUtils.dp2px(80);
 
     private CircleTransform mCircleTransform;
 
@@ -138,14 +141,15 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mHolder.mTvCalorie.setText(mModule.getKc());
                 mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
-                params.height = (int) (mRecyclerViewHeight * 0.9);
+                params.height = (int) (mRecyclerViewHeight * 0.95);
                 params.width = (int) (mRecyclerViewWidth * 0.9);
                 rootParams.height = MATCH_PARENT;
+                marginParams.topMargin = 0;
                 nameMarginParams.leftMargin = DP30;
                 avatarMarginParams.leftMargin = DP30;
                 avatarMarginParams.topMargin = DP30;
-                ivParams.height = DP60;
-                ivParams.width = DP60;
+                ivParams.height = DP80;
+                ivParams.width = DP80;
                 mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
                 mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 88);
                 mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
@@ -163,17 +167,18 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
                 rootParams.height = MATCH_PARENT;
-                params.height = (int) (mRecyclerViewHeight * 0.75);
-                params.width = (int) (mRecyclerViewWidth * 0.45);
+                marginParams.topMargin = 0;
+                params.height = (int) (mRecyclerViewHeight * 0.95);
+                params.width = (int) (mRecyclerViewWidth * 0.50);
                 nameMarginParams.leftMargin = DP20;
                 avatarMarginParams.leftMargin = DP20;
                 avatarMarginParams.topMargin = DP30;
                 ivParams.height = DP60;
                 ivParams.width = DP60;
-                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
                 mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
-                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
-                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
                 if (!mHolder.mTvBpm.getText().equals(mModule.getHeart_rate())) {
                     mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 }
@@ -186,35 +191,35 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mHolder.mTvCalorie.setText(mModule.getKc());
                 mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
-                marginParams.topMargin = DP40;
+                marginParams.topMargin = DP15;
                 rootParams.height = WRAP_CONTENT;
-                params.height = (int) (mRecyclerViewHeight * 0.45);
-                params.width = (int) (mRecyclerViewWidth * 0.47);
-                ivParams.width = DP60;
-                ivParams.height = DP60;
+                params.height = (int) (mRecyclerViewHeight * 0.46);
+                params.width = (int) (mRecyclerViewWidth * 0.50);
+                ivParams.width = DP55;
+                ivParams.height = DP55;
                 nameMarginParams.leftMargin = DP20;
                 avatarMarginParams.leftMargin = DP20;
                 avatarMarginParams.topMargin = DP15;
-                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
-                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 58);
-                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 44);
+                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
                 break;
             case 5:
             case 6:
             default:
                 ViewUtils.setVisible(mHolder.mClBottom);
-                marginParams.topMargin = DP40;
+                marginParams.topMargin = DP20;
                 rootParams.height = WRAP_CONTENT;
-                params.height = (int) (mRecyclerViewHeight * 0.45);
+                params.height = (int) (mRecyclerViewHeight * 0.47);
                 params.width = (int) (mRecyclerViewWidth * 0.23);
-                ivParams.width = DP50;
-                ivParams.height = DP50;
+                ivParams.width = DP45;
+                ivParams.height = DP45;
                 nameMarginParams.leftMargin = DP10;
                 avatarMarginParams.leftMargin = DP10;
                 avatarMarginParams.topMargin = DP15;
-                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
-                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 56);
+                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
                 mHolder.mTvCalorie2.setText(mModule.getKc());
                 mHolder.mTvBpm2.setText(mModule.getHeart_rate());
                 break;
@@ -294,7 +299,6 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         HomeHolder(View itemView) {
             super(itemView);
-
         }
     }
 
