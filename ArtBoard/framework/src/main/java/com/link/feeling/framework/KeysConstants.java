@@ -44,4 +44,16 @@ public interface KeysConstants {
     String GYM_NAME = "gym_name";
 
     String GYM = "link_office";
+
+    String INDEX = "index";
+
+    String SERVER_URL = "tcp://post-cn-v0h19rdwa01.mqtt.aliyuncs.com:1883";
+    String INSTANCE_ID = "post-cn-v0h19rdwa01";
+    String ACCESS_KEY = "LTAI4Ffcq3cjnLpxAAk39Tfp";
+    String SECRET_KEY = "RHEY6M0AYYR7kpfCxLf3Qj55N8tqzh";
+    String TOPIC = "tv_topic/link_zfb";
+
+    String SIGNATURE = "Signature|";
+    String SEPARATOR = "|";
+    String GID = "GID_LK_TV@@@";
 }

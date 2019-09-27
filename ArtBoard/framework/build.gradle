@@ -40,4 +40,6 @@ dependencies {
     api rootProject.ext.dependencies["multidex"]
     implementation rootProject.ext.dependencies["logger"]
     implementation rootProject.ext.dependencies["kotlin-stdlib-jdk8"]
+    api rootProject.ext.dependencies["mqtt"]
+    api rootProject.ext.dependencies["mqtt-service"]
 }

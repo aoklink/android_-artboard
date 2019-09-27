@@ -90,4 +90,29 @@ public final class ImageConstants {
         return R.mipmap.rank15;
     }
 
+    public static int matchRankLogo(int num) {
+        switch (num) {
+
+            case 1:
+                return R.mipmap.icon_rank1;
+            case 2:
+                return R.mipmap.icon_rank2;
+            case 3:
+                return R.mipmap.icon_rank3;
+            case 4:
+                return R.mipmap.icon_rank4;
+            case 5:
+                return R.mipmap.icon_rank5;
+            case 6:
+                return R.mipmap.icon_rank6;
+            case 7:
+                return R.mipmap.icon_rank7;
+            case 8:
+                return R.mipmap.icon_rank8;
+            case 9:
+                return R.mipmap.icon_rank9;
+        }
+        return R.mipmap.rank15;
+    }
+
 }
