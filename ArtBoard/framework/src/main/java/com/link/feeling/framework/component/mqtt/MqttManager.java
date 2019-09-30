@@ -94,7 +94,7 @@ public final class MqttManager {
             MqttMessage message = new MqttMessage();
             final String msg = json;
             message.setPayload(msg.getBytes());
-            mqttAndroidClient.publish(KeysConstants.TOPIC, message, null, new IMqttActionListener() {
+            mqttAndroidClient.publish(KeysConstants.TOPIC_FATHER, message, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     L.e(TAG, "publish:success:" + msg);

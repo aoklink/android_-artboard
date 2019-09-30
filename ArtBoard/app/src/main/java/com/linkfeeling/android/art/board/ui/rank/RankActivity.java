@@ -82,6 +82,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         mMqttManager.connect(this);
 
         postDelay(() -> notifyRankChanged(null), 500);
+        getPresenter().interval();
     }
 
     @NotNull
@@ -98,7 +99,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     @Override
     public void live() {
-        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(0)));
+        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(-1)));
     }
 
     @OnClick({R.id.rk_real, R.id.rk_left, R.id.rk_right})

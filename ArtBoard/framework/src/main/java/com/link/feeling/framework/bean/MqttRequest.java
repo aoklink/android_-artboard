@@ -13,8 +13,27 @@ public final class MqttRequest {
      * gym_id : link_test
      */
 
-    private int type;
+    private int type ;
     private String gym_id = KeysConstants.GYM;
+
+    public MqttRequest() {
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getGym_id() {
+        return gym_id == null ? "" : gym_id;
+    }
+
+    public void setGym_id(String gym_id) {
+        this.gym_id = gym_id;
+    }
 
     public MqttRequest(int type) {
         this.type = type;

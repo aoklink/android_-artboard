@@ -43,17 +43,19 @@ public interface KeysConstants {
 
     String GYM_NAME = "gym_name";
 
-    String GYM = "link_office";
+    String GYM = "link_test";
 
     String INDEX = "index";
 
-    String SERVER_URL = "tcp://post-cn-v0h19rdwa01.mqtt.aliyuncs.com:1883";
-    String INSTANCE_ID = "post-cn-v0h19rdwa01";
-    String ACCESS_KEY = "LTAI4Ffcq3cjnLpxAAk39Tfp";
-    String SECRET_KEY = "RHEY6M0AYYR7kpfCxLf3Qj55N8tqzh";
-    String TOPIC = "tv_topic/link_zfb";
+    String SERVER_URL = "tcp://post-cn-0pp1bk98n05.mqtt.aliyuncs.com";
+    String INSTANCE_ID = "post-cn-0pp1bk98n05";
+
+    String ACCESS_KEY = "LTAI4FeptrQPpNaeBLzsgkMW";
+    String SECRET_KEY = "5VNrknvqHVZqFWrPnb3SvQIYqKLrn8";
+    String TOPIC = "heart_rate_topic/link_test";
+    String TOPIC_FATHER = "heart_rate_topic";
 
     String SIGNATURE = "Signature|";
     String SEPARATOR = "|";
-    String GID = "GID_LK_TV@@@";
+    String GID = "GID_LK_HEART_RATE@@@";
 }
