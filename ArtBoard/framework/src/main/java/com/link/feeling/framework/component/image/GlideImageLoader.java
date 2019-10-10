@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
 import com.link.feeling.framework.R;
 import com.link.feeling.framework.component.image.transformation.CircleTransform;
+import com.link.feeling.framework.utils.data.StringUtils;
 
 /**
  * Created on 2019/1/21  14:17
@@ -78,6 +79,10 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public void load(String imgUrl, ImageView imageView, Transformation<Bitmap>... transformations) {
+        if (StringUtils.isEmpty(imgUrl)){
+            imageView.setImageResource(0);
+            return;
+        }
         Glide.with(imageView.getContext())
                 .load(imgUrl)
                 .transform(transformations)

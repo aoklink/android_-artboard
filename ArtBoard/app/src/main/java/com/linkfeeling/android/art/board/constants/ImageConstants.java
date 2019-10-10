@@ -55,7 +55,6 @@ public final class ImageConstants {
 
     public static int matchRankImage(int num) {
         switch (num) {
-
             case 1:
                 return R.mipmap.rank1;
             case 2:
@@ -76,18 +75,8 @@ public final class ImageConstants {
                 return R.mipmap.rank9;
             case 10:
                 return R.mipmap.rank10;
-            case 11:
-                return R.mipmap.rank11;
-            case 12:
-                return R.mipmap.rank12;
-            case 13:
-                return R.mipmap.rank13;
-            case 14:
-                return R.mipmap.rank14;
-            case 15:
-                return R.mipmap.rank15;
         }
-        return R.mipmap.rank15;
+        return 0;
     }
 
     public static int matchRankLogo(int num) {
@@ -112,7 +101,7 @@ public final class ImageConstants {
             case 9:
                 return R.mipmap.icon_rank9;
         }
-        return R.mipmap.rank15;
+        return R.mipmap.rank10;
     }
 
 }

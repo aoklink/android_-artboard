@@ -1,6 +1,7 @@
 package com.linkfeeling.android.art.board.data.bean.rank;
 
 import com.link.feeling.framework.utils.data.CollectionsUtil;
+import com.link.feeling.framework.utils.data.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +30,10 @@ public final class RankRemoteModule {
     private int type;
     private List<RankRemoteItem> calorie;
     private List<RankRemoteItem> day;
-    private List<RankRemoteItem> time;
-    private List<RankRemoteItem> pbj_pace;
-    private List<RankRemoteItem> dc_pace;
-    private List<RankRemoteItem> tyj_pace;
+    private List<RankRemoteItem> duration;
+    private List<RankRemoteItem> pbj_distance;
+    private List<RankRemoteItem> dc_distance;
+    private List<RankRemoteItem> tyj_distance;
     private List<RankRemoteItem> hdj_max_weight;
     private List<RankRemoteItem> total_capacity;
     private List<RankRemoteItem> single_max_capacity;
@@ -61,36 +62,36 @@ public final class RankRemoteModule {
         this.day = day;
     }
 
-    public List<RankRemoteItem> getTime() {
-        return initRanks(time);
+    public List<RankRemoteItem> getDuration() {
+        return initRanks(duration);
     }
 
-    public void setTime(List<RankRemoteItem> time) {
-        this.time = time;
+    public void setDuration(List<RankRemoteItem> duration) {
+        this.duration = duration;
     }
 
-    public List<RankRemoteItem> getPbj_pace() {
-        return initRanks(pbj_pace);
+    public List<RankRemoteItem> getPbj_distance() {
+        return initRanks(pbj_distance);
     }
 
-    public void setPbj_pace(List<RankRemoteItem> pbj_pace) {
-        this.pbj_pace = pbj_pace;
+    public void setPbj_distance(List<RankRemoteItem> pbj_distance) {
+        this.pbj_distance = pbj_distance;
     }
 
-    public List<RankRemoteItem> getDc_pace() {
-        return initRanks(dc_pace);
+    public List<RankRemoteItem> getDc_distance() {
+        return initRanks(dc_distance);
     }
 
-    public void setDc_pace(List<RankRemoteItem> dc_pace) {
-        this.dc_pace = dc_pace;
+    public void setDc_distance(List<RankRemoteItem> dc_distance) {
+        this.dc_distance = dc_distance;
     }
 
-    public List<RankRemoteItem> getTyj_pace() {
-        return initRanks(tyj_pace);
+    public List<RankRemoteItem> getTyj_distance() {
+        return initRanks(tyj_distance);
     }
 
-    public void setTyj_pace(List<RankRemoteItem> tyj_pace) {
-        this.tyj_pace = tyj_pace;
+    public void setTyj_distance(List<RankRemoteItem> tyj_distance) {
+        this.tyj_distance = tyj_distance;
     }
 
     public List<RankRemoteItem> getHdj_max_weight() {
@@ -130,7 +131,22 @@ public final class RankRemoteModule {
         } else {
             items = items.subList(0, 10);
         }
+        for (int i = 0; i < 5; i++) {
+            items.add(new RankRemoteItem());
+        }
         return items;
     }
 
+    private boolean isGo(List<RankRemoteItem> items) {
+        if (CollectionsUtil.isEmpty(items)) {
+            return true;
+        }
+        int index = 0;
+        for (RankRemoteItem item : items) {
+            if (StringUtils.isNotEmpty(item.getUid())) {
+                index++;
+            }
+        }
+        return index <= 5;
+    }
 }

@@ -42,9 +42,12 @@ public final class RankItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private List<RankRemoteItem> mItems;
 
+    private CircleTransform mCircleTransform;
+
     RankItemAdapter(Context mContext, int mIndex) {
         this.mContext = mContext;
         this.mIndex = mIndex;
+        mCircleTransform = new CircleTransform();
     }
 
     public void setItems(List<RankRemoteItem> mItems) {
@@ -54,7 +57,7 @@ public final class RankItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? TOP_TYPE : NORMAL_TYPE;
+        return position % CollectionsUtil.size(mItems) == 0 ? TOP_TYPE : NORMAL_TYPE;
     }
 
     @NonNull
@@ -65,29 +68,43 @@ public final class RankItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        RankRemoteItem item = mItems.get(position);
+
+        RankRemoteItem item = mItems.get(position % CollectionsUtil.size(mItems));
         if (getItemViewType(position) == TOP_TYPE) {
             Item1Holder itemHolder = (Item1Holder) holder;
-            itemHolder.itemView.setBackgroundColor(mColor1);
-            itemHolder.mLogo.setImageResource(ImageConstants.matchRankImage(position + 1));
-            LinkImageLoader.INSTANCE.load(item.getHead_icon(), itemHolder.mAvatar, new CircleTransform());
+            itemHolder.itemView.setBackgroundColor(position % 2 == 0 ? mColor1 : mColor2);
+            itemHolder.mLogo.setImageResource(ImageConstants.matchRankImage(position % CollectionsUtil.size(mItems) + 1));
+            LinkImageLoader.INSTANCE.load(item.getHead_icon(), itemHolder.mAvatar, mCircleTransform);
             itemHolder.mTvHolder.setText(StringUtils.isEmpty(item.getUid()) ? "" : StringConstants.matchHolder(mIndex));
             itemHolder.mTvName.setText(item.getUser_name());
-            itemHolder.mTvValue.setText(item.getValue());
+            itemHolder.mTvValue.setText(mIndex == 3 ? item.formatDuration() : item.getValue());
         } else {
             ItemHolder itemHolder = (ItemHolder) holder;
             itemHolder.itemView.setBackgroundColor(position % 2 == 0 ? mColor1 : mColor2);
-            itemHolder.mLogo.setImageResource(ImageConstants.matchRankImage(position + 1));
-            LinkImageLoader.INSTANCE.load(item.getHead_icon(), itemHolder.mAvatar, new CircleTransform());
+            itemHolder.mLogo.setImageResource(ImageConstants.matchRankImage(position % CollectionsUtil.size(mItems) + 1));
+            LinkImageLoader.INSTANCE.load(item.getHead_icon(), itemHolder.mAvatar, mCircleTransform);
             itemHolder.mTvHolder.setText(StringUtils.isEmpty(item.getUid()) ? "" : StringConstants.matchHolder(mIndex));
             itemHolder.mTvName.setText(item.getUser_name());
-            itemHolder.mTvValue.setText(item.getValue());
+            itemHolder.mTvValue.setText(mIndex == 3 ? item.formatDuration() : item.getValue());
         }
     }
 
     @Override
     public int getItemCount() {
-        return CollectionsUtil.size(mItems);
+        return isGo(mItems) ? CollectionsUtil.size(mItems) : Integer.MAX_VALUE;
+    }
+
+    private boolean isGo(List<RankRemoteItem> items) {
+        if (CollectionsUtil.isEmpty(items)) {
+            return true;
+        }
+        int index = 0;
+        for (RankRemoteItem item : items) {
+            if (StringUtils.isNotEmpty(item.getUid())) {
+                index++;
+            }
+        }
+        return index <= 5;
     }
 
     class ItemHolder extends BaseViewHolder {

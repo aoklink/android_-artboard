@@ -27,14 +27,13 @@ public final class RankUpdateModule {
     private String user_name;
     private String calorie;
     private String day;
-    private String time;
-    private String pbj_pace;
-    private String dc_pace;
-    private String tyj_pace;
+    private String duration;
+    private String pbj_distance;
+    private String dc_distance;
+    private String tyj_distance;
     private String total_capacity;
     private String single_max_capacity;
     private String hdj_max_weight;
-
 
     public String getHdj_max_weight() {
         return hdj_max_weight == null ? "" : hdj_max_weight;
@@ -92,36 +91,36 @@ public final class RankUpdateModule {
         this.calorie = calorie;
     }
 
-    public String getTime() {
-        return time == null ? "" : time;
+    public String getDuration() {
+        return duration == null ? "" : duration;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
-    public String getPbj_pace() {
-        return pbj_pace == null ? "" : pbj_pace;
+    public String getPbj_distance() {
+        return pbj_distance == null ? "" : pbj_distance;
     }
 
-    public void setPbj_pace(String pbj_pace) {
-        this.pbj_pace = pbj_pace;
+    public void setPbj_distance(String pbj_distance) {
+        this.pbj_distance = pbj_distance;
     }
 
-    public String getDc_pace() {
-        return dc_pace == null ? "" : dc_pace;
+    public String getDc_distance() {
+        return dc_distance == null ? "" : dc_distance;
     }
 
-    public void setDc_pace(String dc_pace) {
-        this.dc_pace = dc_pace;
+    public void setDc_distance(String dc_distance) {
+        this.dc_distance = dc_distance;
     }
 
-    public String getTyj_pace() {
-        return tyj_pace == null ? "" : tyj_pace;
+    public String getTyj_distance() {
+        return tyj_distance == null ? "" : tyj_distance;
     }
 
-    public void setTyj_pace(String tyj_pace) {
-        this.tyj_pace = tyj_pace;
+    public void setTyj_distance(String tyj_distance) {
+        this.tyj_distance = tyj_distance;
     }
 
     public String getTotal_capacity() {

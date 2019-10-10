@@ -21,7 +21,7 @@ public final class RankPresenter extends BasePresenter<RankContract.View> implem
     @Override
     public void interval() {
         mDisposable = Flowable
-                .interval(1, 1, TimeUnit.MINUTES)
+                .interval(0, 5, TimeUnit.MINUTES)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(RankContract.View::live));

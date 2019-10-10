@@ -10,6 +10,7 @@ import com.link.feeling.framework.base.FrameworkBaseActivity;
 import com.link.feeling.framework.base.FrameworkBaseFragment;
 import com.link.feeling.framework.bean.MqttRequest;
 import com.link.feeling.framework.component.mqtt.MqttManager;
+import com.link.feeling.framework.utils.ThreadUtils;
 import com.link.feeling.framework.utils.data.L;
 import com.link.feeling.framework.utils.data.StringUtils;
 import com.link.feeling.framework.utils.ui.ViewUtils;
@@ -80,9 +81,6 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
         mMqttManager = MqttManager.newInstance();
         mMqttManager.connect(this);
-
-        postDelay(() -> notifyRankChanged(null), 500);
-        getPresenter().interval();
     }
 
     @NotNull
@@ -134,12 +132,14 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         mIvRight.setVisibility(position == 2 ? View.GONE : View.VISIBLE);
         switch (position) {
             case 0:
+                mIvRight.requestFocus();
                 mIvReal.setNextFocusDownId(R.id.rk_right);
                 break;
             case 1:
                 mIvReal.setNextFocusDownId(R.id.rk_right);
                 break;
             case 2:
+                mIvLeft.requestFocus();
                 mIvReal.setNextFocusDownId(R.id.rk_left);
                 break;
         }
@@ -152,6 +152,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
+        getPresenter().interval();
         if (reconnect) {
             mMqttManager.subscribeToTopic();
         }
@@ -163,19 +164,20 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
     }
 
     @Override
-    public void messageArrived(String topic, MqttMessage message) throws Exception {
+    public void messageArrived(String topic, MqttMessage message) {
         String body = new String(message.getPayload());
         JSONObject object = JSONObject.parseObject(body);
         int type = object.getIntValue("type");
         switch (type) {
-            case 204:
-                notifyUpdateChanged(JSON.parseObject(body, RankUpdateModule.class));
+            case 203:
+                L.e("HomeActivity203", "messageArrived:" + body);
+                ThreadUtils.execute(() -> notifyUpdateChanged(JSON.parseObject(body, RankUpdateModule.class)));
                 break;
             case 210:
+                L.e("HomeActivity210", "messageArrived:" + body);
                 notifyRankChanged(JSON.parseObject(body, RankRemoteModule.class));
                 break;
         }
-        L.e("HomeActivity", "messageArrived:" + body);
     }
 
     @Override
@@ -187,8 +189,8 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         if (rankRemoteModule == null) {
             rankRemoteModule = new RankRemoteModule();
         }
-        mRankFm1.initRank1(rankRemoteModule.getCalorie(), rankRemoteModule.getDay(), rankRemoteModule.getTime());
-        mRankFm2.initRank2(rankRemoteModule.getPbj_pace(), rankRemoteModule.getDc_pace(), rankRemoteModule.getTyj_pace());
+        mRankFm1.initRank1(rankRemoteModule.getCalorie(), rankRemoteModule.getDay(), rankRemoteModule.getDuration());
+        mRankFm2.initRank2(rankRemoteModule.getPbj_distance(), rankRemoteModule.getDc_distance(), rankRemoteModule.getTyj_distance());
         mRankFm3.initRank3(rankRemoteModule.getTotal_capacity(), rankRemoteModule.getSingle_max_capacity(), rankRemoteModule.getHdj_max_weight());
     }
 
@@ -203,19 +205,19 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         if (StringUtils.isNotEmpty(update.getDay())) {
             mRankFm1.updateRank2(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getDay()));
         }
-        if (StringUtils.isNotEmpty(update.getTime())) {
-            mRankFm1.updateRank3(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getTime()));
+        if (StringUtils.isNotEmpty(update.getDuration())) {
+            mRankFm1.updateRank3(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getDuration()));
         }
 
 
-        if (StringUtils.isNotEmpty(update.getPbj_pace())) {
-            mRankFm2.updateRank4(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getPbj_pace()));
+        if (StringUtils.isNotEmpty(update.getPbj_distance())) {
+            mRankFm2.updateRank4(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getPbj_distance()));
         }
-        if (StringUtils.isNotEmpty(update.getDc_pace())) {
-            mRankFm2.updateRank5(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getDc_pace()));
+        if (StringUtils.isNotEmpty(update.getDc_distance())) {
+            mRankFm2.updateRank5(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getDc_distance()));
         }
-        if (StringUtils.isNotEmpty(update.getTyj_pace())) {
-            mRankFm2.updateRank6(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getTyj_pace()));
+        if (StringUtils.isNotEmpty(update.getTyj_distance())) {
+            mRankFm2.updateRank6(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getTyj_distance()));
         }
 
 

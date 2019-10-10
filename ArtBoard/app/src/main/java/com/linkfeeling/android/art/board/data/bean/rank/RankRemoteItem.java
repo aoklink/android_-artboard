@@ -1,5 +1,11 @@
 package com.linkfeeling.android.art.board.data.bean.rank;
 
+import com.link.feeling.framework.utils.data.StringUtils;
+import com.link.feeling.framework.widgets.NumParseUtil;
+import com.linkfeeling.android.art.board.widget.Base64Utils;
+
+import java.util.Locale;
+
 /**
  * Created on 2019/9/27  10:23
  * chenpan pan.chen@linkfeeling.cn
@@ -30,7 +36,7 @@ public final class RankRemoteItem {
     }
 
     public String getUser_name() {
-        return user_name;
+        return Base64Utils.URLDecoder(user_name);
     }
 
     public void setUser_name(String user_name) {
@@ -46,7 +52,7 @@ public final class RankRemoteItem {
     }
 
     public String getUid() {
-        return uid;
+        return uid == null ? "" : uid;
     }
 
     public void setUid(String uid) {
@@ -55,6 +61,20 @@ public final class RankRemoteItem {
 
     public String getValue() {
         return value == null ? "" : value;
+    }
+
+    public String formatDuration() {
+        if (StringUtils.isEmpty(value)) {
+            return "";
+        }
+        long time = NumParseUtil.parseLong(value);
+        if (time < 60) {
+            return String.format(Locale.getDefault(), "00:00:%02d", time % 60);
+        } else if (time < 3600) {
+            return String.format(Locale.getDefault(), "00:%02d:%02d", time / 60, time % 60);
+        } else {
+            return String.format(Locale.getDefault(), "%02d:%02d:%02d", time / 3600, time % 3600 / 60, time % 60);
+        }
     }
 
     public void setValue(String value) {
