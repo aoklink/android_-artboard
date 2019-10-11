@@ -5,31 +5,44 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.TextSwitcher;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
+import com.link.feeling.framework.bean.MqttRequest;
+import com.link.feeling.framework.component.mqtt.MqttManager;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
+import com.link.feeling.framework.utils.data.L;
 import com.linkfeeling.android.art.board.R;
+import com.linkfeeling.android.art.board.data.bean.HeartRemoteModule;
+import com.linkfeeling.android.art.board.data.bean.HomeModule;
 import com.linkfeeling.android.art.board.data.bean.HomePartModule;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.OffsetModule;
+import com.linkfeeling.android.art.board.data.bean.RemoveRemoteModule;
+import com.linkfeeling.android.art.board.utils.DateUtils;
+
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import butterknife.BindView;
 
-public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeContract.Presenter> implements HomeContract.View, ViewSwitcher.ViewFactory, Animation.AnimationListener {
+public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeContract.Presenter> implements HomeContract.View, ViewSwitcher.ViewFactory, MqttCallbackExtended {
 
     public static List<OffsetModule> sOffsetCache = new ArrayList<>();
 
@@ -42,12 +55,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     @BindView(R.id.people_count_text_switcher)
     TextSwitcher mTsCount;
 
-
-    @BindView(R.id.current_style_group)
-    Group mCurrentGroup;
-
-    @BindView(R.id.home_root)
-    ConstraintLayout mClRoot;
+    @BindView(R.id.timer)
+    TextView mTvTimer;
 
     private HomeAdapter mAdapter;
     private GridLayoutManager mGridManager;
@@ -58,6 +67,10 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private String mTempCount = "0";
     private CountDownTimer mTimer;
 
+    private MqttManager mMqttManager;
+
+    private List<HomeRemoteModule> mModules;
+    private int mTempSize;
 
     @Override
     protected int getLayoutRes() {
@@ -67,9 +80,12 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
         initRecyclerView();
-        getPresenter().request();
-        getPresenter().interval();
         initTimerTask();
+        mModules = new ArrayList<>();
+        mMqttManager = MqttManager.newInstance();
+        mMqttManager.connect(this, 100);
+        getPresenter().interval();
+        getPresenter().count();
     }
 
     private void initTimerTask() {
@@ -107,6 +123,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         mGridManager = new GridLayoutManager(this, 2);
         mRvBoard.setLayoutManager(mGridManager);
         mRvBoard.setAdapter(mAdapter);
+        ((SimpleItemAnimator) Objects.requireNonNull(mRvBoard.getItemAnimator())).setSupportsChangeAnimations(false);
 
         List<HomePartModule> mPartModules = new ArrayList<>();
         mPartModules.add(new HomePartModule("激活\n放松", "01-39%"));
@@ -131,44 +148,15 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     }
 
     @Override
-    public void loading(List<HomeRemoteModule> modules) {
-        if (mCurrentGroup.getVisibility() != View.VISIBLE) {
-            mClRoot.setBackgroundResource(R.drawable.icon_bg);
-            mCurrentGroup.setVisibility(View.VISIBLE);
-
-        }
-
-        switch (CollectionsUtil.size(modules)) {
-            case 1:
-                mGridManager.setSpanCount(1);
-                break;
-            case 2:
-            case 3:
-            case 4:
-                mGridManager.setSpanCount(2);
-                break;
-            case 5:
-            case 6:
-            default:
-                mGridManager.setSpanCount(4);
-                break;
-        }
-        mAdapter.setModules(modules);
-
-
-        mTempCount = String.valueOf(CollectionsUtil.size(modules));
-
-        if (!mCurrentCount.equals(mTempCount)) {
-            mCurrentCount = mTempCount;
-            mTsCount.setText(mCurrentCount);
-        }
-
-        mTotalPage = (CollectionsUtil.size(modules) / 8) + (CollectionsUtil.size(modules) % 8 > 0 ? 1 : 0);
+    public void loading() {
+        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(100)));
     }
 
     @Override
-    public void loadingRank(List<HomeRemoteModule> modules, String total_calorie) {
-
+    public void timer() {
+        if (!DateUtils.formatHour(System.currentTimeMillis()).equals(mTvTimer.getText().toString())) {
+            mTvTimer.setText(DateUtils.formatHour(System.currentTimeMillis()));
+        }
     }
 
     public View makeView() {
@@ -199,22 +187,151 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         }
     }
 
-    @Override
-    public void onAnimationStart(Animation animation) {
-
-    }
-
-    @Override
-    public void onAnimationEnd(Animation animation) {
-    }
-
-    @Override
-    public void onAnimationRepeat(Animation animation) {
-
-    }
-
     public static void launch(Context context) {
         Intent intent = new Intent(context, HomeActivity.class);
         context.startActivity(intent);
     }
+
+    @Override
+    public void connectComplete(boolean reconnect, String serverURI) {
+        getPresenter().interval();
+        if (reconnect) {
+            mMqttManager.subscribeToTopic();
+        }
+    }
+
+    @Override
+    public void connectionLost(Throwable cause) {
+
+    }
+
+    @Override
+    public void messageArrived(String topic, MqttMessage message) {
+        String body = new String(message.getPayload());
+        JSONObject object = JSONObject.parseObject(body);
+        int type = object.getIntValue("type");
+        switch (type) {
+            case 201:
+                notifyBpmOrKcChanged(JSON.parseObject(body, HeartRemoteModule.class));
+                L.e("HomeActivity201", "messageArrived:" + body);
+                break;
+            case 202:
+                notifyInsertChanged(JSON.parseObject(body, HomeRemoteModule.class));
+                L.e("HomeActivity202", "messageArrived:" + body);
+                break;
+            case 203:
+                notifyRemoveChanged(JSON.parseObject(body, RemoveRemoteModule.class));
+                L.e("HomeActivity203", "messageArrived:" + body);
+                break;
+            case 209:
+                L.e("HomeActivity209", "messageArrived:" + body);
+                initData(JSON.parseObject(body, HomeModule.class));
+                break;
+        }
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken token) {
+
+    }
+
+    private void initData(HomeModule module) {
+        if (module == null || CollectionsUtil.isEmpty(module.getData())) {
+            return;
+        }
+        mModules.clear();
+        mModules.addAll(module.getData());
+        initCache();
+        initSpan();
+        mAdapter.setModules(mModules);
+        initPeopleCount();
+    }
+
+    private void initCache() {
+        if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {
+            mTempSize = CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache);
+            for (int i = 0; i < mTempSize; i++) {
+                HomeActivity.sOffsetCache.add(new OffsetModule());
+            }
+        }
+    }
+
+    private void initPeopleCount() {
+        mTempCount = String.valueOf(CollectionsUtil.size(mModules));
+        if (!mCurrentCount.equals(mTempCount)) {
+            mCurrentCount = mTempCount;
+            mTsCount.setText(mCurrentCount);
+        }
+        mTotalPage = (CollectionsUtil.size(mModules) / 8) + (CollectionsUtil.size(mModules) % 8 > 0 ? 1 : 0);
+    }
+
+    private void initSpan() {
+        switch (CollectionsUtil.size(mModules)) {
+            case 1:
+                mGridManager.setSpanCount(1);
+                break;
+            case 2:
+            case 3:
+            case 4:
+                mGridManager.setSpanCount(2);
+                break;
+            case 5:
+            case 6:
+            default:
+                mGridManager.setSpanCount(4);
+                break;
+        }
+    }
+
+    private void notifyBpmOrKcChanged(HeartRemoteModule module) {
+        if (CollectionsUtil.isEmpty(mModules) || module == null) {
+            return;
+        }
+        for (HomeRemoteModule item : mModules) {
+            if (item.getUid().equals(module.getUid())) {
+                item.setCalorie(module.getCalorie());
+                item.setHeart_rate(module.getHeart_rate());
+                item.setRatio(module.getRatio());
+                item.setStatus(true);
+                mAdapter.notifyItemChanged(mModules.indexOf(item));
+            }
+        }
+    }
+
+    private void notifyInsertChanged(HomeRemoteModule module) {
+        if (module == null) {
+            return;
+        }
+        if (CollectionsUtil.isEmpty(mModules) || !isContain(module)) {
+            mModules.add(module);
+            initCache();
+            initSpan();
+            mAdapter.setModules(mModules);
+            initPeopleCount();
+        }
+    }
+
+    private boolean isContain(HomeRemoteModule module) {
+        for (HomeRemoteModule item : mModules) {
+            if (item.getUid().equals(module.getUid())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void notifyRemoveChanged(RemoveRemoteModule module) {
+        if (CollectionsUtil.isEmpty(mModules) || module == null) {
+            return;
+        }
+        for (HomeRemoteModule item : mModules) {
+            if (item.getUid().equals(module.getUid())) {
+                mModules.remove(item);
+                initSpan();
+                mAdapter.setModules(mModules);
+                initPeopleCount();
+            }
+        }
+    }
+
 }

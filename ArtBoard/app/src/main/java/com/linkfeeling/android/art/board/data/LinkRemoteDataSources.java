@@ -1,11 +1,7 @@
 package com.linkfeeling.android.art.board.data;
 
-import com.link.feeling.framework.component.net.NetResult;
-import com.linkfeeling.android.art.board.data.bean.HomeRemoteBean;
-import com.linkfeeling.android.art.board.data.bean.HomeRequest;
 import com.linkfeeling.android.art.board.data.network.LinkApi;
 
-import io.reactivex.Single;
 import retrofit2.Retrofit;
 
 /**
@@ -20,9 +16,6 @@ public final class LinkRemoteDataSources implements LinkDataSources {
         mApi = retrofit.create(LinkApi.class);
     }
 
-    @Override
-    public Single<NetResult<HomeRemoteBean>> home(HomeRequest request) {
-        return mApi.home(request);
-    }
+
 }
 

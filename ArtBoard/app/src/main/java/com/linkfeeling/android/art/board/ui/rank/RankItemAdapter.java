@@ -77,39 +77,34 @@ public final class RankItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             LinkImageLoader.INSTANCE.load(item.getHead_icon(), itemHolder.mAvatar, mCircleTransform);
             itemHolder.mTvHolder.setText(StringUtils.isEmpty(item.getUid()) ? "" : StringConstants.matchHolder(mIndex));
             itemHolder.mTvName.setText(item.getUser_name());
-            itemHolder.mTvValue.setText(mIndex == 3 ? item.formatDuration() : item.getValue());
+            itemHolder.mTvValue.setText(item.getFormatValue(mIndex));
         } else {
             ItemHolder itemHolder = (ItemHolder) holder;
             itemHolder.itemView.setBackgroundColor(position % 2 == 0 ? mColor1 : mColor2);
+
+            itemHolder.mLogo.setVisibility(position < 3 ? View.VISIBLE : View.GONE);
+            itemHolder.mTvNum.setVisibility(position < 3 ? View.GONE : View.VISIBLE);
+
             itemHolder.mLogo.setImageResource(ImageConstants.matchRankImage(position % CollectionsUtil.size(mItems) + 1));
+            itemHolder.mTvNum.setText(String.valueOf(position + 1));
+
             LinkImageLoader.INSTANCE.load(item.getHead_icon(), itemHolder.mAvatar, mCircleTransform);
             itemHolder.mTvHolder.setText(StringUtils.isEmpty(item.getUid()) ? "" : StringConstants.matchHolder(mIndex));
             itemHolder.mTvName.setText(item.getUser_name());
-            itemHolder.mTvValue.setText(mIndex == 3 ? item.formatDuration() : item.getValue());
+            itemHolder.mTvValue.setText(item.getFormatValue(mIndex));
         }
     }
 
     @Override
     public int getItemCount() {
-        return isGo(mItems) ? CollectionsUtil.size(mItems) : Integer.MAX_VALUE;
-    }
-
-    private boolean isGo(List<RankRemoteItem> items) {
-        if (CollectionsUtil.isEmpty(items)) {
-            return true;
-        }
-        int index = 0;
-        for (RankRemoteItem item : items) {
-            if (StringUtils.isNotEmpty(item.getUid())) {
-                index++;
-            }
-        }
-        return index <= 5;
+        return CollectionsUtil.size(mItems);
     }
 
     class ItemHolder extends BaseViewHolder {
         @BindView(R.id.item_rank_iv)
         ImageView mLogo;
+        @BindView(R.id.item_rank_tv)
+        TextView mTvNum;
         @BindView(R.id.item_rank_avatar)
         ImageView mAvatar;
         @BindView(R.id.item_rank_holder)

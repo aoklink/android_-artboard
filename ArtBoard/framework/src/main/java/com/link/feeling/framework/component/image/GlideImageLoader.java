@@ -19,6 +19,9 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public Bitmap load(Context context, Uri uri) {
+        if (context == null) {
+            return null;
+        }
         Bitmap bitmap = null;
         try {
             bitmap = Glide.with(context)
@@ -38,6 +41,9 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public void load(String imgUrl, ImageView imageView) {
+        if (imageView.getContext() == null) {
+            return;
+        }
         Glide.with(imageView.getContext())
                 .load(imgUrl)
                 .error(R.drawable.round_placeholder)
@@ -63,6 +69,9 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public void load(int imgUrl, ImageView imageView) {
+        if (imageView.getContext() == null) {
+            return;
+        }
         Glide.with(imageView.getContext())
                 .load(imgUrl)
                 .into(imageView);
@@ -70,6 +79,9 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public void load(String imgUrl, ImageView imageView, int placeholder) {
+        if (imageView.getContext() == null) {
+            return;
+        }
         Glide.with(imageView.getContext())
                 .load(imgUrl)
                 .error(placeholder)
@@ -79,7 +91,10 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public void load(String imgUrl, ImageView imageView, Transformation<Bitmap>... transformations) {
-        if (StringUtils.isEmpty(imgUrl)){
+        if (imageView.getContext() == null) {
+            return;
+        }
+        if (StringUtils.isEmpty(imgUrl)) {
             imageView.setImageResource(0);
             return;
         }

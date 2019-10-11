@@ -20,16 +20,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
-import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,10 +59,6 @@ public class RankFragment extends FrameworkBaseFragment {
     private RankItemAdapter mItemAdapter1;
     private RankItemAdapter mItemAdapter2;
     private RankItemAdapter mItemAdapter3;
-
-    private Disposable mDisposable1;
-    private Disposable mDisposable2;
-    private Disposable mDisposable3;
 
     static RankFragment newInstance(int index) {
         RankFragment fragment = new RankFragment();
@@ -126,10 +118,6 @@ public class RankFragment extends FrameworkBaseFragment {
         mItemAdapter1.setItems(mRankList1);
         mItemAdapter2.setItems(mRankList2);
         mItemAdapter3.setItems(mRankList3);
-
-        ThreadUtils.execute(() -> startLooper1(mRankList1));
-        ThreadUtils.execute(() -> startLooper2(mRankList2));
-        ThreadUtils.execute(() -> startLooper3(mRankList3));
     }
 
     void initRank2(List<RankRemoteItem> list4, List<RankRemoteItem> list5, List<RankRemoteItem> list6) {
@@ -140,10 +128,6 @@ public class RankFragment extends FrameworkBaseFragment {
         mRankList4 = list4;
         mRankList5 = list5;
         mRankList6 = list6;
-
-        ThreadUtils.execute(() -> startLooper1(mRankList4));
-        ThreadUtils.execute(() -> startLooper2(mRankList5));
-        ThreadUtils.execute(() -> startLooper3(mRankList6));
     }
 
     void initRank3(List<RankRemoteItem> list7, List<RankRemoteItem> list8, List<RankRemoteItem> list9) {
@@ -154,74 +138,6 @@ public class RankFragment extends FrameworkBaseFragment {
         mRankList7 = list7;
         mRankList8 = list8;
         mRankList9 = list9;
-
-        ThreadUtils.execute(() -> startLooper1(mRankList7));
-        ThreadUtils.execute(() -> startLooper2(mRankList8));
-        ThreadUtils.execute(() -> startLooper3(mRankList9));
-    }
-
-    private void startLooper1(List<RankRemoteItem> items) {
-        if (isGo(items)) {
-            stopLooper1();
-            return;
-        }
-        if (mDisposable1 == null) {
-            mDisposable1 = Flowable
-                    .interval(1000, 100, TimeUnit.MILLISECONDS)
-                    .onBackpressureLatest()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> mRv1.smoothScrollBy(0, 20));
-        }
-    }
-
-    private void startLooper2(List<RankRemoteItem> items) {
-        if (isGo(items)) {
-            stopLooper2();
-            return;
-        }
-        if (mDisposable2 == null) {
-            mDisposable2 = Flowable
-                    .interval(1000, 100, TimeUnit.MILLISECONDS)
-                    .onBackpressureLatest()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> mRv2.smoothScrollBy(0, 20));
-        }
-    }
-
-    private void startLooper3(List<RankRemoteItem> items) {
-        if (isGo(items)) {
-            stopLooper3();
-            return;
-        }
-        if (mDisposable3 == null) {
-            mDisposable3 = Flowable
-                    .interval(1000, 100, TimeUnit.MILLISECONDS)
-                    .onBackpressureLatest()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> mRv3.smoothScrollBy(0, 20));
-        }
-    }
-
-
-    private void stopLooper1() {
-        if (mDisposable1 != null && !mDisposable1.isDisposed()) {
-            mDisposable1.dispose();
-        }
-        mDisposable1 = null;
-    }
-
-    private void stopLooper2() {
-        if (mDisposable2 != null && !mDisposable2.isDisposed()) {
-            mDisposable2.dispose();
-        }
-        mDisposable2 = null;
-    }
-
-    private void stopLooper3() {
-        if (mDisposable3 != null && !mDisposable3.isDisposed()) {
-            mDisposable3.dispose();
-        }
-        mDisposable3 = null;
     }
 
 
@@ -236,14 +152,10 @@ public class RankFragment extends FrameworkBaseFragment {
         }
         mRankList1.add(item);
         Collections.sort(mRankList1, (o1, o2) -> NumParseUtil.parseInt(o2.getValue()) - NumParseUtil.parseInt(o1.getValue()));
-        if (CollectionsUtil.size(mRankList1) > 10) {
-            mRankList1 = mRankList1.subList(0, 10);
-        }
-        for (int i = 0; i < 5; i++) {
-            mRankList1.add(new RankRemoteItem());
+        if (CollectionsUtil.size(mRankList1) > KeysConstants.RANK_ITEM) {
+            mRankList1 = mRankList1.subList(0, KeysConstants.RANK_ITEM);
         }
         ThreadUtils.runOnMainThread(() -> mItemAdapter1.setItems(mRankList1));
-        ThreadUtils.execute(() -> startLooper1(mRankList1));
     }
 
     void updateRank2(RankRemoteItem item) {
@@ -257,14 +169,10 @@ public class RankFragment extends FrameworkBaseFragment {
         }
         mRankList2.add(item);
         Collections.sort(mRankList2, (o1, o2) -> NumParseUtil.parseInt(o2.getValue()) - NumParseUtil.parseInt(o1.getValue()));
-        if (CollectionsUtil.size(mRankList2) > 10) {
-            mRankList2 = mRankList2.subList(0, 10);
-        }
-        for (int i = 0; i < 5; i++) {
-            mRankList2.add(new RankRemoteItem());
+        if (CollectionsUtil.size(mRankList2) > KeysConstants.RANK_ITEM) {
+            mRankList2 = mRankList2.subList(0, KeysConstants.RANK_ITEM);
         }
         ThreadUtils.runOnMainThread(() -> mItemAdapter2.setItems(mRankList2));
-        ThreadUtils.execute(() -> startLooper1(mRankList2));
     }
 
     void updateRank3(RankRemoteItem item) {
@@ -278,14 +186,10 @@ public class RankFragment extends FrameworkBaseFragment {
         }
         mRankList3.add(item);
         Collections.sort(mRankList3, (o1, o2) -> Long.compare(NumParseUtil.parseLong(o2.getValue()), NumParseUtil.parseLong(o1.getValue())));
-        if (CollectionsUtil.size(mRankList3) > 10) {
-            mRankList3 = mRankList3.subList(0, 10);
-        }
-        for (int i = 0; i < 5; i++) {
-            mRankList3.add(new RankRemoteItem());
+        if (CollectionsUtil.size(mRankList3) > KeysConstants.RANK_ITEM) {
+            mRankList3 = mRankList3.subList(0, KeysConstants.RANK_ITEM);
         }
         ThreadUtils.runOnMainThread(() -> mItemAdapter3.setItems(mRankList3));
-        ThreadUtils.execute(() -> startLooper1(mRankList3));
     }
 
 
@@ -300,14 +204,10 @@ public class RankFragment extends FrameworkBaseFragment {
         }
         mRankList4.add(item);
         Collections.sort(mRankList4, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList4) > 10) {
-            mRankList4 = mRankList4.subList(0, 10);
-        }
-        for (int i = 0; i < 5; i++) {
-            mRankList4.add(new RankRemoteItem());
+        if (CollectionsUtil.size(mRankList4) > KeysConstants.RANK_ITEM) {
+            mRankList4 = mRankList4.subList(0, KeysConstants.RANK_ITEM);
         }
         ThreadUtils.runOnMainThread(() -> mItemAdapter1.setItems(mRankList4));
-        ThreadUtils.execute(() -> startLooper1(mRankList4));
     }
 
     void updateRank5(RankRemoteItem item) {
@@ -321,14 +221,10 @@ public class RankFragment extends FrameworkBaseFragment {
         }
         mRankList5.add(item);
         Collections.sort(mRankList5, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList5) > 10) {
-            mRankList5 = mRankList5.subList(0, 10);
-        }
-        for (int i = 0; i < 5; i++) {
-            mRankList5.add(new RankRemoteItem());
+        if (CollectionsUtil.size(mRankList5) > KeysConstants.RANK_ITEM) {
+            mRankList5 = mRankList5.subList(0, KeysConstants.RANK_ITEM);
         }
         ThreadUtils.runOnMainThread(() -> mItemAdapter2.setItems(mRankList5));
-        ThreadUtils.execute(() -> startLooper1(mRankList5));
     }
 
     void updateRank6(RankRemoteItem item) {
@@ -342,14 +238,10 @@ public class RankFragment extends FrameworkBaseFragment {
         }
         mRankList6.add(item);
         Collections.sort(mRankList6, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList6) > 10) {
-            mRankList6 = mRankList6.subList(0, 10);
-        }
-        for (int i = 0; i < 5; i++) {
-            mRankList6.add(new RankRemoteItem());
+        if (CollectionsUtil.size(mRankList6) > KeysConstants.RANK_ITEM) {
+            mRankList6 = mRankList6.subList(0, KeysConstants.RANK_ITEM);
         }
         ThreadUtils.runOnMainThread(() -> mItemAdapter3.setItems(mRankList6));
-        ThreadUtils.execute(() -> startLooper1(mRankList6));
     }
 
     void updateRank7(RankRemoteItem item) {
@@ -363,14 +255,10 @@ public class RankFragment extends FrameworkBaseFragment {
         }
         mRankList7.add(item);
         Collections.sort(mRankList7, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList7) > 10) {
-            mRankList7 = mRankList7.subList(0, 10);
-        }
-        for (int i = 0; i < 5; i++) {
-            mRankList7.add(new RankRemoteItem());
+        if (CollectionsUtil.size(mRankList7) > KeysConstants.RANK_ITEM) {
+            mRankList7 = mRankList7.subList(0, KeysConstants.RANK_ITEM);
         }
         ThreadUtils.runOnMainThread(() -> mItemAdapter1.setItems(mRankList7));
-        ThreadUtils.execute(() -> startLooper1(mRankList7));
     }
 
     void updateRank8(RankRemoteItem item) {
@@ -384,14 +272,10 @@ public class RankFragment extends FrameworkBaseFragment {
         }
         mRankList8.add(item);
         Collections.sort(mRankList8, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList8) > 10) {
-            mRankList8 = mRankList8.subList(0, 10);
-        }
-        for (int i = 0; i < 5; i++) {
-            mRankList8.add(new RankRemoteItem());
+        if (CollectionsUtil.size(mRankList8) > KeysConstants.RANK_ITEM) {
+            mRankList8 = mRankList8.subList(0, KeysConstants.RANK_ITEM);
         }
         ThreadUtils.runOnMainThread(() -> mItemAdapter2.setItems(mRankList8));
-        ThreadUtils.execute(() -> startLooper1(mRankList8));
     }
 
     void updateRank9(RankRemoteItem item) {
@@ -405,14 +289,10 @@ public class RankFragment extends FrameworkBaseFragment {
         }
         mRankList9.add(item);
         Collections.sort(mRankList9, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList9) > 10) {
-            mRankList9 = mRankList9.subList(0, 10);
-        }
-        for (int i = 0; i < 5; i++) {
-            mRankList9.add(new RankRemoteItem());
+        if (CollectionsUtil.size(mRankList9) > KeysConstants.RANK_ITEM) {
+            mRankList9 = mRankList9.subList(0, KeysConstants.RANK_ITEM);
         }
         ThreadUtils.runOnMainThread(() -> mItemAdapter3.setItems(mRankList9));
-        ThreadUtils.execute(() -> startLooper1(mRankList9));
     }
 
 }

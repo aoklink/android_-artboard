@@ -3,6 +3,7 @@ package com.linkfeeling.android.art.board.ui.rank;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -19,6 +20,7 @@ import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.rank.RankUpdateModule;
 import com.linkfeeling.android.art.board.ui.HomeActivity;
+import com.linkfeeling.android.art.board.utils.DateUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -42,10 +44,8 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     @BindView(R.id.rk_real)
     ImageView mIvReal;
-    @BindView(R.id.rk_left)
-    ImageView mIvLeft;
-    @BindView(R.id.rk_right)
-    ImageView mIvRight;
+    @BindView(R.id.rank_timer)
+    TextView mTvTimer;
 
     private int mCurrentPageIndex = 0;
 
@@ -65,7 +65,6 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
-
         mFragments = new ArrayList<>();
         mRankFm1 = RankFragment.newInstance(0);
         mRankFm2 = RankFragment.newInstance(1);
@@ -75,12 +74,16 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         mFragments.add(mRankFm2);
         mFragments.add(mRankFm3);
         mPagerAdapter = new RankPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, mFragments);
+
         mRankVp.setAdapter(mPagerAdapter);
         mRankVp.setOffscreenPageLimit(3);
         mRankVp.addOnPageChangeListener(this);
 
         mMqttManager = MqttManager.newInstance();
-        mMqttManager.connect(this);
+        mMqttManager.connect(this, 101);
+
+        getPresenter().count();
+        getPresenter().countPage();
     }
 
     @NotNull
@@ -100,7 +103,24 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(-1)));
     }
 
-    @OnClick({R.id.rk_real, R.id.rk_left, R.id.rk_right})
+    @Override
+    public void timer() {
+        if (!DateUtils.formatHour(System.currentTimeMillis()).equals(mTvTimer.getText().toString())) {
+            mTvTimer.setText(DateUtils.formatHour(System.currentTimeMillis()));
+        }
+    }
+
+    @Override
+    public void scrollPage() {
+        if (mCurrentPageIndex < 2) {
+            mCurrentPageIndex++;
+        } else {
+            mCurrentPageIndex = 0;
+        }
+        mRankVp.setCurrentItem(mCurrentPageIndex, true);
+    }
+
+    @OnClick({R.id.rk_real})
     public void onViewClick(View v) {
         if (ViewUtils.isQuickClick()) {
             return;
@@ -108,14 +128,6 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         switch (v.getId()) {
             case R.id.rk_real:
                 HomeActivity.launch(this);
-                break;
-            case R.id.rk_left:
-                mRankVp.setCurrentItem(mCurrentPageIndex > 0 ? mCurrentPageIndex - 1 : 0, true);
-                mCurrentPageIndex = mCurrentPageIndex > 0 ? mCurrentPageIndex-- : 0;
-                break;
-            case R.id.rk_right:
-                mRankVp.setCurrentItem(mCurrentPageIndex < 2 ? mCurrentPageIndex + 1 : 2, true);
-                mCurrentPageIndex = mCurrentPageIndex < 2 ? mCurrentPageIndex++ : 2;
                 break;
         }
     }
@@ -128,21 +140,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
     @Override
     public void onPageSelected(int position) {
         mCurrentPageIndex = position;
-        mIvLeft.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
-        mIvRight.setVisibility(position == 2 ? View.GONE : View.VISIBLE);
-        switch (position) {
-            case 0:
-                mIvRight.requestFocus();
-                mIvReal.setNextFocusDownId(R.id.rk_right);
-                break;
-            case 1:
-                mIvReal.setNextFocusDownId(R.id.rk_right);
-                break;
-            case 2:
-                mIvLeft.requestFocus();
-                mIvReal.setNextFocusDownId(R.id.rk_left);
-                break;
-        }
+        mIvReal.requestFocus();
     }
 
     @Override

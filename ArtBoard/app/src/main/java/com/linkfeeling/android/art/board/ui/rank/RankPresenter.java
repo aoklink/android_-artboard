@@ -15,16 +15,34 @@ import io.reactivex.disposables.Disposable;
 public final class RankPresenter extends BasePresenter<RankContract.View> implements RankContract.Presenter {
 
 
-    // 注册监听
-    private Disposable mDisposable;
-
     @Override
     public void interval() {
-        mDisposable = Flowable
+        // 注册监听
+        Disposable mDisposable = Flowable
                 .interval(0, 5, TimeUnit.MINUTES)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(RankContract.View::live));
         addDisposable(mDisposable);
+    }
+
+    @Override
+    public void count() {
+        Disposable mDisposable1 = Flowable
+                .interval(0, 1, TimeUnit.SECONDS)
+                .onBackpressureLatest()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> onceViewAttached(RankContract.View::timer));
+        addDisposable(mDisposable1);
+    }
+
+    @Override
+    public void countPage() {
+        Disposable mDisposable1 = Flowable
+                .interval(25, 20, TimeUnit.SECONDS)
+                .onBackpressureLatest()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> onceViewAttached(RankContract.View::scrollPage));
+        addDisposable(mDisposable1);
     }
 }

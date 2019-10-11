@@ -12,10 +12,18 @@ public interface RankContract {
     interface View extends BaseMvpView {
 
         void live();
+
+        void timer();
+
+        void scrollPage();
     }
 
     interface Presenter extends BaseMvpPresenter<View> {
         void interval();
+
+        void count();
+
+        void countPage();
     }
 
 }

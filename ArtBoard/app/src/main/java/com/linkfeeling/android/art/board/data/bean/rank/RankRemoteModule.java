@@ -1,5 +1,6 @@
 package com.linkfeeling.android.art.board.data.bean.rank;
 
+import com.link.feeling.framework.KeysConstants;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.StringUtils;
 
@@ -123,16 +124,13 @@ public final class RankRemoteModule {
         if (CollectionsUtil.isEmpty(items)) {
             items = new ArrayList<>();
         }
-        int index = 10 - CollectionsUtil.size(items);
-        if (CollectionsUtil.size(items) < 10) {
+        int index = KeysConstants.RANK_ITEM - CollectionsUtil.size(items);
+        if (CollectionsUtil.size(items) < KeysConstants.RANK_ITEM) {
             for (int i = 0; i < index; i++) {
                 items.add(new RankRemoteItem());
             }
         } else {
-            items = items.subList(0, 10);
-        }
-        for (int i = 0; i < 5; i++) {
-            items.add(new RankRemoteItem());
+            items = items.subList(0, KeysConstants.RANK_ITEM);
         }
         return items;
     }

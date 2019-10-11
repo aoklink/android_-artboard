@@ -31,7 +31,6 @@
         app:layout_constraintStart_toStartOf="@id/rk_rv3"
         tools:ignore="ContentDescription" />
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rk_rv1"
         android:layout_width="0dp"

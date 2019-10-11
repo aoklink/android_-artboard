@@ -58,4 +58,6 @@ public interface KeysConstants {
     String SIGNATURE = "Signature|";
     String SEPARATOR = "|";
     String GID = "GID_LK_HEART_RATE@@@";
+
+    int RANK_ITEM = 11;
 }

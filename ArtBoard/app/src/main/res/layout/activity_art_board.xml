@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="20dp"
-        android:src="@drawable/icon_gym_logo"
+        android:src="@mipmap/icon_gym_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
@@ -33,6 +33,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.35"
         app:layout_constraintWidth_percent="0.17" />
+
+    <com.link.feeling.framework.widgets.NumberFontTextView
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff5f5f5"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@id/user_sport_summary_recycler_view"
+        app:layout_constraintEnd_toEndOf="@id/user_sport_summary_recycler_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="17:23" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -93,7 +104,6 @@
         android:id="@+id/current_style_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         app:constraint_referenced_ids="user_sport_summary_recycler_view,include_people,user_board_recycler_view,imageView,service_provider_manifest_tv" />
 
 

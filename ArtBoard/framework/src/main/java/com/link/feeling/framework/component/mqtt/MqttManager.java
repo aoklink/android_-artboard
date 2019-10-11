@@ -26,11 +26,14 @@ public final class MqttManager {
 
     private MqttAndroidClient mqttAndroidClient;
 
+    private int mType;
+
     public static MqttManager newInstance() {
         return new MqttManager();
     }
 
-    public void connect(MqttCallbackExtended callback) {
+    public void connect(MqttCallbackExtended callback ,int type) {
+        mType = type;
         if (mqttAndroidClient == null) {
             mqttAndroidClient = new MqttAndroidClient(BaseApplication.getAppContext(), KeysConstants.SERVER_URL, KeysConstants.GID + DeviceUtils.getMac());
         }
@@ -74,7 +77,7 @@ public final class MqttManager {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     L.e(TAG, "subscribe:success");
-                    publishMessage(JSON.toJSONString(new MqttRequest(101)));
+                    publishMessage(JSON.toJSONString(new MqttRequest(mType)));
                 }
 
                 @Override
