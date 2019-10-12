@@ -30,12 +30,10 @@ import butterknife.BindView;
  */
 public final class RankItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public static final int TOP_TYPE = 100;
-    public static final int NORMAL_TYPE = 101;
-
 
     private Context mContext;
     private int mIndex;
+    private int mPage = 0;
 
     private int mColor1 = Color.parseColor("#FF43436F");
     private int mColor2 = Color.parseColor("#FF61618B");
@@ -50,49 +48,37 @@ public final class RankItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         mCircleTransform = new CircleTransform();
     }
 
-    public void setItems(List<RankRemoteItem> mItems) {
+    void setItems(List<RankRemoteItem> mItems) {
         this.mItems = mItems;
         notifyDataSetChanged();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position % CollectionsUtil.size(mItems) == 0 ? TOP_TYPE : NORMAL_TYPE;
+    void setPage(int mPage) {
+        this.mPage = mPage;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return viewType == TOP_TYPE ? new Item1Holder(LayoutInflater.from(mContext).inflate(R.layout.rank_item1, parent, false)) : new ItemHolder(LayoutInflater.from(mContext).inflate(R.layout.rank_item, parent, false));
+        return new ItemHolder(LayoutInflater.from(mContext).inflate(R.layout.rank_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         RankRemoteItem item = mItems.get(position % CollectionsUtil.size(mItems));
-        if (getItemViewType(position) == TOP_TYPE) {
-            Item1Holder itemHolder = (Item1Holder) holder;
-            itemHolder.itemView.setBackgroundColor(position % 2 == 0 ? mColor1 : mColor2);
-            itemHolder.mLogo.setImageResource(ImageConstants.matchRankImage(position % CollectionsUtil.size(mItems) + 1));
-            LinkImageLoader.INSTANCE.load(item.getHead_icon(), itemHolder.mAvatar, mCircleTransform);
-            itemHolder.mTvHolder.setText(StringUtils.isEmpty(item.getUid()) ? "" : StringConstants.matchHolder(mIndex));
-            itemHolder.mTvName.setText(item.getUser_name());
-            itemHolder.mTvValue.setText(item.getFormatValue(mIndex));
-        } else {
-            ItemHolder itemHolder = (ItemHolder) holder;
-            itemHolder.itemView.setBackgroundColor(position % 2 == 0 ? mColor1 : mColor2);
+        ItemHolder itemHolder = (ItemHolder) holder;
+        itemHolder.itemView.setBackgroundColor(position % 2 == 0 ? mColor2 : mColor1);
 
-            itemHolder.mLogo.setVisibility(position < 3 ? View.VISIBLE : View.GONE);
-            itemHolder.mTvNum.setVisibility(position < 3 ? View.GONE : View.VISIBLE);
+        itemHolder.mLogo.setVisibility((position < 2 && mPage == 0) ? View.VISIBLE : View.GONE);
+        itemHolder.mTvNum.setVisibility(position < 2 && mPage == 0 ? View.GONE : View.VISIBLE);
+        itemHolder.mLogo.setImageResource(ImageConstants.matchRankImage(position % CollectionsUtil.size(mItems) + 2));
 
-            itemHolder.mLogo.setImageResource(ImageConstants.matchRankImage(position % CollectionsUtil.size(mItems) + 1));
-            itemHolder.mTvNum.setText(String.valueOf(position + 1));
-
-            LinkImageLoader.INSTANCE.load(item.getHead_icon(), itemHolder.mAvatar, mCircleTransform);
-            itemHolder.mTvHolder.setText(StringUtils.isEmpty(item.getUid()) ? "" : StringConstants.matchHolder(mIndex));
-            itemHolder.mTvName.setText(item.getUser_name());
-            itemHolder.mTvValue.setText(item.getFormatValue(mIndex));
-        }
+        itemHolder.mTvNum.setText(String.valueOf(mPage * 5 + position + 2));
+        LinkImageLoader.INSTANCE.load(item.getHead_icon(), itemHolder.mAvatar, mCircleTransform);
+        itemHolder.mTvHolder.setText(StringUtils.isEmpty(item.getUid()) ? "" : StringConstants.matchHolder(mIndex));
+        itemHolder.mTvName.setText(item.getUser_name());
+        itemHolder.mTvValue.setText(item.getFormatValue(mIndex));
     }
 
     @Override
@@ -115,23 +101,6 @@ public final class RankItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         TextView mTvValue;
 
         ItemHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    class Item1Holder extends BaseViewHolder {
-        @BindView(R.id.item_rank_iv1)
-        ImageView mLogo;
-        @BindView(R.id.item_rank_avatar1)
-        ImageView mAvatar;
-        @BindView(R.id.item_rank_holder1)
-        TextView mTvHolder;
-        @BindView(R.id.item_rank_name1)
-        TextView mTvName;
-        @BindView(R.id.item_rank_value1)
-        TextView mTvValue;
-
-        Item1Holder(View itemView) {
             super(itemView);
         }
     }

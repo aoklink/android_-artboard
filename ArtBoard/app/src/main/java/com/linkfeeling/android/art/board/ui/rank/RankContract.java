@@ -16,6 +16,8 @@ public interface RankContract {
         void timer();
 
         void scrollPage();
+
+        void scrollRank();
     }
 
     interface Presenter extends BaseMvpPresenter<View> {
@@ -24,6 +26,8 @@ public interface RankContract {
         void count();
 
         void countPage();
+
+        void countRank();
     }
 
 }

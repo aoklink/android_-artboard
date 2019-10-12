@@ -1,5 +1,6 @@
 package com.link.feeling.framework.component.image;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -91,7 +92,7 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public void load(String imgUrl, ImageView imageView, Transformation<Bitmap>... transformations) {
-        if (imageView.getContext() == null) {
+        if (imageView.getContext() == null || ((Activity) imageView.getContext()).isFinishing() || ((Activity) imageView.getContext()).isDestroyed()){
             return;
         }
         if (StringUtils.isEmpty(imgUrl)) {

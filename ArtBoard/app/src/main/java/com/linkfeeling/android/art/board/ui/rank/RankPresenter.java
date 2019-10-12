@@ -14,35 +14,50 @@ import io.reactivex.disposables.Disposable;
  */
 public final class RankPresenter extends BasePresenter<RankContract.View> implements RankContract.Presenter {
 
+    private Disposable mDisposable1;
 
     @Override
     public void interval() {
         // 注册监听
-        Disposable mDisposable = Flowable
+        Disposable disposable = Flowable
                 .interval(0, 5, TimeUnit.MINUTES)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(RankContract.View::live));
-        addDisposable(mDisposable);
+        addDisposable(disposable);
     }
 
     @Override
     public void count() {
-        Disposable mDisposable1 = Flowable
+        Disposable disposable = Flowable
                 .interval(0, 1, TimeUnit.SECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(RankContract.View::timer));
-        addDisposable(mDisposable1);
+        addDisposable(disposable);
     }
 
     @Override
     public void countPage() {
-        Disposable mDisposable1 = Flowable
-                .interval(25, 20, TimeUnit.SECONDS)
+        Disposable disposable = Flowable
+                .interval(60, 60, TimeUnit.SECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(RankContract.View::scrollPage));
+        addDisposable(disposable);
+    }
+
+    @Override
+    public void countRank() {
+        if (mDisposable1 != null && !mDisposable1.isDisposed()) {
+            mDisposable1.dispose();
+            mDisposable1 = null;
+        }
+        mDisposable1 = Flowable
+                .interval(0, 15, TimeUnit.SECONDS)
+                .onBackpressureLatest()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> onceViewAttached(RankContract.View::scrollRank));
         addDisposable(mDisposable1);
     }
 }

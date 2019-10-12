@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -17,6 +18,7 @@ import com.link.feeling.framework.component.mqtt.MqttManager;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
 import com.link.feeling.framework.utils.data.L;
+import com.link.feeling.framework.utils.ui.ViewUtils;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.data.bean.HeartRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.HomeModule;
@@ -24,6 +26,7 @@ import com.linkfeeling.android.art.board.data.bean.HomePartModule;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 import com.linkfeeling.android.art.board.data.bean.RemoveRemoteModule;
+import com.linkfeeling.android.art.board.ui.rank.RankActivity;
 import com.linkfeeling.android.art.board.utils.DateUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -41,6 +44,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeContract.Presenter> implements HomeContract.View, ViewSwitcher.ViewFactory, MqttCallbackExtended {
 
@@ -58,6 +62,9 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     @BindView(R.id.timer)
     TextView mTvTimer;
 
+    @BindView(R.id.rk_real)
+    ImageView mIvReal;
+
     private HomeAdapter mAdapter;
     private GridLayoutManager mGridManager;
     private String mCurrentCount = "";
@@ -66,9 +73,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private int mCurrentPage = 1;
     private String mTempCount = "0";
     private CountDownTimer mTimer;
-
     private MqttManager mMqttManager;
-
     private List<HomeRemoteModule> mModules;
     private int mTempSize;
 
@@ -86,6 +91,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         mMqttManager.connect(this, 100);
         getPresenter().interval();
         getPresenter().count();
+
+        mIvReal.requestFocus();
     }
 
     private void initTimerTask() {
@@ -156,6 +163,18 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     public void timer() {
         if (!DateUtils.formatHour(System.currentTimeMillis()).equals(mTvTimer.getText().toString())) {
             mTvTimer.setText(DateUtils.formatHour(System.currentTimeMillis()));
+        }
+    }
+
+    @OnClick({R.id.rk_real})
+    public void onViewClick(View v) {
+        if (ViewUtils.isQuickClick()) {
+            return;
+        }
+        switch (v.getId()) {
+            case R.id.rk_real:
+                RankActivity.launch(this);
+                break;
         }
     }
 

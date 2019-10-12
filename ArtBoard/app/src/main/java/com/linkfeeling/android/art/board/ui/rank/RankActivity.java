@@ -1,5 +1,7 @@
 package com.linkfeeling.android.art.board.ui.rank;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +21,6 @@ import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.rank.RankUpdateModule;
-import com.linkfeeling.android.art.board.ui.HomeActivity;
 import com.linkfeeling.android.art.board.utils.DateUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -81,7 +82,6 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
         mMqttManager = MqttManager.newInstance();
         mMqttManager.connect(this, 101);
-
         getPresenter().count();
         getPresenter().countPage();
     }
@@ -120,6 +120,23 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         mRankVp.setCurrentItem(mCurrentPageIndex, true);
     }
 
+    @Override
+    public void scrollRank() {
+        switch (mCurrentPageIndex) {
+            case 0:
+                mRankFm1.notifyRank1();
+                break;
+
+            case 1:
+                mRankFm2.notifyRank2();
+                break;
+
+            case 2:
+                mRankFm3.notifyRank3();
+                break;
+        }
+    }
+
     @OnClick({R.id.rk_real})
     public void onViewClick(View v) {
         if (ViewUtils.isQuickClick()) {
@@ -127,7 +144,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         }
         switch (v.getId()) {
             case R.id.rk_real:
-                HomeActivity.launch(this);
+                finish();
                 break;
         }
     }
@@ -141,6 +158,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
     public void onPageSelected(int position) {
         mCurrentPageIndex = position;
         mIvReal.requestFocus();
+        getPresenter().countRank();
     }
 
     @Override
@@ -190,6 +208,8 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         mRankFm1.initRank1(rankRemoteModule.getCalorie(), rankRemoteModule.getDay(), rankRemoteModule.getDuration());
         mRankFm2.initRank2(rankRemoteModule.getPbj_distance(), rankRemoteModule.getDc_distance(), rankRemoteModule.getTyj_distance());
         mRankFm3.initRank3(rankRemoteModule.getTotal_capacity(), rankRemoteModule.getSingle_max_capacity(), rankRemoteModule.getHdj_max_weight());
+
+        getPresenter().countRank();
     }
 
     private void notifyUpdateChanged(RankUpdateModule update) {
@@ -230,4 +250,9 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         }
     }
 
+
+    public static void launch(Context context) {
+        Intent intent = new Intent(context, RankActivity.class);
+        context.startActivity(intent);
+    }
 }
