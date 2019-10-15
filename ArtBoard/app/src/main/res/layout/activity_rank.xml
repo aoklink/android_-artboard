@@ -19,23 +19,11 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
-
-    <ImageView
-        android:id="@+id/rk_gym_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:src="@mipmap/icon_gym_logo"
-        app:layout_constraintBottom_toBottomOf="@id/rk_logo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/rk_logo"
-        tools:ignore="ContentDescription" />
-
     <ImageView
         android:id="@+id/rk_real"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
         android:background="@drawable/rank_real"
         android:clickable="true"
         android:focusable="true"
@@ -45,7 +33,7 @@
         android:nextFocusUp="@id/rk_real"
         android:nextFocusDown="@id/rk_real"
         app:layout_constraintBottom_toBottomOf="@id/rk_logo"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/rk_logo"
         tools:ignore="ContentDescription" />
 
@@ -53,27 +41,28 @@
         android:id="@+id/rank_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
         android:textColor="@color/white"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@id/rk_gym_logo"
-        app:layout_constraintTop_toBottomOf="@id/rk_gym_logo"
+        app:layout_constraintBottom_toBottomOf="@id/rk_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rk_logo"
         tools:text="14:23" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/rk_vp"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="88dp"
+        android:layout_marginStart="50dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="88dp"
+        android:layout_marginEnd="50dp"
         android:layout_marginBottom="40dp"
         android:focusable="false"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rk_gym_logo" />
+        app:layout_constraintTop_toBottomOf="@id/rk_logo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

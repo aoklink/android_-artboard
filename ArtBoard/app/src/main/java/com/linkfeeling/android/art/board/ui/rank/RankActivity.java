@@ -22,6 +22,7 @@ import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.rank.RankUpdateModule;
 import com.linkfeeling.android.art.board.utils.DateUtils;
+import com.linkfeeling.android.art.board.widget.ViewPagerScroller;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -79,6 +80,10 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         mRankVp.setAdapter(mPagerAdapter);
         mRankVp.setOffscreenPageLimit(3);
         mRankVp.addOnPageChangeListener(this);
+
+        ViewPagerScroller pagerScroller = new ViewPagerScroller(this);
+        pagerScroller.setScrollDuration(1250);
+        pagerScroller.initViewPagerScroll(mRankVp);
 
         mMqttManager = MqttManager.newInstance();
         mMqttManager.connect(this, 101);
@@ -186,11 +191,11 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         int type = object.getIntValue("type");
         switch (type) {
             case 203:
-                L.e("HomeActivity203", "messageArrived:" + body);
+                L.e("RankActivity203", "messageArrived:" + body);
                 ThreadUtils.execute(() -> notifyUpdateChanged(JSON.parseObject(body, RankUpdateModule.class)));
                 break;
             case 210:
-                L.e("HomeActivity210", "messageArrived:" + body);
+                L.e("RankActivity210", "messageArrived:" + body);
                 notifyRankChanged(JSON.parseObject(body, RankRemoteModule.class));
                 break;
         }
