@@ -131,11 +131,9 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
             case 0:
                 mRankFm1.notifyRank1();
                 break;
-
             case 1:
                 mRankFm2.notifyRank2();
                 break;
-
             case 2:
                 mRankFm3.notifyRank3();
                 break;
@@ -173,7 +171,6 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
-        getPresenter().interval();
         if (reconnect) {
             mMqttManager.subscribeToTopic();
         }
@@ -197,6 +194,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
             case 210:
                 L.e("RankActivity210", "messageArrived:" + body);
                 notifyRankChanged(JSON.parseObject(body, RankRemoteModule.class));
+                getPresenter().interval();
                 break;
         }
     }
@@ -211,10 +209,9 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
             rankRemoteModule = new RankRemoteModule();
         }
         mRankFm1.initRank1(rankRemoteModule.getCalorie(), rankRemoteModule.getDay(), rankRemoteModule.getDuration());
+        getPresenter().countRank();
         mRankFm2.initRank2(rankRemoteModule.getPbj_distance(), rankRemoteModule.getDc_distance(), rankRemoteModule.getTyj_distance());
         mRankFm3.initRank3(rankRemoteModule.getTotal_capacity(), rankRemoteModule.getSingle_max_capacity(), rankRemoteModule.getHdj_max_weight());
-
-        getPresenter().countRank();
     }
 
     private void notifyUpdateChanged(RankUpdateModule update) {
