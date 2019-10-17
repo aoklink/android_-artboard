@@ -48,6 +48,8 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
     ImageView mIvReal;
     @BindView(R.id.rank_timer)
     TextView mTvTimer;
+    @BindView(R.id.rk_holder)
+    ImageView mIvHolder;
 
     private int mCurrentPageIndex = 0;
 
@@ -89,6 +91,8 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         mMqttManager.connect(this, 101);
         getPresenter().count();
         getPresenter().countPage();
+
+        mIvHolder.requestFocus();
     }
 
     @NotNull
@@ -100,7 +104,6 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
     @Override
     protected void onResume() {
         super.onResume();
-        mIvReal.requestFocus();
     }
 
     @Override

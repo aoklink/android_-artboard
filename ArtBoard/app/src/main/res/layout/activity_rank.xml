@@ -20,6 +20,19 @@
         tools:ignore="ContentDescription" />
 
     <ImageView
+        android:id="@+id/rk_holder"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusRight="@id/rk_real"
+        app:layout_constraintBottom_toBottomOf="@id/rk_logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rk_logo"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
         android:id="@+id/rk_real"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +41,7 @@
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:nextFocusLeft="@id/rk_real"
+        android:nextFocusLeft="@id/rk_holder"
         android:nextFocusRight="@id/rk_real"
         android:nextFocusUp="@id/rk_real"
         android:nextFocusDown="@id/rk_real"

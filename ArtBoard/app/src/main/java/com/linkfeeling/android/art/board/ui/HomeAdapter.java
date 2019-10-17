@@ -162,7 +162,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
                 rootParams.height = MATCH_PARENT;
-                params.height = (int) (mRecyclerViewHeight * 0.75);
+                params.height = (int) (mRecyclerViewHeight * 0.90);
                 params.width = (int) (mRecyclerViewWidth * 0.45);
                 nameMarginParams.leftMargin = DP20;
                 avatarMarginParams.leftMargin = DP20;
