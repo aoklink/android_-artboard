@@ -59,13 +59,14 @@ public interface KeysConstants {
 //    String INSTANCE_ID = "post-cn-0pp1bk98n05";
 
 
-    String TOPIC = "heart_rate_topic/link_office";
+    String GYM = "rl_jinhua_fitness";
+    String TOPIC = "heart_rate_topic/" + GYM;
     String TOPIC_FATHER = "heart_rate_topic";
 
     String SIGNATURE = "Signature|";
     String SEPARATOR = "|";
     String GID = "GID_LK_HEART_RATE@@@";
 
-    String GYM = "link_office";
+
     int RANK_ITEM = 11;
 }

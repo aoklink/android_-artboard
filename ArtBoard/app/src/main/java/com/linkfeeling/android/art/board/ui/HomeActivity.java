@@ -91,8 +91,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         mMqttManager.connect(this, 100);
         getPresenter().interval();
         getPresenter().count();
-
-        mIvReal.requestFocus();
+        mTvTimer.requestFocus();
     }
 
     private void initTimerTask() {
