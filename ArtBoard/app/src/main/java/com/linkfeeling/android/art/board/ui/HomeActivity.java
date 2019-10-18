@@ -26,7 +26,6 @@ import com.linkfeeling.android.art.board.data.bean.HomePartModule;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 import com.linkfeeling.android.art.board.data.bean.RemoveRemoteModule;
-import com.linkfeeling.android.art.board.ui.rank.RankActivity;
 import com.linkfeeling.android.art.board.utils.DateUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -172,7 +171,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         }
         switch (v.getId()) {
             case R.id.rk_real:
-                RankActivity.launch(this);
+                finish();
                 break;
         }
     }

@@ -21,6 +21,7 @@ import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.rank.RankUpdateModule;
+import com.linkfeeling.android.art.board.ui.HomeActivity;
 import com.linkfeeling.android.art.board.utils.DateUtils;
 import com.linkfeeling.android.art.board.widget.ViewPagerScroller;
 
@@ -150,7 +151,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         }
         switch (v.getId()) {
             case R.id.rk_real:
-                finish();
+                HomeActivity.launch(this);
                 break;
         }
     }

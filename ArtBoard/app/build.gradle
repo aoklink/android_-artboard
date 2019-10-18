@@ -5,10 +5,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.linkfeeling.android.art.board"
-        multiDexEnabled true 
+        multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
-            abiFilters 'x86' ,'x86-64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            abiFilters 'x86', 'x86-64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
         }
 
         javaCompileOptions {
