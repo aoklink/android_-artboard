@@ -21,7 +21,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui.HomeActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.rank.RankActivity"
             android:screenOrientation="landscape">
