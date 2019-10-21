@@ -43,6 +43,32 @@ public interface KeysConstants {
 
     String GYM_NAME = "gym_name";
 
-    String GYM = "fitting_gym_xixi";
+    String INDEX = "index";
 
+
+    // prod
+    String SERVER_URL = "tcp://post-cn-v0h19rdwa01.mqtt.aliyuncs.com";
+    String INSTANCE_ID = "post-cn-v0h19rdwa01";
+
+    String ACCESS_KEY = "LTAI4FeptrQPpNaeBLzsgkMW";
+    String SECRET_KEY = "5VNrknvqHVZqFWrPnb3SvQIYqKLrn8";
+
+    String GYM = "fitting_gym_xixi";
+//    String GYM = "link_office";
+    String TOPIC = "heart_rate_topic/" + GYM;
+    String TOPIC_FATHER = "heart_rate_topic";
+
+    String SIGNATURE = "Signature|";
+    String SEPARATOR = "|";
+    String GID = "GID_LK_HEART_RATE@@@";
+
+
+    int RANK_ITEM = 11;
+
+//    测试环境:
+//    instanceId:post-cn-0pp1bk98n05
+//    ServiceUrl:post-cn-0pp1bk98n05.mqtt.aliyuncs.com
+//    线上环境:
+//    instanceId:post-cn-v0h19rdwa01
+//    ServiceUrl:post-cn-v0h19rdwa01.mqtt.aliyuncs.com
 }

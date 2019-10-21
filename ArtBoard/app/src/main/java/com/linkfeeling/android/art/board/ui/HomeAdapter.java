@@ -107,7 +107,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 //        } else {
 //            mHolder.itemView.setAlpha(1);
 //        }
-        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()), mModule.isOnline());
+        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()), mModule.isStatus());
 
 
         LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
@@ -198,7 +198,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
         ObjectAnimator animator = null;
-        if (!mModule.isOnline()) {
+        if (!mModule.isStatus()) {
             if (mSparseArray.get(position) != null) {
                 return;
             } else {

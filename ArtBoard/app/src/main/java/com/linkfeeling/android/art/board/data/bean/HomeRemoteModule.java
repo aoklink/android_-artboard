@@ -1,6 +1,7 @@
 package com.linkfeeling.android.art.board.data.bean;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.linkfeeling.android.art.board.widget.Base64Utils;
@@ -26,6 +27,8 @@ public final class HomeRemoteModule {
 
     @JSONField(name = "calorie")
     private String calorie;
+    @JSONField(name = "uid")
+    private String uid;
     @JSONField(name = "heart_rate")
     private String heart_rate;
     @JSONField(name = "user_name")
@@ -34,12 +37,22 @@ public final class HomeRemoteModule {
     private String head_icon;
     @JSONField(name = "ratio")
     private int ratio;
-    @JSONField(name = "online")
-    private boolean online;
+    @JSONField(name = "status")
+    private boolean status;
+
+    private int type;
 
     private float alpha = 0.8f;
     private Animator animator;
 
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public float getAlpha() {
         return alpha;
@@ -49,20 +62,44 @@ public final class HomeRemoteModule {
         this.alpha = alpha;
     }
 
-    public Animator getAnimator() {
-        return animator;
+    public ObjectAnimator getAnimator() {
+        return (ObjectAnimator) animator;
     }
 
     public void setAnimator(Animator animator) {
         this.animator = animator;
     }
 
-    public boolean isOnline() {
-        return online;
+    public String getCalorie() {
+        return calorie == null ? "" : calorie;
     }
 
-    public void setOnline(boolean online) {
-        this.online = online;
+    public void setCalorie(String calorie) {
+        this.calorie = calorie;
+    }
+
+    public String getUid() {
+        return uid == null ? "" : uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public int getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(int ratio) {
+        this.ratio = ratio;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public String getKc() {
@@ -101,11 +138,9 @@ public final class HomeRemoteModule {
         return ratio;
     }
 
-
     public String getPercentStr() {
         return ratio + "%";
     }
-
 
     public void setPercent(int percent) {
         this.ratio = percent;
@@ -117,8 +152,9 @@ public final class HomeRemoteModule {
         if (o == null || getClass() != o.getClass()) return false;
         HomeRemoteModule module = (HomeRemoteModule) o;
         return ratio == module.ratio &&
-                online == module.online &&
+                status == module.status &&
                 Objects.equals(calorie, module.calorie) &&
+                Objects.equals(uid, module.uid) &&
                 Objects.equals(heart_rate, module.heart_rate) &&
                 Objects.equals(user_name, module.user_name) &&
                 Objects.equals(head_icon, module.head_icon);
@@ -126,7 +162,6 @@ public final class HomeRemoteModule {
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(calorie, heart_rate, user_name, head_icon, ratio, online);
+        return Objects.hash(calorie, uid, heart_rate, user_name, head_icon, ratio, status);
     }
 }

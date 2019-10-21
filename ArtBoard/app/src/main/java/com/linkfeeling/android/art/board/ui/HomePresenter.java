@@ -1,17 +1,7 @@
 package com.linkfeeling.android.art.board.ui;
 
 import com.link.feeling.framework.base.BasePresenter;
-import com.link.feeling.framework.component.rx.BaseSingleObserver;
-import com.link.feeling.framework.utils.data.CollectionsUtil;
-import com.link.feeling.framework.utils.data.DeviceUtils;
-import com.linkfeeling.android.art.board.data.LinkDataRepositories;
-import com.linkfeeling.android.art.board.data.bean.HomeRemoteBean;
-import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
-import com.linkfeeling.android.art.board.data.bean.HomeRequest;
-import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -24,70 +14,28 @@ import io.reactivex.disposables.Disposable;
  */
 public final class HomePresenter extends BasePresenter<HomeContract.View> implements HomeContract.Presenter {
 
-    private List<HomeRemoteModule> mModules = new ArrayList<>();
-
-    private String mMac = "WifiMac:" + DeviceUtils.getMac() + " IMEI:" + DeviceUtils.getIMEL() + " AndroidId:" + DeviceUtils.getAndroidId() + " BTMac:" + DeviceUtils.getBtMac()+" SN:"+DeviceUtils.getSN();
-
     // 注册监听
     private Disposable mDisposable;
-
-    private int mTempSize;
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void request() {
-        mIsLoading = false;
-        LinkDataRepositories.getInstance()
-                .home(new HomeRequest(mMac))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSingleObserver<HomeRemoteBean>(this) {
-                    @Override
-                    public void onSuccess(HomeRemoteBean module) {
-                        super.onSuccess(module);
-
-                        if (module == null || CollectionsUtil.isEmpty(module.getGym_data())) {
-                            onceViewAttached(view -> {
-                                mModules.clear();
-                                view.loading(mModules);
-                            });
-                            return;
-                        }
-
-                        if (mModules.equals(module.getGym_data())) {
-                            return;
-                        }
-
-                        mModules.clear();
-                        mModules.addAll(module.getGym_data());
-                        if (module.isFlag()) {
-                            if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {
-                                mTempSize = CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache);
-                                for (int i = 0; i < mTempSize; i++) {
-                                    HomeActivity.sOffsetCache.add(new OffsetModule());
-                                }
-                            }
-                            onceViewAttached(view -> {
-                                view.loading(mModules);
-                            });
-                        } else {
-                            onceViewAttached(view -> {
-                                view.loadingRank(mModules, module.getTotal_calorie());
-                            });
-                        }
-                    }
-                });
-    }
+    private Disposable mDisposable1;
 
     @Override
     public void interval() {
         mDisposable = Flowable
-                .interval(1, 1200, TimeUnit.MILLISECONDS)
+                .interval(2, 2, TimeUnit.MINUTES)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> onceViewAttached(view -> {
-                    request();
-                }));
+                .subscribe(aLong -> onceViewAttached(HomeContract.View::loading));
         addDisposable(mDisposable);
+    }
+
+    @Override
+    public void count() {
+        mDisposable1 = Flowable
+                .interval(0, 1, TimeUnit.SECONDS)
+                .onBackpressureLatest()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> onceViewAttached(HomeContract.View::timer));
+        addDisposable(mDisposable1);
     }
 
 }

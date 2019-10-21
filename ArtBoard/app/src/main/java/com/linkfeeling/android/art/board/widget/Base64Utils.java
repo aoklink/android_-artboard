@@ -1,6 +1,7 @@
 package com.linkfeeling.android.art.board.widget;
 
 import com.link.feeling.framework.KeysConstants;
+import com.link.feeling.framework.utils.data.StringUtils;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -34,6 +35,9 @@ public final class Base64Utils {
      * @return
      */
     public static String URLDecoder(String value) {
+        if (StringUtils.isEmpty(value)){
+            return "";
+        }
         try {
            return URLDecoder.decode(value, KeysConstants.UTF_8);
         } catch (Exception e) {

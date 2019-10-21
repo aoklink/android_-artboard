@@ -106,17 +106,15 @@ public final class WaveView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         // 从canvas层面去除绘制时锯齿
-//        canvas.setDrawFilter(mDrawFilter);
+        //canvas.setDrawFilter(mDrawFilter);
         for (int i = 0; i < mMeasureWidth; i++) {
             // y = A * sin( wx + b) + h ; A： 浪高； w：周期；b：初相；
             mEndY = (float) (mWaveHeight * Math.sin(mCurrentPeriod * Math.PI / mMeasureWidth * i + mOffset1)) + mMeasureHeight / 3;
             //画第一条波浪
             canvas.drawLine(i, mMeasureHeight, i, mEndY, mWavePaint);
-//
             //画第二条波浪
             mEndY1 = (float) (mWaveHeight * Math.sin(mCurrentPeriod * Math.PI / mMeasureWidth * i + mOffset2)) + mMeasureHeight / 3;
             canvas.drawLine(i, mMeasureHeight, i, mEndY1, mWavePaint1);
-
             //画第二条波浪
             mEndY2 = (float) (mWaveHeight * Math.sin(mCurrentPeriod * Math.PI / mMeasureWidth * i + mOffset3)) + mMeasureHeight / 3;
             canvas.drawLine(i, mMeasureHeight, i, mEndY2, mWavePaint2);
