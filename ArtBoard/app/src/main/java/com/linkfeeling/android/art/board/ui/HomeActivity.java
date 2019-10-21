@@ -1,40 +1,51 @@
 package com.linkfeeling.android.art.board.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextSwitcher;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
+import com.link.feeling.framework.bean.MqttRequest;
+import com.link.feeling.framework.component.mqtt.MqttManager;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
+import com.link.feeling.framework.utils.data.L;
 import com.link.feeling.framework.utils.ui.ViewUtils;
 import com.linkfeeling.android.art.board.R;
-import com.linkfeeling.android.art.board.constants.ImageConstants;
+import com.linkfeeling.android.art.board.data.bean.HeartRemoteModule;
+import com.linkfeeling.android.art.board.data.bean.HomeModule;
 import com.linkfeeling.android.art.board.data.bean.HomePartModule;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.OffsetModule;
+import com.linkfeeling.android.art.board.data.bean.RemoveRemoteModule;
+import com.linkfeeling.android.art.board.utils.DateUtils;
+
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import butterknife.BindView;
+import butterknife.OnClick;
 
-public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeContract.Presenter> implements HomeContract.View, ViewSwitcher.ViewFactory, Animation.AnimationListener {
+public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeContract.Presenter> implements HomeContract.View, ViewSwitcher.ViewFactory, MqttCallbackExtended {
 
     public static List<OffsetModule> sOffsetCache = new ArrayList<>();
 
@@ -47,43 +58,23 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     @BindView(R.id.people_count_text_switcher)
     TextSwitcher mTsCount;
 
-    @BindView(R.id.week_calorie_container)
-    LinearLayout mCalorieContainer;
+    @BindView(R.id.timer)
+    TextView mTvTimer;
 
-    @BindView(R.id.rank_rv)
-    RecyclerView mRvRank;
-
-    @BindView(R.id.current_style_group)
-    Group mCurrentGroup;
-    @BindView(R.id.rank_style_group)
-    Group mRankGroup;
-
-    @BindView(R.id.home_root)
-    ConstraintLayout mClRoot;
+    @BindView(R.id.rk_real)
+    ImageView mIvReal;
 
     private HomeAdapter mAdapter;
-    private PartAdapter mPartAdapter;
     private GridLayoutManager mGridManager;
-    private List<HomePartModule> mPartModules;
     private String mCurrentCount = "";
 
     private int mTotalPage;
     private int mCurrentPage = 1;
     private String mTempCount = "0";
     private CountDownTimer mTimer;
-
-    private RankAdapter mRankAdapter;
-    private String mCacheCalorie = "";
-    private Animation mFadeInAnimation;
-    private Animation mFadeOutAnimation;
-
-    private LayoutAnimationController mControllerIn;
-    private LayoutAnimationController mControllerOut;
-    private List<HomeRemoteModule> mRankModules;
-    private int mRankPage = 0;
-    private int mCurrentRankPage = 0;
-    private CountDownTimer mRankTimer;
-    private long mTempDelay = 1350;
+    private MqttManager mMqttManager;
+    private List<HomeRemoteModule> mModules;
+    private int mTempSize;
 
     @Override
     protected int getLayoutRes() {
@@ -93,9 +84,13 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
         initRecyclerView();
-        getPresenter().request();
-        getPresenter().interval();
         initTimerTask();
+        mModules = new ArrayList<>();
+        mMqttManager = MqttManager.newInstance();
+        mMqttManager.connect(this, 100);
+        getPresenter().interval();
+        getPresenter().count();
+        mTvTimer.requestFocus();
     }
 
     private void initTimerTask() {
@@ -133,31 +128,22 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         mGridManager = new GridLayoutManager(this, 2);
         mRvBoard.setLayoutManager(mGridManager);
         mRvBoard.setAdapter(mAdapter);
+        ((SimpleItemAnimator) Objects.requireNonNull(mRvBoard.getItemAnimator())).setSupportsChangeAnimations(false);
 
-        mPartModules = new ArrayList<>();
+        List<HomePartModule> mPartModules = new ArrayList<>();
         mPartModules.add(new HomePartModule("激活\n放松", "01-39%"));
         mPartModules.add(new HomePartModule("动态\n热身", "40-55%"));
         mPartModules.add(new HomePartModule("脂肪\n燃烧", "56-69%"));
 
-        mPartModules.add(new HomePartModule("糖分\n消耗", "70-79%"));
-        mPartModules.add(new HomePartModule("心肺\n训练", "80-89%"));
+        mPartModules.add(new HomePartModule("心肺\n强化", "70-79%"));
+        mPartModules.add(new HomePartModule("无氧\n挑战", "80-89%"));
         mPartModules.add(new HomePartModule("极限\n锻炼", "90-99%"));
 
-        mPartAdapter = new PartAdapter(this);
+        PartAdapter mPartAdapter = new PartAdapter(this);
         mRvPart.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         mRvPart.setAdapter(mPartAdapter);
         mPartAdapter.setPartModules(mPartModules);
         mTsCount.setFactory(this);
-
-        mRankAdapter = new RankAdapter(this);
-        mRvRank.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        mRvRank.setAdapter(mRankAdapter);
-        mControllerIn = AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_in_holder);
-        mControllerOut = AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_out_holder);
-        mFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        mFadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out);
-        mFadeOutAnimation.setAnimationListener(this);
-        mRankModules = new ArrayList<>();
     }
 
     @NonNull
@@ -167,114 +153,27 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     }
 
     @Override
-    public void loading(List<HomeRemoteModule> modules) {
-        if (mCurrentGroup.getVisibility() != View.VISIBLE) {
-            mClRoot.setBackgroundResource(R.drawable.icon_bg);
-            mCurrentGroup.setVisibility(View.VISIBLE);
-            mCurrentGroup.startAnimation(mFadeInAnimation);
-        }
-
-        ViewUtils.setGone(mRankGroup);
-
-        switch (CollectionsUtil.size(modules)) {
-            case 1:
-                mGridManager.setSpanCount(1);
-                break;
-            case 2:
-            case 3:
-            case 4:
-                mGridManager.setSpanCount(2);
-                break;
-            case 5:
-            case 6:
-            default:
-                mGridManager.setSpanCount(4);
-                break;
-        }
-        mAdapter.setModules(modules);
-
-
-        mTempCount = String.valueOf(CollectionsUtil.size(modules));
-
-        if (!mCurrentCount.equals(mTempCount)) {
-            mCurrentCount = mTempCount;
-            mTsCount.setText(mCurrentCount);
-        }
-
-        mTotalPage = (CollectionsUtil.size(modules) / 8) + (CollectionsUtil.size(modules) % 8 > 0 ? 1 : 0);
+    public void loading() {
+        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(100)));
     }
 
     @Override
-    public void loadingRank(List<HomeRemoteModule> modules, String total_calorie) {
-        if (mRankGroup.getVisibility() != View.VISIBLE) {
-            mRankGroup.setVisibility(View.VISIBLE);
-            mClRoot.setBackgroundResource(R.drawable.rank_bg);
-            mRankGroup.startAnimation(mFadeInAnimation);
-        }
-        ViewUtils.setGone(mCurrentGroup);
-
-        mRankModules.clear();
-        mRankModules.addAll(modules);
-        mRankPage = CollectionsUtil.size(mRankModules) / 5 + (CollectionsUtil.size(mRankModules) % 5 > 0 ? 1 : 0);
-
-        if (!mCacheCalorie.equals(total_calorie)) {
-            mCacheCalorie = total_calorie;
-            mCalorieContainer.removeAllViews();
-            for (int i = 0; i < total_calorie.length(); i++) {
-                ImageView iv = (ImageView) LayoutInflater.from(this).inflate(R.layout.item_number, mCalorieContainer, false);
-                iv.setBackgroundResource(ImageConstants.matchNumberImage(String.valueOf(total_calorie.charAt(i))));
-                mCalorieContainer.addView(iv);
-            }
-            mCalorieContainer.startAnimation(mFadeInAnimation);
-        }
-        mRvRank.setLayoutAnimation(mControllerIn);
-        mCurrentRankPage = 0;
-        if (mRankPage > 1) {
-            mRankAdapter.setModules(mRankModules.subList(0, 5));
-            scheduledRankAnimation();
-        } else {
-            mRankAdapter.setModules(mRankModules);
-            if (mRankTimer != null) {
-                mRankTimer.cancel();
-            }
+    public void timer() {
+        if (!DateUtils.formatHour(System.currentTimeMillis()).equals(mTvTimer.getText().toString())) {
+            mTvTimer.setText(DateUtils.formatHour(System.currentTimeMillis()));
         }
     }
 
-
-    private boolean mIsRankTimerStart = true;
-
-    private void scheduledRankAnimation() {
-        if (mRankTimer != null) {
-            mRankTimer.cancel();
+    @OnClick({R.id.rk_real})
+    public void onViewClick(View v) {
+        if (ViewUtils.isQuickClick()) {
+            return;
         }
-        mIsRankTimerStart = true;
-        mRankTimer = new CountDownTimer(Long.MAX_VALUE, 8888) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                if (mIsRankTimerStart) {
-                    mIsRankTimerStart = false;
-                    return;
-                }
-                mRvRank.setLayoutAnimation(mControllerOut);
-                mRankAdapter.setModules(mRankModules.subList(mCurrentRankPage * 5, mRankPage == (mCurrentRankPage + 1) ? CollectionsUtil.size(mRankModules) : (mCurrentRankPage + 1) * 5));
-                mCurrentRankPage++;
-                if (mCurrentRankPage >= mRankPage) {
-                    mCurrentRankPage = 0;
-                }
-                mTempDelay = 270 * mRankAdapter.getItemCount();
-                postDelay(() -> {
-                    mRvRank.setLayoutAnimation(mControllerIn);
-                    mRankAdapter.setCurrentPage(mCurrentRankPage);
-                    mRankAdapter.setModules(mRankModules.subList(mCurrentRankPage * 5, mRankPage == (mCurrentRankPage + 1) ? CollectionsUtil.size(mRankModules) : (mCurrentRankPage + 1) * 5));
-                }, mTempDelay);
-            }
-
-            @Override
-            public void onFinish() {
-                scheduledRankAnimation();
-            }
-        };
-        mRankTimer.start();
+        switch (v.getId()) {
+            case R.id.rk_real:
+                finish();
+                break;
+        }
     }
 
     public View makeView() {
@@ -296,9 +195,6 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             if (mTimer != null) {
                 mTimer.cancel();
             }
-            if (mRankTimer != null) {
-                mRankTimer.cancel();
-            }
         }
     }
 
@@ -308,17 +204,151 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         }
     }
 
+    public static void launch(Context context) {
+        Intent intent = new Intent(context, HomeActivity.class);
+        context.startActivity(intent);
+    }
+
     @Override
-    public void onAnimationStart(Animation animation) {
+    public void connectComplete(boolean reconnect, String serverURI) {
+        getPresenter().interval();
+        if (reconnect) {
+            mMqttManager.subscribeToTopic();
+        }
+    }
+
+    @Override
+    public void connectionLost(Throwable cause) {
 
     }
 
     @Override
-    public void onAnimationEnd(Animation animation) {
+    public void messageArrived(String topic, MqttMessage message) {
+        String body = new String(message.getPayload());
+        JSONObject object = JSONObject.parseObject(body);
+        int type = object.getIntValue("type");
+        switch (type) {
+            case 201:
+                notifyBpmOrKcChanged(JSON.parseObject(body, HeartRemoteModule.class));
+                L.e("HomeActivity201", "messageArrived:" + body);
+                break;
+            case 202:
+                notifyInsertChanged(JSON.parseObject(body, HomeRemoteModule.class));
+                L.e("HomeActivity202", "messageArrived:" + body);
+                break;
+            case 203:
+                notifyRemoveChanged(JSON.parseObject(body, RemoveRemoteModule.class));
+                L.e("HomeActivity203", "messageArrived:" + body);
+                break;
+            case 209:
+                L.e("HomeActivity209", "messageArrived:" + body);
+                initData(JSON.parseObject(body, HomeModule.class));
+                break;
+        }
     }
 
     @Override
-    public void onAnimationRepeat(Animation animation) {
+    public void deliveryComplete(IMqttDeliveryToken token) {
 
     }
+
+    private void initData(HomeModule module) {
+        if (module == null || CollectionsUtil.isEmpty(module.getData())) {
+            return;
+        }
+        mModules.clear();
+        mModules.addAll(module.getData());
+        initCache();
+        initSpan();
+        mAdapter.setModules(mModules);
+        initPeopleCount();
+    }
+
+    private void initCache() {
+        if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {
+            mTempSize = CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache);
+            for (int i = 0; i < mTempSize; i++) {
+                HomeActivity.sOffsetCache.add(new OffsetModule());
+            }
+        }
+    }
+
+    private void initPeopleCount() {
+        mTempCount = String.valueOf(CollectionsUtil.size(mModules));
+        if (!mCurrentCount.equals(mTempCount)) {
+            mCurrentCount = mTempCount;
+            mTsCount.setText(mCurrentCount);
+        }
+        mTotalPage = (CollectionsUtil.size(mModules) / 8) + (CollectionsUtil.size(mModules) % 8 > 0 ? 1 : 0);
+    }
+
+    private void initSpan() {
+        switch (CollectionsUtil.size(mModules)) {
+            case 1:
+                mGridManager.setSpanCount(1);
+                break;
+            case 2:
+            case 3:
+            case 4:
+                mGridManager.setSpanCount(2);
+                break;
+            case 5:
+            case 6:
+            default:
+                mGridManager.setSpanCount(4);
+                break;
+        }
+    }
+
+    private void notifyBpmOrKcChanged(HeartRemoteModule module) {
+        if (CollectionsUtil.isEmpty(mModules) || module == null) {
+            return;
+        }
+        for (HomeRemoteModule item : mModules) {
+            if (item.getUid().equals(module.getUid())) {
+                item.setCalorie(module.getCalorie());
+                item.setHeart_rate(module.getHeart_rate());
+                item.setRatio(module.getRatio());
+                item.setStatus(true);
+                mAdapter.notifyItemChanged(mModules.indexOf(item));
+            }
+        }
+    }
+
+    private void notifyInsertChanged(HomeRemoteModule module) {
+        if (module == null) {
+            return;
+        }
+        if (CollectionsUtil.isEmpty(mModules) || !isContain(module)) {
+            mModules.add(module);
+            initCache();
+            initSpan();
+            mAdapter.setModules(mModules);
+            initPeopleCount();
+        }
+    }
+
+    private boolean isContain(HomeRemoteModule module) {
+        for (HomeRemoteModule item : mModules) {
+            if (item.getUid().equals(module.getUid())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void notifyRemoveChanged(RemoveRemoteModule module) {
+        if (CollectionsUtil.isEmpty(mModules) || module == null) {
+            return;
+        }
+        for (HomeRemoteModule item : mModules) {
+            if (item.getUid().equals(module.getUid())) {
+                mModules.remove(item);
+                initSpan();
+                mAdapter.setModules(mModules);
+                initPeopleCount();
+            }
+        }
+    }
+
 }

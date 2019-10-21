@@ -108,8 +108,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
-        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()), mModule.isOnline());
-
+        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()), mModule.isStatus());
 
         LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
 
@@ -163,7 +162,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mHolder.mTvBpm.setText(mModule.getHeart_rate());
                 ViewUtils.setVisible(mHolder.mClMiddle);
                 rootParams.height = MATCH_PARENT;
-                params.height = (int) (mRecyclerViewHeight * 0.75);
+                params.height = (int) (mRecyclerViewHeight * 0.90);
                 params.width = (int) (mRecyclerViewWidth * 0.45);
                 nameMarginParams.leftMargin = DP20;
                 avatarMarginParams.leftMargin = DP20;
@@ -220,19 +219,17 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 break;
         }
 
-        ObjectAnimator animator = null;
-        if (!mModule.isOnline()) {
+        if (!mModule.isStatus()) {
             if (mSparseArray.get(position) != null) {
                 return;
             } else {
-                animator = ObjectAnimator.ofFloat(mHolder.itemView, "alpha", 0.8f, 0.1f, 0.8f);
+                mModule.setAnimator(ObjectAnimator.ofFloat(mHolder.itemView, "alpha", 0.8f, 0.1f, 0.8f));
             }
-            animator.setDuration(1000);
-            animator.setRepeatMode(ValueAnimator.INFINITE);
-            animator.setRepeatCount(Integer.MAX_VALUE);
-            mModule.setAnimator(animator);
+            mModule.getAnimator().setDuration(1000);
+            mModule.getAnimator().setRepeatMode(ValueAnimator.INFINITE);
+            mModule.getAnimator().setRepeatCount(Integer.MAX_VALUE);
             mSparseArray.put(position, mModule);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            mModule.getAnimator().addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     if (mSparseArray.get(position) != null) {
@@ -240,7 +237,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 }
             });
-            animator.start();
+            mModule.getAnimator().start();
         } else {
             if (mSparseArray.get(position) != null) {
                 mSparseArray.get(position).getAnimator().cancel();
