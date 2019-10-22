@@ -101,6 +101,8 @@ public final class GlideImageLoader implements LinkImageLoader {
         }
         Glide.with(imageView.getContext())
                 .load(imgUrl)
+                .placeholder(R.drawable.round_placeholder)
+                .error(R.drawable.round_placeholder)
                 .transform(transformations)
                 .into(imageView);
     }

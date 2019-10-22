@@ -39,7 +39,7 @@
         android:id="@+id/rk_real"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="60dp"
         android:background="@drawable/rank_page"
         android:clickable="true"
         android:focusable="true"
@@ -49,21 +49,21 @@
         android:nextFocusUp="@id/rk_real"
         android:nextFocusDown="@id/rk_real"
         app:layout_constraintBottom_toBottomOf="@id/include_people"
-        app:layout_constraintEnd_toEndOf="@id/user_sport_summary_recycler_view"
+        app:layout_constraintEnd_toEndOf="@id/user_board_recycler_view"
         tools:ignore="ContentDescription" />
 
     <com.link.feeling.framework.widgets.NumberFontTextView
         android:id="@+id/timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="30dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:nextFocusRight="@id/rk_real"
         android:textColor="#fff5f5f5"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@id/include_people"
-        app:layout_constraintEnd_toStartOf="@id/rk_real"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="17:23" />
 
 
@@ -79,8 +79,9 @@
         layout="@layout/people_count_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         app:layout_constraintBottom_toBottomOf="@id/logo_image_view"
-        app:layout_constraintEnd_toStartOf="@id/people_count_line"
+        app:layout_constraintStart_toEndOf="@id/logo_image_view"
         app:layout_constraintTop_toTopOf="@id/logo_image_view" />
 
 

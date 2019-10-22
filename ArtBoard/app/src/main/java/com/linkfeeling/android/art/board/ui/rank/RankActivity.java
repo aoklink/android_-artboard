@@ -1,7 +1,10 @@
 package com.linkfeeling.android.art.board.ui.rank;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,7 +36,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -49,6 +55,8 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
     ImageView mIvReal;
     @BindView(R.id.rank_timer)
     TextView mTvTimer;
+    @BindView(R.id.ex)
+    TextView mTvBack;
     @BindView(R.id.rk_holder)
     ImageView mIvHolder;
 
@@ -83,17 +91,15 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         mRankVp.setAdapter(mPagerAdapter);
         mRankVp.setOffscreenPageLimit(3);
         mRankVp.addOnPageChangeListener(this);
-
+        mMqttManager = MqttManager.newInstance();
         ViewPagerScroller pagerScroller = new ViewPagerScroller(this);
         pagerScroller.setScrollDuration(1250);
         pagerScroller.initViewPagerScroll(mRankVp);
 
-        mMqttManager = MqttManager.newInstance();
-        mMqttManager.connect(this, 101);
+        request();
         getPresenter().count();
-        getPresenter().countPage();
-
         mIvHolder.requestFocus();
+        getPresenter().countPage();
     }
 
     @NotNull
@@ -261,4 +267,34 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         Intent intent = new Intent(context, RankActivity.class);
         context.startActivity(intent);
     }
+
+    public static final int REQUEST_CODE_PERMISSION_WRITE = 0x201;
+
+    private void request() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {//未开启存储权限
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION_WRITE);
+            } else {
+                mMqttManager.connect(this, 101);
+            }
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE_PERMISSION_WRITE:
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    showToast("未开启存储权限,请手动到设置去开启权限");
+                } else {
+                    mMqttManager.connect(this, 101);
+                }
+                break;
+        }
+    }
+
 }

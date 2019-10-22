@@ -32,7 +32,7 @@ public final class MqttManager {
         return new MqttManager();
     }
 
-    public void connect(MqttCallbackExtended callback ,int type) {
+    public void connect(MqttCallbackExtended callback, int type) {
         mType = type;
         if (mqttAndroidClient == null) {
             mqttAndroidClient = new MqttAndroidClient(BaseApplication.getAppContext(), KeysConstants.SERVER_URL, KeysConstants.GID + DeviceUtils.getMac());
@@ -51,6 +51,11 @@ public final class MqttManager {
             L.e(TAG, "exception:setPassword", e);
         }
 
+        doConnect(mqttConnectOptions);
+
+    }
+
+    private void doConnect(MqttConnectOptions mqttConnectOptions) {
         try {
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
@@ -62,6 +67,7 @@ public final class MqttManager {
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     L.e(TAG, "connect:onFailure", exception);
+                    doConnect(mqttConnectOptions);
                 }
             });
         } catch (MqttException e) {

@@ -134,6 +134,18 @@ public class RankFragment extends FrameworkBaseFragment {
 
 
     private void switchPage() {
+        if (mIndex == 0 && (CollectionsUtil.isEmpty(mRankList1) || CollectionsUtil.isEmpty(mRankList2) || CollectionsUtil.isEmpty(mRankList3))) {
+            return;
+        }
+
+        if (mIndex == 1 && (CollectionsUtil.isEmpty(mRankList4) || CollectionsUtil.isEmpty(mRankList5) || CollectionsUtil.isEmpty(mRankList6))) {
+            return;
+        }
+
+        if (mIndex == 2 && (CollectionsUtil.isEmpty(mRankList7) || CollectionsUtil.isEmpty(mRankList8) || CollectionsUtil.isEmpty(mRankList9))) {
+            return;
+        }
+
         mCurrentPage = mNextPage;
         mItemAdapter1.setPage(mNextPage);
         mItemAdapter2.setPage(mNextPage);
@@ -245,6 +257,9 @@ public class RankFragment extends FrameworkBaseFragment {
     }
 
     void updateRank1(RankRemoteItem item) {
+        if (CollectionsUtil.isEmpty(mRankList1)) {
+            return;
+        }
         for (RankRemoteItem remote : mRankList1) {
             if (remote.getUid().equals(item.getUid())) {
                 remote.setValue(item.getValue());
@@ -264,6 +279,9 @@ public class RankFragment extends FrameworkBaseFragment {
     }
 
     void updateRank2(RankRemoteItem item) {
+        if (CollectionsUtil.isEmpty(mRankList2)) {
+            return;
+        }
         for (RankRemoteItem remote : mRankList2) {
             if (remote.getUid().equals(item.getUid())) {
                 remote.setValue(item.getValue());
@@ -283,6 +301,9 @@ public class RankFragment extends FrameworkBaseFragment {
     }
 
     void updateRank3(RankRemoteItem item) {
+        if (CollectionsUtil.isEmpty(mRankList3)) {
+            return;
+        }
         for (RankRemoteItem remote : mRankList3) {
             if (remote.getUid().equals(item.getUid())) {
                 remote.setValue(item.getValue());
@@ -303,6 +324,9 @@ public class RankFragment extends FrameworkBaseFragment {
 
 
     void updateRank4(RankRemoteItem item) {
+        if (CollectionsUtil.isEmpty(mRankList4)) {
+            return;
+        }
         for (RankRemoteItem remote : mRankList4) {
             if (remote.getUid().equals(item.getUid())) {
                 remote.setValue(item.getValue());
@@ -322,6 +346,9 @@ public class RankFragment extends FrameworkBaseFragment {
     }
 
     void updateRank5(RankRemoteItem item) {
+        if (CollectionsUtil.isEmpty(mRankList5)) {
+            return;
+        }
         for (RankRemoteItem remote : mRankList5) {
             if (remote.getUid().equals(item.getUid())) {
                 remote.setValue(item.getValue());
@@ -341,6 +368,9 @@ public class RankFragment extends FrameworkBaseFragment {
     }
 
     void updateRank6(RankRemoteItem item) {
+        if (CollectionsUtil.isEmpty(mRankList6)) {
+            return;
+        }
         for (RankRemoteItem remote : mRankList6) {
             if (remote.getUid().equals(item.getUid())) {
                 remote.setValue(item.getValue());
@@ -360,6 +390,9 @@ public class RankFragment extends FrameworkBaseFragment {
     }
 
     void updateRank7(RankRemoteItem item) {
+        if (CollectionsUtil.isEmpty(mRankList7)) {
+            return;
+        }
         for (RankRemoteItem remote : mRankList7) {
             if (remote.getUid().equals(item.getUid())) {
                 remote.setValue(item.getValue());
@@ -379,6 +412,9 @@ public class RankFragment extends FrameworkBaseFragment {
     }
 
     void updateRank8(RankRemoteItem item) {
+        if (CollectionsUtil.isEmpty(mRankList8)) {
+            return;
+        }
         for (RankRemoteItem remote : mRankList8) {
             if (remote.getUid().equals(item.getUid())) {
                 remote.setValue(item.getValue());
@@ -398,6 +434,9 @@ public class RankFragment extends FrameworkBaseFragment {
     }
 
     void updateRank9(RankRemoteItem item) {
+        if (CollectionsUtil.isEmpty(mRankList9)) {
+            return;
+        }
         for (RankRemoteItem remote : mRankList9) {
             if (remote.getUid().equals(item.getUid())) {
                 remote.setValue(item.getValue());
