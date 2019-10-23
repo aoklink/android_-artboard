@@ -31,6 +31,7 @@ dependencies {
     api rootProject.ext.dependencies["rxandroid2"]
     api rootProject.ext.dependencies["rxjava2"]
     api rootProject.ext.dependencies["glide"]
+    api rootProject.ext.dependencies["glid-annotationProcessor"]
     api rootProject.ext.dependencies["okhttp3-integration"]
     api rootProject.ext.dependencies["okhttp3"]
     api rootProject.ext.dependencies["retrofit"]
@@ -40,4 +41,6 @@ dependencies {
     api rootProject.ext.dependencies["multidex"]
     implementation rootProject.ext.dependencies["logger"]
     implementation rootProject.ext.dependencies["kotlin-stdlib-jdk8"]
+    api rootProject.ext.dependencies["mqtt"]
+    api rootProject.ext.dependencies["mqtt-service"]
 }

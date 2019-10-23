@@ -1,5 +1,6 @@
 package com.link.feeling.framework.component.image;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
 import com.link.feeling.framework.R;
 import com.link.feeling.framework.component.image.transformation.CircleTransform;
+import com.link.feeling.framework.utils.data.StringUtils;
 
 /**
  * Created on 2019/1/21  14:17
@@ -18,6 +20,9 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public Bitmap load(Context context, Uri uri) {
+        if (context == null) {
+            return null;
+        }
         Bitmap bitmap = null;
         try {
             bitmap = Glide.with(context)
@@ -37,6 +42,9 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public void load(String imgUrl, ImageView imageView) {
+        if (imageView.getContext() == null) {
+            return;
+        }
         Glide.with(imageView.getContext())
                 .load(imgUrl)
                 .error(R.drawable.round_placeholder)
@@ -62,6 +70,9 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public void load(int imgUrl, ImageView imageView) {
+        if (imageView.getContext() == null) {
+            return;
+        }
         Glide.with(imageView.getContext())
                 .load(imgUrl)
                 .into(imageView);
@@ -69,6 +80,9 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public void load(String imgUrl, ImageView imageView, int placeholder) {
+        if (imageView.getContext() == null) {
+            return;
+        }
         Glide.with(imageView.getContext())
                 .load(imgUrl)
                 .error(placeholder)
@@ -78,8 +92,17 @@ public final class GlideImageLoader implements LinkImageLoader {
 
     @Override
     public void load(String imgUrl, ImageView imageView, Transformation<Bitmap>... transformations) {
+        if (imageView.getContext() == null || ((Activity) imageView.getContext()).isFinishing() || ((Activity) imageView.getContext()).isDestroyed()){
+            return;
+        }
+        if (StringUtils.isEmpty(imgUrl)) {
+            imageView.setImageResource(0);
+            return;
+        }
         Glide.with(imageView.getContext())
                 .load(imgUrl)
+                .placeholder(R.drawable.round_placeholder)
+                .error(R.drawable.round_placeholder)
                 .transform(transformations)
                 .into(imageView);
     }

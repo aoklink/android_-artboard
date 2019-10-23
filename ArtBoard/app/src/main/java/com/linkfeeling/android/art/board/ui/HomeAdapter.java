@@ -111,7 +111,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
-        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()), mModule.isOnline());
+        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()), mModule.isStatus());
 
 
         LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
@@ -225,7 +225,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 break;
         }
 
-        if (!mModule.isOnline()) {
+        if (!mModule.isStatus()) {
             if (mSparseArray.get(position) != null) {
                 return;
             } else {
