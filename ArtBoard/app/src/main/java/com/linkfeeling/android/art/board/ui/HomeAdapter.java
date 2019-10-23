@@ -115,9 +115,9 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         mModule = mModules.get(position);
         mHolder = (HomeHolder) holder;
-
-        mModule.setPercent(99);
-        mModule.setRatio_warn(true);
+//
+//        mModule.setPercent(99);
+//        mModule.setRatio_warn(true);
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
@@ -279,7 +279,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             mModule.getAnimator1().start();
         } else {
             if (mSparseArray1.get(position) != null) {
-                mSparseArray1.get(position).getAnimator().cancel();
+                mSparseArray1.get(position).getAnimator1().cancel();
                 mSparseArray1.remove(position);
             }
         }

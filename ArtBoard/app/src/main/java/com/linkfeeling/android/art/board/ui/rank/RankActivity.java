@@ -108,7 +108,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     @Override
     public void live() {
-        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(-1)));
+        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(0)));
     }
 
     @Override

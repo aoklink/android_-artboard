@@ -254,12 +254,13 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     private void initData(HomeModule module) {
         if (module == null || CollectionsUtil.isEmpty(module.getData())) {
+            mModules.clear();
+            mAdapter.setModules(mModules);
+            initPeopleCount();
             return;
         }
         mModules.clear();
         mModules.addAll(module.getData());
-
-
         initCache();
         initSpan();
         mAdapter.setModules(mModules);
