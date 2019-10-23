@@ -14,14 +14,11 @@ import io.reactivex.disposables.Disposable;
  */
 public final class HomePresenter extends BasePresenter<HomeContract.View> implements HomeContract.Presenter {
 
-    // 注册监听
-    private Disposable mDisposable;
-    private Disposable mDisposable1;
-
     @Override
     public void interval() {
-        mDisposable = Flowable
-                .interval(2, 2, TimeUnit.MINUTES)
+        // 注册监听
+        Disposable mDisposable = Flowable
+                .interval(1, 1, TimeUnit.MINUTES)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(HomeContract.View::loading));
@@ -30,7 +27,7 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
 
     @Override
     public void count() {
-        mDisposable1 = Flowable
+        Disposable mDisposable1 = Flowable
                 .interval(0, 1, TimeUnit.SECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())

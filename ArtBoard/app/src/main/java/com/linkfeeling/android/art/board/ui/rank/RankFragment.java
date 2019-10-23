@@ -134,6 +134,16 @@ public class RankFragment extends FrameworkBaseFragment {
 
 
     private void switchPage() {
+        if (mIndex == 0 && (CollectionsUtil.isEmpty(mRankList1) || CollectionsUtil.isEmpty(mRankList2) || CollectionsUtil.isEmpty(mRankList3))) {
+            return;
+        }
+        if (mIndex == 1 && (CollectionsUtil.isEmpty(mRankList4) || CollectionsUtil.isEmpty(mRankList5) || CollectionsUtil.isEmpty(mRankList6))) {
+            return;
+        }
+        if (mIndex == 2 && (CollectionsUtil.isEmpty(mRankList7) || CollectionsUtil.isEmpty(mRankList8) || CollectionsUtil.isEmpty(mRankList9))) {
+            return;
+        }
+
         mCurrentPage = mNextPage;
         mItemAdapter1.setPage(mNextPage);
         mItemAdapter2.setPage(mNextPage);

@@ -26,6 +26,7 @@ import com.linkfeeling.android.art.board.data.bean.HomePartModule;
 import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 import com.linkfeeling.android.art.board.data.bean.RemoveRemoteModule;
+import com.linkfeeling.android.art.board.ui.rank.RankActivity;
 import com.linkfeeling.android.art.board.utils.DateUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -87,7 +88,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         initTimerTask();
         mModules = new ArrayList<>();
         mMqttManager = MqttManager.newInstance();
-        mMqttManager.connect(this, 100);
+        mMqttManager.connect(this, 90);
         getPresenter().interval();
         getPresenter().count();
         mTvTimer.requestFocus();
@@ -154,7 +155,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     public void loading() {
-        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(100)));
+        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(90)));
     }
 
     @Override
@@ -171,7 +172,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         }
         switch (v.getId()) {
             case R.id.rk_real:
-                finish();
+                RankActivity.launch(this);
                 break;
         }
     }
@@ -211,7 +212,6 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
-        getPresenter().interval();
         if (reconnect) {
             mMqttManager.subscribeToTopic();
         }
@@ -258,6 +258,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         }
         mModules.clear();
         mModules.addAll(module.getData());
+
+
         initCache();
         initSpan();
         mAdapter.setModules(mModules);
@@ -310,6 +312,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
                 item.setHeart_rate(module.getHeart_rate());
                 item.setRatio(module.getRatio());
                 item.setStatus(true);
+                item.setRatio_warn(module.isRatio_warn());
                 mAdapter.notifyItemChanged(mModules.indexOf(item));
             }
         }

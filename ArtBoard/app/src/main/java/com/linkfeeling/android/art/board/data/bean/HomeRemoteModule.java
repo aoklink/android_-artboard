@@ -39,12 +39,30 @@ public final class HomeRemoteModule {
     private int ratio;
     @JSONField(name = "status")
     private boolean status;
+    @JSONField(name = "ratio_warn")
+    private boolean ratio_warn;
 
     private int type;
 
     private float alpha = 0.8f;
     private Animator animator;
+    private Animator animator1;
 
+    public Animator getAnimator1() {
+        return animator1;
+    }
+
+    public void setAnimator1(Animator animator1) {
+        this.animator1 = animator1;
+    }
+
+    public boolean isRatio_warn() {
+        return ratio_warn;
+    }
+
+    public void setRatio_warn(boolean ratio_warn) {
+        this.ratio_warn = ratio_warn;
+    }
 
     public int getType() {
         return type;

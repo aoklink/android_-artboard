@@ -22,15 +22,17 @@
 
         <activity
             android:name=".ui.HomeActivity"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".ui.rank.RankActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.rank.RankActivity"
+            android:screenOrientation="landscape">
+
         </activity>
         <!-- Mqtt Service -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />

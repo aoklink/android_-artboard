@@ -43,22 +43,23 @@ android {
         dev {
             dimension 'build'
             buildConfigField "int", "ENV", "2"
-//            applicationIdSuffix ".dev"
-            resValue 'string', 'app_name', '心率系统_dev'
+            resValue 'string', 'app_name', '单车系统_dev'
+            applicationIdSuffix ".bicycle"
         }
 
         // 测试环境
         tes {
             dimension 'build'
             buildConfigField "int", "ENV", "1"
-            resValue 'string', 'app_name', '心率系统_test'
-//            applicationIdSuffix ".test"
+            resValue 'string', 'app_name', '单车系统_test'
+            applicationIdSuffix ".bicycle"
         }
 
         // 生产环境
         prod {
             buildConfigField "int", "ENV", "0"
-            resValue 'string', 'app_name', '心率系统'
+            resValue 'string', 'app_name', '单车系统'
+            applicationIdSuffix ".bicycle"
         }
     }
 }

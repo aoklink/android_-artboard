@@ -54,7 +54,7 @@
                 android:id="@+id/heart_rate_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/icon_bpm"
+                android:drawableStart="@drawable/icon_warn_bpm"
                 android:maxLines="1"
                 android:text="231"
                 android:textColor="#fff5f5f5"

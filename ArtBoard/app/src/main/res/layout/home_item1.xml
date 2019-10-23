@@ -9,7 +9,9 @@
 
 
     <LinearLayout
+        android:background="@drawable/warn_bg"
         android:id="@+id/item1_root"
+        android:padding="3dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -56,6 +58,19 @@
                 app:layout_constraintHeight_percent="0.2"
                 app:layout_constraintStart_toStartOf="parent" />
 
+            <ImageView
+                android:id="@+id/item1_warn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_warn"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.65"
+                app:layout_constraintStart_toEndOf="@id/item1_percent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.8" />
+
             <com.link.feeling.framework.widgets.NumberFontTextView
                 android:id="@+id/item1_percent"
                 android:layout_width="wrap_content"
@@ -69,7 +84,6 @@
                 tools:text="24%" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/item2_temp_layout"
@@ -111,7 +125,7 @@
                 android:id="@+id/item1_bpm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/icon_bpm"
+                android:drawableStart="@drawable/icon_warn_bpm"
                 android:drawablePadding="10dp"
                 android:gravity="center"
                 android:textColor="#fff5f5f5"
@@ -134,7 +148,6 @@
                 app:layout_constraintStart_toEndOf="@id/item1_bpm" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/item3_temp_layout"
@@ -176,7 +189,7 @@
                 android:id="@+id/item2_bpm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/icon_bpm"
+                android:drawableStart="@drawable/icon_warn_bpm"
                 android:drawablePadding="10dp"
                 android:gravity="center"
                 android:textColor="#fff5f5f5"

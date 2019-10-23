@@ -89,10 +89,9 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         pagerScroller.initViewPagerScroll(mRankVp);
 
         mMqttManager = MqttManager.newInstance();
-        mMqttManager.connect(this, 101);
+        mMqttManager.connect(this, 102);
         getPresenter().count();
         getPresenter().countPage();
-
         mIvHolder.requestFocus();
     }
 
