@@ -46,23 +46,26 @@ public class ListActivity extends FrameworkBaseActivity {
     }
 
 
-    @OnClick({R.id.item_link, R.id.item_xixi, R.id.item_ruili, R.id.item_gaote})
+    @OnClick({R.id.item_link, R.id.item_xixi, R.id.item_ruili, R.id.item_gaote, R.id.item_yirendao})
     public void onViewClick(View v) {
         if (ViewUtils.isQuickClick()) {
             return;
         }
         switch (v.getId()) {
             case R.id.item_link:
-                RankActivity.launch(this ,0);
+                RankActivity.launch(this, 0);
                 return;
             case R.id.item_xixi:
-                RankActivity.launch(this ,1);
+                RankActivity.launch(this, 1);
                 return;
             case R.id.item_ruili:
-                RankActivity.launch(this ,2);
+                RankActivity.launch(this, 2);
                 return;
             case R.id.item_gaote:
-                RankActivity.launch(this ,3);
+                RankActivity.launch(this, 3);
+                return;
+            case R.id.item_yirendao:
+                RankActivity.launch(this, 4);
                 return;
         }
     }

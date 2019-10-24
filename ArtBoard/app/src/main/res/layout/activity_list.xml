@@ -27,8 +27,6 @@
 
 
     <ImageView
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
         android:id="@+id/item_xixi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,6 +36,8 @@
         android:focusableInTouchMode="true"
         android:nextFocusUp="@id/item_link"
         android:nextFocusDown="@id/item_ruili"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:src="@mipmap/gym_logo_xixi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,8 +46,6 @@
 
 
     <ImageView
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
         android:id="@+id/item_ruili"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,6 +55,8 @@
         android:focusableInTouchMode="true"
         android:nextFocusUp="@id/item_xixi"
         android:nextFocusDown="@id/item_gaote"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:src="@mipmap/gym_logo_ruili"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,8 +64,6 @@
         tools:ignore="ContentDescription" />
 
     <ImageView
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
         android:id="@+id/item_gaote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,11 +72,32 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:nextFocusUp="@id/item_ruili"
-        android:nextFocusDown="@id/item_link"
+        android:nextFocusDown="@id/item_yirendao"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:src="@mipmap/gym_logo_gaote"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_ruili"
+        tools:ignore="ContentDescription" />
+
+
+    <ImageView
+        android:id="@+id/item_yirendao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/list_bg"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusUp="@id/item_gaote"
+        android:nextFocusDown="@id/item_link"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:src="@mipmap/gym_logo_yirendao"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_gaote"
         tools:ignore="ContentDescription" />
 
 

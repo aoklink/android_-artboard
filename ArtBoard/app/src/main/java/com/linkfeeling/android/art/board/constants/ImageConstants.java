@@ -105,7 +105,7 @@ public final class ImageConstants {
     }
 
 
-    public static int matchGymLogo(int gymId){
+    public static int matchGymLogo(int gymId) {
         switch (gymId) {
             case 0:
                 return R.mipmap.icon_gym_logo;
@@ -115,6 +115,8 @@ public final class ImageConstants {
                 return R.mipmap.gym_logo_ruili;
             case 3:
                 return R.mipmap.gym_logo_gaote;
+            case 4:
+                return R.mipmap.gym_logo_yirendao;
         }
         return 0;
     }

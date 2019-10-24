@@ -35,12 +35,14 @@ public final class StringConstants {
         switch (id) {
             case 0:
                 return "link_office";
-           case 1:
+            case 1:
                 return "fitting_gym_xixi";
-           case 2:
+            case 2:
                 return "rl_jinhua_fitness";
-           case 3:
+            case 3:
                 return "gaote_fitness";
+            case 4:
+                return "yrd_fitting_office";
         }
         return "link_office";
     }

@@ -122,7 +122,7 @@ public final class MqttManager {
             mqttAndroidClient.unsubscribe(KeysConstants.TOPIC + StringConstants.matchGymId(gymId));
             mqttAndroidClient.disconnect();
 //            mqttAndroidClient.close();
-        } catch (MqttException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
