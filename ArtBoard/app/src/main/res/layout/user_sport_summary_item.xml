@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="15dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="20dp">
 
     <LinearLayout
         android:id="@+id/sport_summary_item_ll"
@@ -23,19 +24,19 @@
             android:lines="2"
             android:text="@string/sport_summary_item_text_example"
             android:textColor="#fff5f5f5"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
         <com.link.feeling.framework.widgets.NumberFontTextView
             android:id="@+id/sport_summary_item_value_tv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="5dp"
             android:layout_marginEnd="15dp"
             android:gravity="center"
             android:maxLines="1"
-            android:text="0-39%"
+            tools:text="0-39%"
             android:textColor="#fff5f5f5"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
     <View

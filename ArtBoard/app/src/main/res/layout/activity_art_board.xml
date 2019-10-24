@@ -32,7 +32,7 @@
         app:layout_constraintStart_toEndOf="@id/people_count_line"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.45"
-        app:layout_constraintWidth_percent="0.17" />
+        app:layout_constraintWidth_percent="0.18" />
 
 
     <ImageView
@@ -61,7 +61,7 @@
         android:focusableInTouchMode="true"
         android:nextFocusRight="@id/rk_real"
         android:textColor="#fff5f5f5"
-        android:textSize="24sp"
+        android:textSize="46sp"
         app:layout_constraintBottom_toBottomOf="@id/include_people"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="17:23" />

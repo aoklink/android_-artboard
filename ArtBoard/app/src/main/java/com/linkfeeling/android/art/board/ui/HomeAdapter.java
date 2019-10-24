@@ -253,6 +253,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+
     @Override
     public int getItemCount() {
         return CollectionsUtil.size(mModules);
