@@ -1,7 +1,5 @@
 package com.link.feeling.framework.bean;
 
-import com.link.feeling.framework.KeysConstants;
-
 /**
  * Created on 2019/9/27  10:52
  * chenpan pan.chen@linkfeeling.cn
@@ -14,7 +12,7 @@ public final class MqttRequest {
      */
 
     private int type ;
-    private String gym_id = KeysConstants.GYM;
+    private String gym_id;
 
     public MqttRequest() {
     }
@@ -35,7 +33,8 @@ public final class MqttRequest {
         this.gym_id = gym_id;
     }
 
-    public MqttRequest(int type) {
+    public MqttRequest(int type, String gym_id) {
         this.type = type;
+        this.gym_id = gym_id;
     }
 }

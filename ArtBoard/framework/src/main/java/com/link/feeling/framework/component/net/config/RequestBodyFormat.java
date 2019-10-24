@@ -27,7 +27,7 @@ public class RequestBodyFormat {
                 Map<String, String> map = gson.fromJson(requestStr, Map.class);
 
                 map.put(KeysConstants.REQUEST_TIME, String.valueOf(System.currentTimeMillis()));
-                map.put(KeysConstants.GYM_NAME, KeysConstants.GYM);
+//                map.put(KeysConstants.GYM_NAME, KeysConstants.GYM);
                 map.put(KeysConstants.PLATFORM, KeysConstants.ANDROID);
                 map.put(KeysConstants.NETWORK, DeviceUtils.getNetWorkType());
                 map.put(KeysConstants.PRODUCT_ID, KeysConstants.LINK_FEELING);

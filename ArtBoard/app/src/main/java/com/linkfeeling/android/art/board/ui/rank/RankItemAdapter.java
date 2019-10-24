@@ -15,7 +15,7 @@ import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.StringUtils;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.constants.ImageConstants;
-import com.linkfeeling.android.art.board.constants.StringConstants;
+import com.link.feeling.framework.StringConstants;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
 
 import java.util.List;

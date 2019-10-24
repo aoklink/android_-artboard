@@ -2,6 +2,7 @@ package com.link.feeling.framework.component.mqtt;
 
 import com.alibaba.fastjson.JSON;
 import com.link.feeling.framework.KeysConstants;
+import com.link.feeling.framework.StringConstants;
 import com.link.feeling.framework.base.BaseApplication;
 import com.link.feeling.framework.bean.MqttRequest;
 import com.link.feeling.framework.utils.data.DeviceUtils;
@@ -32,11 +33,12 @@ public final class MqttManager {
         return new MqttManager();
     }
 
-    public void connect(MqttCallbackExtended callback ,int type) {
+    public void connect(MqttCallbackExtended callback, int type, final int gymId) {
         mType = type;
-        if (mqttAndroidClient == null) {
-            mqttAndroidClient = new MqttAndroidClient(BaseApplication.getAppContext(), KeysConstants.SERVER_URL, KeysConstants.GID + DeviceUtils.getMac());
-        }
+        mqttAndroidClient = null;
+
+        mqttAndroidClient = new MqttAndroidClient(BaseApplication.getAppContext(), KeysConstants.SERVER_URL, KeysConstants.GID + DeviceUtils.getMac());
+
         mqttAndroidClient.setCallback(callback);
 
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
@@ -56,7 +58,7 @@ public final class MqttManager {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     L.e(TAG, "connect:onSuccess");
-                    subscribeToTopic();
+                    subscribeToTopic(gymId);
                 }
 
                 @Override
@@ -69,15 +71,15 @@ public final class MqttManager {
         }
     }
 
-    public void subscribeToTopic() {
+    public void subscribeToTopic(int gymId) {
         try {
-            final String topicFilter[] = {KeysConstants.TOPIC};
+            final String topicFilter[] = {KeysConstants.TOPIC + StringConstants.matchGymId(gymId)};
             final int[] qos = {1};
             mqttAndroidClient.subscribe(topicFilter, qos, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     L.e(TAG, "subscribe:success");
-                    publishMessage(JSON.toJSONString(new MqttRequest(mType)));
+                    publishMessage(JSON.toJSONString(new MqttRequest(mType, StringConstants.matchGymId(gymId))));
                 }
 
                 @Override
@@ -110,6 +112,18 @@ public final class MqttManager {
             });
         } catch (MqttException e) {
             L.e(TAG, "publish:exception", e);
+        }
+
+    }
+
+
+    public void destroy(int gymId) {
+        try {
+            mqttAndroidClient.unsubscribe(KeysConstants.TOPIC + StringConstants.matchGymId(gymId));
+            mqttAndroidClient.disconnect();
+//            mqttAndroidClient.close();
+        } catch (MqttException e) {
+            e.printStackTrace();
         }
     }
 

@@ -45,6 +45,8 @@ public interface KeysConstants {
 
     String INDEX = "index";
 
+    String KEY = "key";
+
 
     // prod
     String SERVER_URL = "tcp://post-cn-v0h19rdwa01.mqtt.aliyuncs.com";
@@ -54,8 +56,7 @@ public interface KeysConstants {
     String SECRET_KEY = "5VNrknvqHVZqFWrPnb3SvQIYqKLrn8";
 
 //    String GYM = "rl_jinhua_fitness";
-    String GYM = "link_office";
-    String TOPIC = "heart_rate_topic/" + GYM;
+    String TOPIC = "heart_rate_topic/" ;
     String TOPIC_FATHER = "heart_rate_topic";
 
     String SIGNATURE = "Signature|";

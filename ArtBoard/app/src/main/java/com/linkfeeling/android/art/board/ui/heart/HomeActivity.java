@@ -1,4 +1,4 @@
-package com.linkfeeling.android.art.board.ui;
+package com.linkfeeling.android.art.board.ui.heart;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,8 @@ import android.widget.ViewSwitcher;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.link.feeling.framework.KeysConstants;
+import com.link.feeling.framework.StringConstants;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
 import com.link.feeling.framework.bean.MqttRequest;
 import com.link.feeling.framework.component.mqtt.MqttManager;
@@ -20,6 +22,7 @@ import com.link.feeling.framework.utils.data.DisplayUtils;
 import com.link.feeling.framework.utils.data.L;
 import com.link.feeling.framework.utils.ui.ViewUtils;
 import com.linkfeeling.android.art.board.R;
+import com.linkfeeling.android.art.board.constants.ImageConstants;
 import com.linkfeeling.android.art.board.data.bean.HeartRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.HomeModule;
 import com.linkfeeling.android.art.board.data.bean.HomePartModule;
@@ -63,6 +66,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @BindView(R.id.rk_real)
     ImageView mIvReal;
+    @BindView(R.id.logo_image_view)
+    ImageView mIvLogo;
 
     private HomeAdapter mAdapter;
     private GridLayoutManager mGridManager;
@@ -76,6 +81,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private List<HomeRemoteModule> mModules;
     private int mTempSize;
 
+    private int mGymId;
+
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_art_board;
@@ -83,11 +90,14 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
+        mGymId = getIntent().getIntExtra(KeysConstants.KEY, 0);
+
+        mIvLogo.setImageResource(ImageConstants.matchGymLogo(mGymId));
         initRecyclerView();
         initTimerTask();
         mModules = new ArrayList<>();
         mMqttManager = MqttManager.newInstance();
-        mMqttManager.connect(this, 100);
+        mMqttManager.connect(this, 100, mGymId);
         getPresenter().interval();
         getPresenter().count();
         mTvTimer.requestFocus();
@@ -154,7 +164,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     public void loading() {
-        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(100)));
+        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(100, StringConstants.matchGymId(mGymId))));
     }
 
     @Override
@@ -195,6 +205,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             if (mTimer != null) {
                 mTimer.cancel();
             }
+            mMqttManager.destroy(mGymId);
         }
     }
 
@@ -204,8 +215,9 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         }
     }
 
-    public static void launch(Context context) {
+    public static void launch(Context context, int id) {
         Intent intent = new Intent(context, HomeActivity.class);
+        intent.putExtra(KeysConstants.KEY, id);
         context.startActivity(intent);
     }
 
@@ -213,7 +225,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     public void connectComplete(boolean reconnect, String serverURI) {
         getPresenter().interval();
         if (reconnect) {
-            mMqttManager.subscribeToTopic();
+            mMqttManager.subscribeToTopic(mGymId);
         }
     }
 
@@ -350,5 +362,4 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             }
         }
     }
-
 }

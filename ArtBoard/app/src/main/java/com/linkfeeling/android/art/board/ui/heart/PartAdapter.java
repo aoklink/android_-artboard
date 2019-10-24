@@ -1,4 +1,4 @@
-package com.linkfeeling.android.art.board.ui;
+package com.linkfeeling.android.art.board.ui.heart;
 
 import android.content.Context;
 import android.view.LayoutInflater;

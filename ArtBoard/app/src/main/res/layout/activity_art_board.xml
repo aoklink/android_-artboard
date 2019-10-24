@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/icon_bg"
-    tools:context=".ui.HomeActivity"
+    tools:context=".ui.heart.HomeActivity"
     tools:ignore="PxUsage">
 
 
@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="20dp"
-        android:src="@mipmap/icon_gym_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />

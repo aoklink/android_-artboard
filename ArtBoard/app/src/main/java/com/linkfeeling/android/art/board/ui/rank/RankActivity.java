@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.link.feeling.framework.KeysConstants;
+import com.link.feeling.framework.StringConstants;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
 import com.link.feeling.framework.base.FrameworkBaseFragment;
 import com.link.feeling.framework.bean.MqttRequest;
@@ -21,7 +23,7 @@ import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.rank.RankUpdateModule;
-import com.linkfeeling.android.art.board.ui.HomeActivity;
+import com.linkfeeling.android.art.board.ui.heart.HomeActivity;
 import com.linkfeeling.android.art.board.utils.DateUtils;
 import com.linkfeeling.android.art.board.widget.ViewPagerScroller;
 
@@ -62,6 +64,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     private MqttManager mMqttManager;
 
+    private int mGymId;
 
     @Override
     protected int getLayoutRes() {
@@ -70,6 +73,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
+        mGymId = getIntent().getIntExtra(KeysConstants.KEY, 0);
         mFragments = new ArrayList<>();
         mRankFm1 = RankFragment.newInstance(0);
         mRankFm2 = RankFragment.newInstance(1);
@@ -89,7 +93,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         pagerScroller.initViewPagerScroll(mRankVp);
 
         mMqttManager = MqttManager.newInstance();
-        mMqttManager.connect(this, 101);
+        mMqttManager.connect(this, 101, mGymId);
         getPresenter().count();
         getPresenter().countPage();
 
@@ -109,7 +113,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     @Override
     public void live() {
-        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(-1)));
+        mMqttManager.publishMessage(JSON.toJSONString(new MqttRequest(-1, StringConstants.matchGymId(mGymId))));
     }
 
     @Override
@@ -151,7 +155,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         }
         switch (v.getId()) {
             case R.id.rk_real:
-                HomeActivity.launch(this);
+                HomeActivity.launch(this, mGymId);
                 break;
         }
     }
@@ -176,7 +180,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         if (reconnect) {
-            mMqttManager.subscribeToTopic();
+            mMqttManager.subscribeToTopic(mGymId);
         }
     }
 
@@ -257,8 +261,18 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
     }
 
 
-    public static void launch(Context context) {
+    public static void launch(Context context, int gymId) {
         Intent intent = new Intent(context, RankActivity.class);
+        intent.putExtra(KeysConstants.KEY, gymId);
         context.startActivity(intent);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isFinishing()) {
+            mMqttManager.destroy(mGymId);
+        }
+    }
+
 }

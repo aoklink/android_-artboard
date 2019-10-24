@@ -104,4 +104,18 @@ public final class ImageConstants {
         return R.mipmap.rank10;
     }
 
+
+    public static int matchGymLogo(int gymId){
+        switch (gymId) {
+            case 0:
+                return R.mipmap.icon_gym_logo;
+            case 1:
+                return R.mipmap.gym_logo_xixi;
+            case 2:
+                return R.mipmap.gym_logo_ruili;
+            case 3:
+                return R.mipmap.gym_logo_gaote;
+        }
+        return 0;
+    }
 }

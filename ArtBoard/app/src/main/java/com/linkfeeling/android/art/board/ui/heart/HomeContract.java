@@ -1,4 +1,4 @@
-package com.linkfeeling.android.art.board.ui;
+package com.linkfeeling.android.art.board.ui.heart;
 
 import com.link.feeling.framework.base.BaseMvpPresenter;
 import com.link.feeling.framework.base.BaseMvpView;

@@ -20,7 +20,7 @@ public final class RankPresenter extends BasePresenter<RankContract.View> implem
     public void interval() {
         // 注册监听
         Disposable disposable = Flowable
-                .interval(0, 5, TimeUnit.MINUTES)
+                .interval(5, 5, TimeUnit.MINUTES)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(RankContract.View::live));

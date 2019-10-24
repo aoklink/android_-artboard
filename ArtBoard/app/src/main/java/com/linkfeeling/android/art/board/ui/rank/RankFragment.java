@@ -20,7 +20,7 @@ import com.link.feeling.framework.widgets.NumParseUtil;
 import com.link.feeling.mvp.common.MvpPresenter;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.constants.ImageConstants;
-import com.linkfeeling.android.art.board.constants.StringConstants;
+import com.link.feeling.framework.StringConstants;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
 
 import org.jetbrains.annotations.NotNull;

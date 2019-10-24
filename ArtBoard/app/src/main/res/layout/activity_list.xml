@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/icon_bg"
+    tools:context="com.linkfeeling.android.art.board.ui.list.ListActivity">
+
+
+    <ImageView
+        android:id="@+id/item_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/list_bg"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusDown="@id/item_xixi"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:src="@mipmap/icon_gym_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+
+    <ImageView
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:id="@+id/item_xixi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/list_bg"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusUp="@id/item_link"
+        android:nextFocusDown="@id/item_ruili"
+        android:src="@mipmap/gym_logo_xixi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_link"
+        tools:ignore="ContentDescription" />
+
+
+    <ImageView
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:id="@+id/item_ruili"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/list_bg"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusUp="@id/item_xixi"
+        android:nextFocusDown="@id/item_gaote"
+        android:src="@mipmap/gym_logo_ruili"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_xixi"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:id="@+id/item_gaote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/list_bg"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusUp="@id/item_ruili"
+        android:nextFocusDown="@id/item_link"
+        android:src="@mipmap/gym_logo_gaote"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_ruili"
+        tools:ignore="ContentDescription" />
+
+
+    <!--<ImageView-->
+    <!--android:id="@+id/item_yirendao"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="25dp"-->
+    <!--android:src="@mipmap/gym_logo_gaote"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/item_ruili"-->
+    <!--tools:ignore="ContentDescription" />-->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
