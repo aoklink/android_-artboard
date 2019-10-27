@@ -4,7 +4,7 @@ apply plugin: 'bugly'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.linkfeeling.android.art.board"
+        applicationId "com.linkfeeling.android.art.board.bicycle"
         multiDexEnabled true
         ndk {
             // 设置支持的SO库架构

@@ -1,8 +1,6 @@
 package com.linkfeeling.android.art.board.ui;
 
 import android.animation.AnimatorInflater;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
@@ -12,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.link.feeling.framework.base.BaseViewHolder;
@@ -60,6 +58,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private SparseArray<HomeRemoteModule> mSparseArray;
     private SparseArray<HomeRemoteModule> mSparseArray1;
+    private SparseArray<HomeRemoteModule> mSparseArray2;
 
     private int DP10 = (int) DisplayUtils.dp2px(10);
     private int DP15 = (int) DisplayUtils.dp2px(15);
@@ -88,6 +87,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mOfflineAnimation = AnimationUtils.loadAnimation(mContext, R.anim.fade_in_out);
         mSparseArray = new SparseArray<>();
         mSparseArray1 = new SparseArray<>();
+        mSparseArray2 = new SparseArray<>();
     }
 
     void setModules(List<HomeRemoteModule> mModules) {
@@ -231,7 +231,6 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 break;
         }
 
-        mHolder.mLlRoot.setBackground(mModule.isRatio_warn() ? DisplayUtils.getDrawable(R.drawable.warn_bg) : null);
         mHolder.mIvWarn.setVisibility(mModule.isRatio_warn() ? View.VISIBLE : View.GONE);
         mHolder.mTvBpm.setTextColor(mModule.isRatio_warn() ? mWarnColor : mNormalColor);
         mHolder.mTvBpmHolder.setTextColor(mModule.isRatio_warn() ? mWarnColor : mNormalColor);
@@ -240,26 +239,16 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mHolder.mTvBpm2.setTextColor(mModule.isRatio_warn() ? mWarnColor : mNormalColor);
         mHolder.mTvBpm2Holder.setTextColor(mModule.isRatio_warn() ? mWarnColor : mNormalColor);
         ViewUtils.setDrawableLeft(mHolder.mTvBpm2, mModule.isRatio_warn() ? R.drawable.icon_warn_bpm : R.drawable.icon_bpm);
+        mHolder.mWarnLayout.setVisibility(mModule.isRatio_warn() ? View.VISIBLE : View.GONE);
 
         if (!mModule.isStatus()) {
-            if (mSparseArray.get(position) != null) {
-                return;
-            } else {
-                mModule.setAnimator(ObjectAnimator.ofFloat(mHolder.itemView, "alpha", 0.8f, 0.1f, 0.8f));
+            if (mSparseArray.get(position) == null) {
+                mModule.setAnimator1(AnimatorInflater.loadAnimator(mContext, R.animator.off_line_tip));
+                mSparseArray.put(position, mModule);
+                mModule.getAnimator().setTarget(mHolder.itemView);
+                mModule.getAnimator().start();
             }
-            mModule.getAnimator().setDuration(1000);
-            mModule.getAnimator().setRepeatMode(ValueAnimator.INFINITE);
-            mModule.getAnimator().setRepeatCount(Integer.MAX_VALUE);
-            mSparseArray.put(position, mModule);
-            mModule.getAnimator().addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    if (mSparseArray.get(position) != null) {
-                        mSparseArray.get(position).setAlpha((Float) animation.getAnimatedValue());
-                    }
-                }
-            });
-            mModule.getAnimator().start();
+            return;
         } else {
             if (mSparseArray.get(position) != null) {
                 mSparseArray.get(position).getAnimator().cancel();
@@ -269,18 +258,26 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         if (mModule.isRatio_warn()) {
-            if (mSparseArray1.get(position) != null) {
-                return;
-            } else {
-                mModule.setAnimator1(AnimatorInflater.loadAnimator(mContext,R.animator.heart_rate));
+            if (mSparseArray1.get(position) == null) {
+                mModule.setAnimator1(AnimatorInflater.loadAnimator(mContext, R.animator.heart_rate));
+                mSparseArray1.put(position, mModule);
+                mModule.getAnimator1().setTarget(mHolder.mTvBpm);
+                mModule.getAnimator1().start();
             }
-            mSparseArray1.put(position, mModule);
-            mModule.getAnimator1().setTarget(mHolder.mTvBpm);
-            mModule.getAnimator1().start();
+            if (mSparseArray2.get(position) == null) {
+                mModule.setAnimator2(AnimatorInflater.loadAnimator(mContext, R.animator.warn_tip));
+                mSparseArray2.put(position, mModule);
+                mModule.getAnimator2().setTarget(mHolder.mWarnLayout);
+                mModule.getAnimator2().start();
+            }
         } else {
             if (mSparseArray1.get(position) != null) {
                 mSparseArray1.get(position).getAnimator1().cancel();
                 mSparseArray1.remove(position);
+            }
+            if (mSparseArray2.get(position) != null) {
+                mSparseArray2.get(position).getAnimator1().cancel();
+                mSparseArray2.remove(position);
             }
         }
     }
@@ -315,7 +312,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @BindView(R.id.item1_bpm_holder)
         TextView mTvBpmHolder;
         @BindView(R.id.item1_root)
-        LinearLayout mLlRoot;
+        FrameLayout mLlRoot;
 
         @BindView(R.id.item1_top_layout)
         ConstraintLayout mClTop;
@@ -335,6 +332,8 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         @BindView(R.id.item1_warn)
         ImageView mIvWarn;
+        @BindView(R.id.iv_warn)
+        ImageView mWarnLayout;
 
         HomeHolder(View itemView) {
             super(itemView);

@@ -47,6 +47,15 @@ public final class HomeRemoteModule {
     private float alpha = 0.8f;
     private Animator animator;
     private Animator animator1;
+    private Animator animator2;
+
+    public Animator getAnimator2() {
+        return animator2;
+    }
+
+    public void setAnimator2(Animator animator2) {
+        this.animator2 = animator2;
+    }
 
     public Animator getAnimator1() {
         return animator1;
