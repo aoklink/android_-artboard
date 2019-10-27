@@ -19,8 +19,6 @@ import butterknife.OnClick;
 
 public class ListActivity extends FrameworkBaseActivity {
 
-    @BindView(R.id.item_link)
-    ImageView mIvLink;
     @BindView(R.id.item_xixi)
     ImageView mIvXiXi;
     @BindView(R.id.item_ruili)
@@ -36,7 +34,7 @@ public class ListActivity extends FrameworkBaseActivity {
 
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
-        mIvLink.requestFocus();
+        mIvXiXi.requestFocus();
     }
 
     @NotNull
@@ -46,15 +44,13 @@ public class ListActivity extends FrameworkBaseActivity {
     }
 
 
-    @OnClick({R.id.item_link, R.id.item_xixi, R.id.item_ruili, R.id.item_gaote, R.id.item_yirendao})
+    @OnClick({R.id.item_xixi, R.id.item_ruili, R.id.item_gaote})
     public void onViewClick(View v) {
         if (ViewUtils.isQuickClick()) {
             return;
         }
         switch (v.getId()) {
-            case R.id.item_link:
-                RankActivity.launch(this, 0);
-                return;
+
             case R.id.item_xixi:
                 RankActivity.launch(this, 1);
                 return;
@@ -64,9 +60,7 @@ public class ListActivity extends FrameworkBaseActivity {
             case R.id.item_gaote:
                 RankActivity.launch(this, 3);
                 return;
-            case R.id.item_yirendao:
-                RankActivity.launch(this, 4);
-                return;
+
         }
     }
 }
