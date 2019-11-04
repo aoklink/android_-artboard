@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
 import com.link.feeling.framework.bean.MqttRequest;
 import com.link.feeling.framework.component.mqtt.MqttManager;
+import com.link.feeling.framework.utils.ThreadUtils;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.DisplayUtils;
 import com.link.feeling.framework.utils.data.L;
@@ -27,6 +28,7 @@ import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 import com.linkfeeling.android.art.board.data.bean.RemoveRemoteModule;
 import com.linkfeeling.android.art.board.utils.DateUtils;
+import com.linkfeeling.android.art.board.widget.Base64Utils;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -169,10 +171,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         if (ViewUtils.isQuickClick()) {
             return;
         }
-        switch (v.getId()) {
-            case R.id.rk_real:
-                finish();
-                break;
+        if (v.getId() == R.id.rk_real) {
+            finish();
         }
     }
 
@@ -194,6 +194,9 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         if (isFinishing()) {
             if (mTimer != null) {
                 mTimer.cancel();
+            }
+            if (mMqttManager != null) {
+                mMqttManager.destroy();
             }
         }
     }
@@ -229,7 +232,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         int type = object.getIntValue("type");
         switch (type) {
             case 201:
-                notifyBpmOrKcChanged(JSON.parseObject(body, HeartRemoteModule.class));
+                ThreadUtils.execute(() -> notifyBpmOrKcChanged(JSON.parseObject(body, HeartRemoteModule.class)));
+
                 L.e("HomeActivity201", "messageArrived:" + body);
                 break;
             case 202:
@@ -306,11 +310,15 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         }
         for (HomeRemoteModule item : mModules) {
             if (item.getUid().equals(module.getUid())) {
-                item.setCalorie(module.getCalorie());
-                item.setHeart_rate(module.getHeart_rate());
-                item.setRatio(module.getRatio());
-                item.setStatus(true);
-                mAdapter.notifyItemChanged(mModules.indexOf(item));
+                if ((!item.getHeart_rate().equals(module.getHeart_rate()) || !item.getCalorie().equals(module.getCalorie())) && System.currentTimeMillis() - item.getMillis() > 666) {
+                   L.e("mills"+ Base64Utils.URLDecoder(item.getUser_name()),(System.currentTimeMillis() - item.getMillis())+"");
+                    item.setMillis(System.currentTimeMillis());
+                    item.setCalorie(module.getCalorie());
+                    item.setHeart_rate(module.getHeart_rate());
+                    item.setRatio(module.getRatio());
+                    item.setStatus(true);
+                    ThreadUtils.runOnMainThread(() -> mAdapter.notifyItemChanged(mModules.indexOf(item)));
+                }
             }
         }
     }

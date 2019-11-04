@@ -261,4 +261,14 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         Intent intent = new Intent(context, RankActivity.class);
         context.startActivity(intent);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isFinishing()){
+            if (mMqttManager!=null) {
+                mMqttManager.destroy();
+            }
+        }
+    }
 }

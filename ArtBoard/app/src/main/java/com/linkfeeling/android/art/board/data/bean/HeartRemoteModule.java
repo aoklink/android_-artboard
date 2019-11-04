@@ -19,6 +19,7 @@ public final class HeartRemoteModule {
     private String calorie;
     private int ratio;
 
+
     public int getRatio() {
         return ratio;
     }

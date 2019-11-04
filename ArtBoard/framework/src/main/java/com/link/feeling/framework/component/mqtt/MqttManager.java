@@ -111,6 +111,18 @@ public final class MqttManager {
         } catch (MqttException e) {
             L.e(TAG, "publish:exception", e);
         }
+
+    }
+
+
+    public void destroy() {
+        try {
+            mqttAndroidClient.unsubscribe(KeysConstants.TOPIC);
+            mqttAndroidClient.disconnect();
+//            mqttAndroidClient.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

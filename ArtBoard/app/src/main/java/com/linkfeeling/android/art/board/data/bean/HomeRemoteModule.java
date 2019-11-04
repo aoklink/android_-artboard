@@ -44,7 +44,15 @@ public final class HomeRemoteModule {
 
     private float alpha = 0.8f;
     private Animator animator;
+    private long millis;
 
+    public long getMillis() {
+        return millis;
+    }
+
+    public void setMillis(long millis) {
+        this.millis = millis;
+    }
 
     public int getType() {
         return type;
