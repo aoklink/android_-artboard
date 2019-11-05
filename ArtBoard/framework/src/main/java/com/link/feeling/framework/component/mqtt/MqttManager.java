@@ -71,7 +71,7 @@ public final class MqttManager {
 
     public void subscribeToTopic() {
         try {
-            final String topicFilter[] = {KeysConstants.TOPIC};
+            final String[] topicFilter = {KeysConstants.TOPIC};
             final int[] qos = {1};
             mqttAndroidClient.subscribe(topicFilter, qos, null, new IMqttActionListener() {
                 @Override
