@@ -1,7 +1,6 @@
 package com.linkfeeling.android.art.board.data.bean;
 
 import android.animation.Animator;
-import android.animation.ObjectAnimator;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.linkfeeling.android.art.board.widget.Base64Utils;
@@ -39,12 +38,20 @@ public final class HomeRemoteModule {
     private int ratio;
     @JSONField(name = "status")
     private boolean status;
+    @JSONField(name = "ratio_warn")
+    private boolean ratio_warn;
 
     private int type;
 
     private float alpha = 0.8f;
     private Animator animator;
     private long millis;
+    private Animator animator1;
+    private Animator animator2;
+
+    public Animator getAnimator2() {
+        return animator2;
+    }
 
     public long getMillis() {
         return millis;
@@ -52,6 +59,25 @@ public final class HomeRemoteModule {
 
     public void setMillis(long millis) {
         this.millis = millis;
+    }
+    public void setAnimator2(Animator animator2) {
+        this.animator2 = animator2;
+    }
+
+    public Animator getAnimator1() {
+        return animator1;
+    }
+
+    public void setAnimator1(Animator animator1) {
+        this.animator1 = animator1;
+    }
+
+    public boolean isRatio_warn() {
+        return ratio_warn;
+    }
+
+    public void setRatio_warn(boolean ratio_warn) {
+        this.ratio_warn = ratio_warn;
     }
 
     public int getType() {
@@ -70,8 +96,8 @@ public final class HomeRemoteModule {
         this.alpha = alpha;
     }
 
-    public ObjectAnimator getAnimator() {
-        return (ObjectAnimator) animator;
+    public Animator getAnimator() {
+        return animator;
     }
 
     public void setAnimator(Animator animator) {
