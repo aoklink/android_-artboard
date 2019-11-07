@@ -28,7 +28,6 @@ import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 import com.linkfeeling.android.art.board.data.bean.RemoveRemoteModule;
 import com.linkfeeling.android.art.board.utils.DateUtils;
-import com.linkfeeling.android.art.board.widget.Base64Utils;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -233,7 +232,6 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         switch (type) {
             case 201:
                 ThreadUtils.execute(() -> notifyBpmOrKcChanged(JSON.parseObject(body, HeartRemoteModule.class)));
-
                 L.e("HomeActivity201", "messageArrived:" + body);
                 break;
             case 202:
@@ -260,12 +258,21 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         if (module == null || CollectionsUtil.isEmpty(module.getData())) {
             return;
         }
-        mModules.clear();
-        mModules.addAll(module.getData());
-        initCache();
-        initSpan();
-        mAdapter.setModules(mModules);
-        initPeopleCount();
+        if (CollectionsUtil.isEmpty(mModules)) {
+            mModules.clear();
+            mModules.addAll(module.getData());
+            initCache();
+            initSpan();
+            mAdapter.setModules(mModules);
+            initPeopleCount();
+        }else{
+            mModules.clear();
+            mModules.addAll(module.getData());
+            initCache();
+            initSpan();
+            mAdapter.notifyItemRangeChanged(0,CollectionsUtil.size(mModules));
+            initPeopleCount();
+        }
     }
 
     private void initCache() {
@@ -311,7 +318,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         for (HomeRemoteModule item : mModules) {
             if (item.getUid().equals(module.getUid())) {
                 if ((!item.getHeart_rate().equals(module.getHeart_rate()) || !item.getCalorie().equals(module.getCalorie())) && System.currentTimeMillis() - item.getMillis() > 666) {
-                   L.e("mills"+ Base64Utils.URLDecoder(item.getUser_name()),(System.currentTimeMillis() - item.getMillis())+"");
+//                   L.e("mills"+ Base64Utils.URLDecoder(item.getUser_name()),(System.currentTimeMillis() - item.getMillis())+"");
                     item.setMillis(System.currentTimeMillis());
                     item.setCalorie(module.getCalorie());
                     item.setHeart_rate(module.getHeart_rate());
@@ -331,7 +338,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             mModules.add(module);
             initCache();
             initSpan();
-            mAdapter.setModules(mModules);
+            mAdapter.notifyItemInserted(CollectionsUtil.size(mModules)-1);
             initPeopleCount();
         }
     }
@@ -351,9 +358,10 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         }
         for (HomeRemoteModule item : mModules) {
             if (item.getUid().equals(module.getUid())) {
+                int index = mModules.indexOf(item);
                 mModules.remove(item);
                 initSpan();
-                mAdapter.setModules(mModules);
+                mAdapter.notifyItemRemoved(index);
                 initPeopleCount();
             }
         }

@@ -7,12 +7,11 @@
     <string name="bpm">bpm</string>
     <string name="kcal">kcal</string>
     <string name="calorie">千卡</string>
-    <string name="loading_tip">正在加载...</string>
+    <string name="loading_tip">正在加载…</string>
     <string name="loading_error_tip">加载失败,请点击重试</string>
     <string name="percent">%1$s-%</string>
     <string name="use">消耗</string>
     <string name="week">本周累计消耗热量</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

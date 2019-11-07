@@ -18,7 +18,7 @@ public final class HomePresenter extends BasePresenter<HomeContract.View> implem
     public void interval() {
         // 注册监听
         Disposable mDisposable = Flowable
-                .interval(1, 1, TimeUnit.MINUTES)
+                .interval(2*60, 2*60, TimeUnit.SECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(HomeContract.View::loading));

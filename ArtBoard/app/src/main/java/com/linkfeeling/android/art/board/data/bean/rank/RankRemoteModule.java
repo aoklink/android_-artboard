@@ -1,5 +1,8 @@
 package com.linkfeeling.android.art.board.data.bean.rank;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.link.feeling.framework.KeysConstants;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.StringUtils;
@@ -12,7 +15,7 @@ import java.util.List;
  * chenpan pan.chen@linkfeeling.cn
  */
 @SuppressWarnings("unused")
-public final class RankRemoteModule {
+public final class RankRemoteModule implements Parcelable {
 
 
     /**
@@ -28,97 +31,42 @@ public final class RankRemoteModule {
      * single_max_capacity : [{"user_name":"","head_icon":"","uid":"","value":200}]
      */
 
-    private int type;
-    private List<RankRemoteItem> calorie;
-    private List<RankRemoteItem> day;
-    private List<RankRemoteItem> duration;
-    private List<RankRemoteItem> pbj_distance;
-    private List<RankRemoteItem> dc_distance;
-    private List<RankRemoteItem> tyj_distance;
-    private List<RankRemoteItem> hdj_max_weight;
-    private List<RankRemoteItem> total_capacity;
-    private List<RankRemoteItem> single_max_capacity;
+    private int id;
+    private String img;
+    private String unit;
+    private List<RankRemoteItem> data;
 
-    public int getType() {
-        return type;
+    public String getUnit() {
+        return unit == null ? "" : unit;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
-    public List<RankRemoteItem> getCalorie() {
-        return initRanks(calorie);
+    public int getId() {
+        return id;
     }
 
-    public void setCalorie(List<RankRemoteItem> calorie) {
-        this.calorie = calorie;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public List<RankRemoteItem> getDay() {
-        return initRanks(day);
+    public String getImg() {
+        return img == null ? "" : img;
     }
 
-    public void setDay(List<RankRemoteItem> day) {
-        this.day = day;
+    public void setImg(String img) {
+        this.img = img;
     }
 
-    public List<RankRemoteItem> getDuration() {
-        return initRanks(duration);
+    public List<RankRemoteItem> getData() {
+        return initRanks(data);
     }
 
-    public void setDuration(List<RankRemoteItem> duration) {
-        this.duration = duration;
+    public void setData(List<RankRemoteItem> data) {
+        this.data = data;
     }
-
-    public List<RankRemoteItem> getPbj_distance() {
-        return initRanks(pbj_distance);
-    }
-
-    public void setPbj_distance(List<RankRemoteItem> pbj_distance) {
-        this.pbj_distance = pbj_distance;
-    }
-
-    public List<RankRemoteItem> getDc_distance() {
-        return initRanks(dc_distance);
-    }
-
-    public void setDc_distance(List<RankRemoteItem> dc_distance) {
-        this.dc_distance = dc_distance;
-    }
-
-    public List<RankRemoteItem> getTyj_distance() {
-        return initRanks(tyj_distance);
-    }
-
-    public void setTyj_distance(List<RankRemoteItem> tyj_distance) {
-        this.tyj_distance = tyj_distance;
-    }
-
-    public List<RankRemoteItem> getHdj_max_weight() {
-        return initRanks(hdj_max_weight);
-    }
-
-    public void setHdj_max_weight(List<RankRemoteItem> hdj_max_weight) {
-        this.hdj_max_weight = hdj_max_weight;
-    }
-
-    public List<RankRemoteItem> getTotal_capacity() {
-        return initRanks(total_capacity);
-    }
-
-    public void setTotal_capacity(List<RankRemoteItem> total_capacity) {
-        this.total_capacity = total_capacity;
-    }
-
-    public List<RankRemoteItem> getSingle_max_capacity() {
-        return initRanks(single_max_capacity);
-    }
-
-    public void setSingle_max_capacity(List<RankRemoteItem> single_max_capacity) {
-        this.single_max_capacity = single_max_capacity;
-    }
-
 
     private List<RankRemoteItem> initRanks(List<RankRemoteItem> items) {
         if (CollectionsUtil.isEmpty(items)) {
@@ -147,4 +95,38 @@ public final class RankRemoteModule {
         }
         return index <= 5;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.img);
+        dest.writeTypedList(this.data);
+    }
+
+    public RankRemoteModule() {
+    }
+
+    protected RankRemoteModule(Parcel in) {
+        this.id = in.readInt();
+        this.img = in.readString();
+        this.data = in.createTypedArrayList(RankRemoteItem.CREATOR);
+    }
+
+    public static final Parcelable.Creator<RankRemoteModule> CREATOR = new Parcelable.Creator<RankRemoteModule>() {
+        @Override
+        public RankRemoteModule createFromParcel(Parcel source) {
+            return new RankRemoteModule(source);
+        }
+
+        @Override
+        public RankRemoteModule[] newArray(int size) {
+            return new RankRemoteModule[size];
+        }
+    };
 }

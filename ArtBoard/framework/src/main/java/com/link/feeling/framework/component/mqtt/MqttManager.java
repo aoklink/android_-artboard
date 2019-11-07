@@ -42,6 +42,7 @@ public final class MqttManager {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setConnectionTimeout(10);
         mqttConnectOptions.setKeepAliveInterval(15);
+        mqttConnectOptions.setMaxInflight(1000);
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(true);
         try {
@@ -108,7 +109,7 @@ public final class MqttManager {
                     L.e(TAG, "publish:failed:" + msg);
                 }
             });
-        } catch (MqttException e) {
+        } catch (Exception e) {
             L.e(TAG, "publish:exception", e);
         }
 

@@ -6,15 +6,15 @@
         android:propertyName="scaleX"
         android:repeatCount="-1"
         android:repeatMode="reverse"
-        android:valueFrom="1.2"
-        android:valueTo="0.8"
+        android:valueFrom="1.1"
+        android:valueTo="0.7"
         android:valueType="floatType" />
     <objectAnimator
         android:duration="500"
         android:propertyName="scaleY"
         android:repeatCount="-1"
         android:repeatMode="reverse"
-        android:valueFrom="1.2"
-        android:valueTo="0.8"
+        android:valueFrom="1.1"
+        android:valueTo="0.7"
         android:valueType="floatType" />
 </set>
