@@ -6,13 +6,13 @@ import com.link.feeling.framework.base.BaseApplication;
 import com.link.feeling.framework.bean.MqttRequest;
 import com.link.feeling.framework.utils.data.DeviceUtils;
 import com.link.feeling.framework.utils.data.L;
+import com.link.feeling.framework.utils.data.StringUtils;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 /**
@@ -32,7 +32,7 @@ public final class MqttManager {
         return new MqttManager();
     }
 
-    public void connect(MqttCallbackExtended callback ,int type) {
+    public void connect(MqttCallbackExtended callback, int type) {
         mType = type;
         if (mqttAndroidClient == null) {
             mqttAndroidClient = new MqttAndroidClient(BaseApplication.getAppContext(), KeysConstants.SERVER_URL, KeysConstants.GID + DeviceUtils.getMac());
@@ -65,7 +65,7 @@ public final class MqttManager {
                     L.e(TAG, "connect:onFailure", exception);
                 }
             });
-        } catch (MqttException e) {
+        } catch (Exception e) {
             L.e(TAG, "connect:exception", e);
         }
     }
@@ -87,13 +87,16 @@ public final class MqttManager {
                 }
             });
 
-        } catch (MqttException ex) {
+        } catch (Exception ex) {
             L.e(TAG, "subscribe:exception", ex);
         }
     }
 
 
     public void publishMessage(String json) {
+        if (StringUtils.isJsonEmpty(json)) {
+            return;
+        }
         try {
             MqttMessage message = new MqttMessage();
             final String msg = json;

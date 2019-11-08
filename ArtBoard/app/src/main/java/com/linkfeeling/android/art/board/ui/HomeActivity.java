@@ -30,12 +30,14 @@ import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 import com.linkfeeling.android.art.board.data.bean.RemoveRemoteModule;
 import com.linkfeeling.android.art.board.utils.DateUtils;
+import com.linkfeeling.android.art.board.widget.WrapGridLayoutManager;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -118,7 +120,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
                 if (mCurrentPage > mTotalPage) {
                     mCurrentPage = 0;
                 }
-                long duration = CollectionsUtil.size(mTempModules)*100L;
+                long duration = CollectionsUtil.size(mTempModules) * 100L;
                 if (mCurrentPage < mTotalPage) {
                     postDelay(() -> {
                         mTempModules.clear();
@@ -162,7 +164,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         mAdapter = new HomeAdapter(this);
         mAdapter.setRecyclerViewHeight(DisplayUtils.getScreenHeight() - DisplayUtils.dp2px(100));
         mAdapter.setRecyclerViewWidth((float) (DisplayUtils.getScreenWidth() * 0.8 - DisplayUtils.dp2px(80)));
-        mGridManager = new GridLayoutManager(this, 2);
+        mGridManager = new WrapGridLayoutManager(this, 2);
         mRvBoard.setLayoutManager(mGridManager);
         mRvBoard.setAdapter(mAdapter);
         ((SimpleItemAnimator) Objects.requireNonNull(mRvBoard.getItemAnimator())).setSupportsChangeAnimations(false);
@@ -232,9 +234,9 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
                 mTimer.cancel();
                 mTimer = null;
             }
-            if (mMqttManager != null) {
-                mMqttManager.destroy();
-            }
+//            if (mMqttManager != null) {
+//                mMqttManager.destroy();
+//            }
         }
     }
 
@@ -245,7 +247,6 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
-        getPresenter().interval();
         if (reconnect) {
             mMqttManager.subscribeToTopic();
         }
@@ -351,7 +352,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             }, 10000);
         } else {
             if (mTimer != null) {
-                mCurrentPage = 1;
+                mCurrentPage = 0;
                 mTimer.cancel();
                 mTimer = null;
             }
@@ -395,18 +396,19 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         }
     }
 
+    // 添加
     private void notifyInsertChanged(HomeRemoteModule module) {
         if (module == null) {
             return;
         }
-        if (CollectionsUtil.isEmpty(mTempModules) || !isContain(module)) {
+        if (!isContain(module)) {
             mModules.add(module);
             initCache();
             initSpan();
             initPeopleCount();
             if (CollectionsUtil.size(mTempModules) < 8) {
                 mTempModules.add(module);
-                mAdapter.notifyItemInserted(CollectionsUtil.size(mModules) - 1);
+                mAdapter.notifyItemRangeChanged(0, CollectionsUtil.size(mModules) - 1);
             }
         }
     }
@@ -420,15 +422,16 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         return false;
     }
 
+    // 删除
     private void notifyRemoveChanged(RemoveRemoteModule module) {
-        if (CollectionsUtil.isEmpty(mTempModules) || module == null || !isContain(module)) {
+        if (CollectionsUtil.isEmpty(mModules) || CollectionsUtil.isEmpty(mTempModules) || module == null || !isContain(module)) {
             return;
         }
-
-        for (HomeRemoteModule item : mModules) {
+        Iterator<HomeRemoteModule> iterator = mModules.iterator();
+        while (iterator.hasNext()) {
+            HomeRemoteModule item = iterator.next();
             if (item.getUid().equals(module.getUid())) {
                 mModules.remove(item);
-                initSpan();
                 initPeopleCount();
             }
         }
@@ -442,6 +445,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
                 mTempModules.addAll(mModules.subList(mCurrentPage * 8, CollectionsUtil.size(mModules)));
             }
         }
+        initSpan();
         mAdapter.notifyItemRangeChanged(0, CollectionsUtil.size(mTempModules));
     }
 

@@ -237,6 +237,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
             return;
         } else {
+            module.getAnimatorOffline().setTarget(null);
             module.getAnimatorOffline().cancel();
         }
 
@@ -251,6 +252,8 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 module.getAnimatorWarn().start();
             }
         } else {
+            module.getAnimatorBpm().setTarget(null);
+            module.getAnimatorWarn().setTarget(null);
             module.getAnimatorBpm().cancel();
             module.getAnimatorWarn().cancel();
         }

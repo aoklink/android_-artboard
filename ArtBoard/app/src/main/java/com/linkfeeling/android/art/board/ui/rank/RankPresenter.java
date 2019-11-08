@@ -15,36 +15,53 @@ import io.reactivex.disposables.Disposable;
 public final class RankPresenter extends BasePresenter<RankContract.View> implements RankContract.Presenter {
 
     private Disposable mDisposable1;
+    private Disposable mDisposable;
+
+
+    private Disposable mDisposableTimer;
+    private Disposable mDisposablePage;
+
 
     @Override
     public void interval() {
-        // 注册监听
-        Disposable disposable = Flowable
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+            mDisposable = null;
+        }
+        mDisposable = Flowable
                 .interval(0, 5, TimeUnit.MINUTES)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(RankContract.View::live));
-        addDisposable(disposable);
+        addDisposable(mDisposable);
     }
 
     @Override
     public void count() {
-        Disposable disposable = Flowable
+        if (mDisposableTimer != null && !mDisposableTimer.isDisposed()) {
+            mDisposableTimer.dispose();
+            mDisposableTimer = null;
+        }
+        mDisposableTimer = Flowable
                 .interval(0, 1, TimeUnit.SECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(RankContract.View::timer));
-        addDisposable(disposable);
+        addDisposable(mDisposableTimer);
     }
 
     @Override
     public void countPage() {
-        Disposable disposable = Flowable
+        if (mDisposablePage != null && !mDisposablePage.isDisposed()) {
+            mDisposablePage.dispose();
+            mDisposablePage = null;
+        }
+        mDisposablePage = Flowable
                 .interval(60, 60, TimeUnit.SECONDS)
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> onceViewAttached(RankContract.View::scrollPage));
-        addDisposable(disposable);
+        addDisposable(mDisposablePage);
     }
 
     @Override

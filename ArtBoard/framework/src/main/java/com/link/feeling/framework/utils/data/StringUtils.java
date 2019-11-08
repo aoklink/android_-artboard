@@ -26,6 +26,16 @@ public final class StringUtils {
     }
 
     /**
+     * 为空
+     *
+     * @param s
+     * @return
+     */
+    public static boolean isJsonEmpty(String s) {
+        return s == null || s.length() == 0 || s.equals("null") || s.equals("{}");
+    }
+
+    /**
      * 不为空
      *
      * @param s
