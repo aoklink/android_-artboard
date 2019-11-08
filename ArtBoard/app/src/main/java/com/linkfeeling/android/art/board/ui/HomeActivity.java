@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -68,14 +70,15 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private HomeAdapter mAdapter;
     private GridLayoutManager mGridManager;
     private String mCurrentCount = "";
-
     private int mTotalPage;
-    private int mCurrentPage = 1;
-    private String mTempCount = "0";
+    private int mCurrentPage = 0;
+
     private CountDownTimer mTimer;
     private MqttManager mMqttManager;
     private List<HomeRemoteModule> mModules;
-    private int mTempSize;
+    private List<HomeRemoteModule> mTempModules;
+    private LayoutAnimationController mControllerIn;
+    private LayoutAnimationController mControllerOut;
 
     @Override
     protected int getLayoutRes() {
@@ -84,9 +87,11 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
 
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
+        mControllerIn = AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_in_holder);
+        mControllerOut = AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_out_holder);
         initRecyclerView();
-        initTimerTask();
         mModules = new ArrayList<>();
+        mTempModules = new ArrayList<>();
         mMqttManager = MqttManager.newInstance();
         mMqttManager.connect(this, 100);
         getPresenter().interval();
@@ -97,20 +102,41 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private void initTimerTask() {
         if (mTimer != null) {
             mTimer.cancel();
+            mTimer = null;
         }
         mTimer = new CountDownTimer(Long.MAX_VALUE, 10000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if (mTotalPage <= 1) {
-                    smoothScrollToPosition(0);
+                if (mTotalPage < 1) {
+                    mTimer.cancel();
+                    mTimer = null;
                     return;
                 }
+                mRvBoard.setLayoutAnimation(mControllerOut);
+                mAdapter.setModules(mTempModules);
+                mCurrentPage++;
+                if (mCurrentPage > mTotalPage) {
+                    mCurrentPage = 0;
+                }
+                long duration = CollectionsUtil.size(mTempModules)*100L;
                 if (mCurrentPage < mTotalPage) {
-                    smoothScrollToPosition(mCurrentPage * 8);
-                    mCurrentPage++;
-                } else {
-                    smoothScrollToPosition(0);
-                    mCurrentPage = 1;
+                    postDelay(() -> {
+                        mTempModules.clear();
+                        mTempModules.addAll(mModules.subList(mCurrentPage * 8, mCurrentPage * 8 + 8));
+                        cancelAnimator();
+                        mRvBoard.setLayoutAnimation(mControllerIn);
+                        mAdapter.setModules(mTempModules);
+                    }, duration);
+                    return;
+                }
+                if (mCurrentPage == mTotalPage) {
+                    postDelay(() -> {
+                        mTempModules.clear();
+                        mTempModules.addAll(mModules.subList(mCurrentPage * 8, CollectionsUtil.size(mModules)));
+                        cancelAnimator();
+                        mRvBoard.setLayoutAnimation(mControllerIn);
+                        mAdapter.setModules(mTempModules);
+                    }, duration);
                 }
             }
 
@@ -120,6 +146,16 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             }
         };
         mTimer.start();
+    }
+
+    private void cancelAnimator() {
+        if (CollectionsUtil.isNotEmpty(mTempModules)) {
+            for (HomeRemoteModule module : mTempModules) {
+                module.getAnimatorOffline().cancel();
+                module.getAnimatorBpm().cancel();
+                module.getAnimatorWarn().cancel();
+            }
+        }
     }
 
     private void initRecyclerView() {
@@ -184,6 +220,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         super.onDetachedFromWindow();
         if (mTimer != null) {
             mTimer.cancel();
+            mTimer = null;
         }
     }
 
@@ -193,16 +230,11 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         if (isFinishing()) {
             if (mTimer != null) {
                 mTimer.cancel();
+                mTimer = null;
             }
             if (mMqttManager != null) {
                 mMqttManager.destroy();
             }
-        }
-    }
-
-    private void smoothScrollToPosition(int position) {
-        if (mRvBoard != null) {
-            mRvBoard.smoothScrollToPosition(position);
         }
     }
 
@@ -263,21 +295,41 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             mModules.addAll(module.getData());
             initCache();
             initSpan();
-            mAdapter.setModules(mModules);
             initPeopleCount();
-        }else{
+            mTempModules.clear();
+            if (mTotalPage < 1) {
+                mTempModules.addAll(mModules);
+            } else {
+                if (mCurrentPage < mTotalPage) {
+                    mTempModules.addAll(mModules.subList(mCurrentPage * 8, mCurrentPage * 8 + 8));
+                } else {
+                    mTempModules.addAll(mModules.subList(mCurrentPage * 8, CollectionsUtil.size(mModules)));
+                }
+            }
+            mAdapter.setModules(mTempModules);
+        } else {
             mModules.clear();
             mModules.addAll(module.getData());
             initCache();
             initSpan();
-            mAdapter.notifyItemRangeChanged(0,CollectionsUtil.size(mModules));
             initPeopleCount();
+            mTempModules.clear();
+            if (mTotalPage < 1) {
+                mTempModules.addAll(mModules);
+            } else {
+                if (mCurrentPage < mTotalPage) {
+                    mTempModules.addAll(mModules.subList(mCurrentPage * 8, mCurrentPage * 8 + 8));
+                } else {
+                    mTempModules.addAll(mModules.subList(mCurrentPage * 8, CollectionsUtil.size(mModules)));
+                }
+            }
+            mAdapter.notifyItemRangeChanged(0, CollectionsUtil.size(mTempModules));
         }
     }
 
     private void initCache() {
         if (CollectionsUtil.size(mModules) > CollectionsUtil.size(HomeActivity.sOffsetCache)) {
-            mTempSize = CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache);
+            int mTempSize = CollectionsUtil.size(mModules) - CollectionsUtil.size(HomeActivity.sOffsetCache);
             for (int i = 0; i < mTempSize; i++) {
                 HomeActivity.sOffsetCache.add(new OffsetModule());
             }
@@ -285,15 +337,29 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     }
 
     private void initPeopleCount() {
-        mTempCount = String.valueOf(CollectionsUtil.size(mModules));
+        String mTempCount = String.valueOf(CollectionsUtil.size(mModules));
         if (!mCurrentCount.equals(mTempCount)) {
             mCurrentCount = mTempCount;
             mTsCount.setText(mCurrentCount);
         }
-        mTotalPage = (CollectionsUtil.size(mModules) / 8) + (CollectionsUtil.size(mModules) % 8 > 0 ? 1 : 0);
+        mTotalPage = (CollectionsUtil.size(mModules) / 8) + (CollectionsUtil.size(mModules) % 8 > 0 ? 1 : 0) - 1;
+        if (mTotalPage >= 1) {
+            postDelay(() -> {
+                if (mTimer == null) {
+                    initTimerTask();
+                }
+            }, 10000);
+        } else {
+            if (mTimer != null) {
+                mCurrentPage = 1;
+                mTimer.cancel();
+                mTimer = null;
+            }
+        }
     }
 
     private void initSpan() {
+        mAdapter.setSize(CollectionsUtil.size(mModules));
         switch (CollectionsUtil.size(mModules)) {
             case 1:
                 mGridManager.setSpanCount(1);
@@ -312,19 +378,18 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     }
 
     private void notifyBpmOrKcChanged(HeartRemoteModule module) {
-        if (CollectionsUtil.isEmpty(mModules) || module == null) {
+        if (CollectionsUtil.isEmpty(mTempModules) || module == null) {
             return;
         }
-        for (HomeRemoteModule item : mModules) {
+        for (HomeRemoteModule item : mTempModules) {
             if (item.getUid().equals(module.getUid())) {
                 if ((!item.getHeart_rate().equals(module.getHeart_rate()) || !item.getCalorie().equals(module.getCalorie())) && System.currentTimeMillis() - item.getMillis() > 666) {
-//                   L.e("mills"+ Base64Utils.URLDecoder(item.getUser_name()),(System.currentTimeMillis() - item.getMillis())+"");
                     item.setMillis(System.currentTimeMillis());
                     item.setCalorie(module.getCalorie());
                     item.setHeart_rate(module.getHeart_rate());
                     item.setRatio(module.getRatio());
                     item.setStatus(true);
-                    ThreadUtils.runOnMainThread(() -> mAdapter.notifyItemChanged(mModules.indexOf(item)));
+                    ThreadUtils.runOnMainThread(() -> mAdapter.notifyItemChanged(mTempModules.indexOf(item)));
                 }
             }
         }
@@ -334,12 +399,15 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
         if (module == null) {
             return;
         }
-        if (CollectionsUtil.isEmpty(mModules) || !isContain(module)) {
+        if (CollectionsUtil.isEmpty(mTempModules) || !isContain(module)) {
             mModules.add(module);
             initCache();
             initSpan();
-            mAdapter.notifyItemInserted(CollectionsUtil.size(mModules)-1);
             initPeopleCount();
+            if (CollectionsUtil.size(mTempModules) < 8) {
+                mTempModules.add(module);
+                mAdapter.notifyItemInserted(CollectionsUtil.size(mModules) - 1);
+            }
         }
     }
 
@@ -353,18 +421,36 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     }
 
     private void notifyRemoveChanged(RemoveRemoteModule module) {
-        if (CollectionsUtil.isEmpty(mModules) || module == null) {
+        if (CollectionsUtil.isEmpty(mTempModules) || module == null || !isContain(module)) {
             return;
         }
+
         for (HomeRemoteModule item : mModules) {
             if (item.getUid().equals(module.getUid())) {
-                int index = mModules.indexOf(item);
                 mModules.remove(item);
                 initSpan();
-                mAdapter.notifyItemRemoved(index);
                 initPeopleCount();
             }
         }
+        mTempModules.clear();
+        if (mTotalPage < 1) {
+            mTempModules.addAll(mModules);
+        } else {
+            if (mCurrentPage < mTotalPage) {
+                mTempModules.addAll(mModules.subList(mCurrentPage * 8, mCurrentPage * 8 + 8));
+            } else {
+                mTempModules.addAll(mModules.subList(mCurrentPage * 8, CollectionsUtil.size(mModules)));
+            }
+        }
+        mAdapter.notifyItemRangeChanged(0, CollectionsUtil.size(mTempModules));
     }
 
+    private boolean isContain(RemoveRemoteModule module) {
+        for (HomeRemoteModule item : mModules) {
+            if (item.getUid().equals(module.getUid())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

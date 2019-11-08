@@ -1,6 +1,5 @@
 package com.linkfeeling.android.art.board.ui;
 
-import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
@@ -67,6 +66,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     Drawable mWarnDrawable = DisplayUtils.getDrawable(R.drawable.icon_warn_bpm);
     Drawable mNormalDrawable = DisplayUtils.getDrawable(R.drawable.icon_bpm);
 
+    private int mSize;
 
     HomeAdapter(Context mContext) {
         this.mContext = mContext;
@@ -86,6 +86,9 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.mRecyclerViewWidth = (int) mRecyclerViewWidth;
     }
 
+    public void setSize(int mSize) {
+        this.mSize = mSize;
+    }
 
     @NonNull
     @Override
@@ -102,8 +105,8 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         HomeHolder homeHolder = (HomeHolder) holder;
         homeHolder.itemView.setTag(position);
 //
-        module.setPercent(99);
-        module.setRatio_warn(true);
+//        module.setPercent(99);
+//        module.setRatio_warn(true);
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
@@ -130,7 +133,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ViewUtils.setGone(homeHolder.mClMiddle);
         ViewUtils.setGone(homeHolder.mClBottom);
 
-        switch (CollectionsUtil.size(mModules)) {
+        switch (mSize) {
             case 1:
                 homeHolder.mTvCalorie.setText(module.getKc());
                 homeHolder.mTvBpm.setText(module.getHeart_rate());
@@ -228,58 +231,28 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         homeHolder.mWarnLayout.setVisibility(module.isRatio_warn() ? View.VISIBLE : View.GONE);
 
         if (!module.isStatus()) {
-            if (module.getAnimator() == null) {
-                module.setAnimator(AnimatorInflater.loadAnimator(mContext, R.animator.off_line_tip));
-                module.getAnimator().setTarget(homeHolder.itemView);
-                module.getAnimator().start();
-            } else {
-                module.getAnimator().setTarget(homeHolder.itemView);
-                if (!module.getAnimator().isStarted()) {
-                    module.getAnimator().start();
-                }
+            module.getAnimatorOffline().setTarget(homeHolder.itemView);
+            if (!module.getAnimatorOffline().isStarted()) {
+                module.getAnimatorOffline().start();
             }
             return;
         } else {
-            if (module.getAnimator() != null) {
-                module.getAnimator().cancel();
-            }
-            homeHolder.itemView.animate().cancel();
+            module.getAnimatorOffline().cancel();
         }
 
 
         if (module.isRatio_warn()) {
-            if (module.getAnimator1() == null) {
-                module.setAnimator1(AnimatorInflater.loadAnimator(mContext, R.animator.heart_rate));
-                module.getAnimator1().setTarget(CollectionsUtil.size(mModules) < 5 ? homeHolder.mTvBpm : homeHolder.mTvBpm2);
-                module.getAnimator1().start();
-            } else {
-                module.getAnimator1().setTarget(CollectionsUtil.size(mModules) < 5 ? homeHolder.mTvBpm : homeHolder.mTvBpm2);
-                if (!module.getAnimator1().isStarted()) {
-                    module.getAnimator1().start();
-                }
+            module.getAnimatorBpm().setTarget(CollectionsUtil.size(mModules) < 5 ? homeHolder.mTvBpm : homeHolder.mTvBpm2);
+            if (!module.getAnimatorBpm().isStarted()) {
+                module.getAnimatorBpm().start();
             }
-
-            if (module.getAnimator2() == null) {
-                module.setAnimator2(AnimatorInflater.loadAnimator(mContext, R.animator.warn_tip));
-                module.getAnimator2().setTarget(homeHolder.mWarnLayout);
-                module.getAnimator2().start();
-            } else {
-                module.getAnimator2().setTarget(homeHolder.mWarnLayout);
-                if (!module.getAnimator2().isStarted()) {
-                    module.getAnimator2().start();
-                }
+            module.getAnimatorWarn().setTarget(homeHolder.mWarnLayout);
+            if (!module.getAnimatorWarn().isStarted()) {
+                module.getAnimatorWarn().start();
             }
         } else {
-            if (module.getAnimator1() != null) {
-                module.getAnimator1().cancel();
-            }
-
-            if (module.getAnimator2() != null) {
-                module.getAnimator2().cancel();
-            }
-            homeHolder.mTvBpm.animate().cancel();
-            homeHolder.mTvBpm2.animate().cancel();
-            homeHolder.mWarnLayout.animate().cancel();
+            module.getAnimatorBpm().cancel();
+            module.getAnimatorWarn().cancel();
         }
     }
 

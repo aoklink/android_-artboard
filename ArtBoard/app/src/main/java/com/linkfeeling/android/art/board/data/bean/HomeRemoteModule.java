@@ -1,8 +1,11 @@
 package com.linkfeeling.android.art.board.data.bean;
 
 import android.animation.Animator;
+import android.animation.AnimatorInflater;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.linkfeeling.android.art.board.MainApplication;
+import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.widget.Base64Utils;
 
 import java.util.Objects;
@@ -44,14 +47,11 @@ public final class HomeRemoteModule {
     private int type;
 
     private float alpha = 0.8f;
-    private Animator animator;
+    private Animator animatorOffline;
+    private Animator animatorOnline;
     private long millis;
-    private Animator animator1;
-    private Animator animator2;
-
-    public Animator getAnimator2() {
-        return animator2;
-    }
+    private Animator animatorBpm;
+    private Animator animatorWarn;
 
     public long getMillis() {
         return millis;
@@ -60,16 +60,37 @@ public final class HomeRemoteModule {
     public void setMillis(long millis) {
         this.millis = millis;
     }
-    public void setAnimator2(Animator animator2) {
-        this.animator2 = animator2;
+
+    public Animator getAnimatorOffline() {
+        if (animatorOffline == null) {
+            animatorOffline = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.off_line_tip);
+        }
+        return animatorOffline;
     }
 
-    public Animator getAnimator1() {
-        return animator1;
+    public Animator getAnimatorOnline() {
+        if (animatorOnline == null) {
+            animatorOnline = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.on_line_tip);
+        }
+        return animatorOnline;
     }
 
-    public void setAnimator1(Animator animator1) {
-        this.animator1 = animator1;
+    public Animator getAnimatorBpm() {
+        if (animatorBpm == null) {
+            animatorBpm = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.heart_rate);
+        }
+        return animatorBpm;
+    }
+
+    public Animator getAnimatorWarn() {
+        if (animatorWarn == null) {
+            animatorWarn = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.warn_tip);
+        }
+        return animatorWarn;
+    }
+
+    public void setAnimatorWarn(Animator animatorWarn) {
+        this.animatorWarn = animatorWarn;
     }
 
     public boolean isRatio_warn() {
@@ -94,14 +115,6 @@ public final class HomeRemoteModule {
 
     public void setAlpha(float alpha) {
         this.alpha = alpha;
-    }
-
-    public Animator getAnimator() {
-        return animator;
-    }
-
-    public void setAnimator(Animator animator) {
-        this.animator = animator;
     }
 
     public String getCalorie() {
