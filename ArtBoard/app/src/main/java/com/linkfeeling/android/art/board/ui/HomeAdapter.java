@@ -22,7 +22,9 @@ import com.linkfeeling.android.art.board.data.bean.HomeRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.OffsetModule;
 import com.linkfeeling.android.art.board.widget.WaveView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -68,15 +70,31 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private int mSize;
 
+    private boolean mIsAnimator;
+
     HomeAdapter(Context mContext) {
         this.mContext = mContext;
+        this.mModules = new ArrayList<>();
         mCircleTransform = new CircleTransform();
     }
 
     void setModules(List<HomeRemoteModule> mModules) {
-        this.mModules = mModules;
+        this.mModules.clear();
+        this.mModules.addAll(mModules);
         notifyDataSetChanged();
     }
+
+    public void setIsAnimator(boolean mIsAnimator) {
+        this.mIsAnimator = mIsAnimator;
+    }
+
+    //    void notifyRangeChanged(List<HomeRemoteModule> mModules) {
+//        int size = CollectionsUtil.size(this.mModules);
+//        this.mModules.clear();
+//        this.mModules.addAll(mModules);
+//        notifyItemRangeChanged(0 ,size>CollectionsUtil.size(mModules)?size:CollectionsUtil.size(mModules));
+////        notifyItemRangeChanged(0, CollectionsUtil.size(this.mModules));
+//    }
 
     void setRecyclerViewHeight(float mRecyclerViewHeight) {
         this.mRecyclerViewHeight = (int) mRecyclerViewHeight;
@@ -97,7 +115,6 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return new HomeHolder(v);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
@@ -105,8 +122,9 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         HomeHolder homeHolder = (HomeHolder) holder;
         homeHolder.itemView.setTag(position);
 //
-//        module.setPercent(99);
-//        module.setRatio_warn(true);
+        Random random = new Random();
+        module.setPercent(random.nextInt(100));
+        module.setRatio_warn(module.getPercent() > 50);
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
@@ -230,19 +248,31 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ViewUtils.setDrawableLeft(homeHolder.mTvBpm2, module.isRatio_warn() ? R.drawable.icon_warn_bpm : R.drawable.icon_bpm);
         homeHolder.mWarnLayout.setVisibility(module.isRatio_warn() ? View.VISIBLE : View.GONE);
 
+
+        // ********************************离线动画******************************
+        // ********************************离线动画******************************
+        // ********************************离线动画******************************
         if (!module.isStatus()) {
+            module.getAnimatorOnline().cancel();
             module.getAnimatorOffline().setTarget(homeHolder.itemView);
             if (!module.getAnimatorOffline().isStarted()) {
                 module.getAnimatorOffline().start();
             }
             return;
         } else {
-            module.getAnimatorOffline().setTarget(null);
             module.getAnimatorOffline().cancel();
+            module.getAnimatorOnline().setTarget(homeHolder.itemView);
+            if (!module.getAnimatorOnline().isStarted()) {
+                module.getAnimatorOnline().start();
+            }
         }
 
-
+        // ********************************心率过高动画******************************
+        // ********************************心率过高动画******************************
+        // ********************************心率过高动画******************************
         if (module.isRatio_warn()) {
+            module.getAnimatorBpmNormal().cancel();
+            module.getAnimatorWarnNormal().cancel();
             module.getAnimatorBpm().setTarget(CollectionsUtil.size(mModules) < 5 ? homeHolder.mTvBpm : homeHolder.mTvBpm2);
             if (!module.getAnimatorBpm().isStarted()) {
                 module.getAnimatorBpm().start();
@@ -252,10 +282,16 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 module.getAnimatorWarn().start();
             }
         } else {
-            module.getAnimatorBpm().setTarget(null);
-            module.getAnimatorWarn().setTarget(null);
             module.getAnimatorBpm().cancel();
             module.getAnimatorWarn().cancel();
+            module.getAnimatorBpmNormal().setTarget(CollectionsUtil.size(mModules) < 5 ? homeHolder.mTvBpm : homeHolder.mTvBpm2);
+            if (!module.getAnimatorBpmNormal().isStarted()) {
+                module.getAnimatorBpmNormal().start();
+            }
+            module.getAnimatorWarnNormal().setTarget(homeHolder.mWarnLayout);
+            if (!module.getAnimatorWarnNormal().isStarted()) {
+                module.getAnimatorWarnNormal().start();
+            }
         }
     }
 

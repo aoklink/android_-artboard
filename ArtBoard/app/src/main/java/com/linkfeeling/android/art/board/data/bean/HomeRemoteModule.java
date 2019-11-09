@@ -51,7 +51,10 @@ public final class HomeRemoteModule {
     private Animator animatorOnline;
     private long millis;
     private Animator animatorBpm;
+    private Animator animatorBpmNormal;
+
     private Animator animatorWarn;
+    private Animator animatorWarnNormal;
 
     public long getMillis() {
         return millis;
@@ -82,6 +85,13 @@ public final class HomeRemoteModule {
         return animatorBpm;
     }
 
+    public Animator getAnimatorBpmNormal() {
+        if (animatorBpmNormal == null) {
+            animatorBpmNormal = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.heart_rate_normal);
+        }
+        return animatorBpmNormal;
+    }
+
     public Animator getAnimatorWarn() {
         if (animatorWarn == null) {
             animatorWarn = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.warn_tip);
@@ -89,8 +99,11 @@ public final class HomeRemoteModule {
         return animatorWarn;
     }
 
-    public void setAnimatorWarn(Animator animatorWarn) {
-        this.animatorWarn = animatorWarn;
+    public Animator getAnimatorWarnNormal() {
+        if (animatorWarnNormal == null) {
+            animatorWarnNormal = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.warn_tip_normal);
+        }
+        return animatorWarnNormal;
     }
 
     public boolean isRatio_warn() {
@@ -210,5 +223,32 @@ public final class HomeRemoteModule {
     @Override
     public int hashCode() {
         return Objects.hash(calorie, uid, heart_rate, user_name, head_icon, ratio, status);
+    }
+
+    public void clearAnimator() {
+        if (animatorOnline != null) {
+            animatorOnline.cancel();
+        }
+        if (animatorOffline != null) {
+            animatorOffline.cancel();
+        }
+        if (animatorBpm != null) {
+            animatorBpm.cancel();
+        }
+        if (animatorBpmNormal != null) {
+            animatorBpmNormal.cancel();
+        }
+        if (animatorWarn != null) {
+            animatorWarn.cancel();
+        }
+        if (animatorWarnNormal != null) {
+            animatorWarnNormal.cancel();
+        }
+        animatorOnline = null;
+        animatorOffline = null;
+        animatorBpm = null;
+        animatorBpmNormal = null;
+        animatorWarn = null;
+        animatorWarnNormal = null;
     }
 }

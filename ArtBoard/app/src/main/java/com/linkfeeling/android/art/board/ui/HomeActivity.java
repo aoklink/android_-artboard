@@ -82,6 +82,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private LayoutAnimationController mControllerIn;
     private LayoutAnimationController mControllerOut;
 
+    private boolean mIsAnimator = false;
+
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_art_board;
@@ -114,6 +116,8 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
                     mTimer = null;
                     return;
                 }
+
+                mIsAnimator = true;
                 mRvBoard.setLayoutAnimation(mControllerOut);
                 mAdapter.setModules(mTempModules);
                 mCurrentPage++;
@@ -128,6 +132,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
                         cancelAnimator();
                         mRvBoard.setLayoutAnimation(mControllerIn);
                         mAdapter.setModules(mTempModules);
+                        mIsAnimator = false;
                     }, duration);
                     return;
                 }
@@ -138,6 +143,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
                         cancelAnimator();
                         mRvBoard.setLayoutAnimation(mControllerIn);
                         mAdapter.setModules(mTempModules);
+                        mIsAnimator = false;
                     }, duration);
                 }
             }
@@ -153,9 +159,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
     private void cancelAnimator() {
         if (CollectionsUtil.isNotEmpty(mTempModules)) {
             for (HomeRemoteModule module : mTempModules) {
-                module.getAnimatorOffline().cancel();
-                module.getAnimatorBpm().cancel();
-                module.getAnimatorWarn().cancel();
+                module.clearAnimator();
             }
         }
     }
@@ -297,35 +301,49 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             initCache();
             initSpan();
             initPeopleCount();
-            mTempModules.clear();
             if (mTotalPage < 1) {
+                mTempModules.clear();
                 mTempModules.addAll(mModules);
             } else {
                 if (mCurrentPage < mTotalPage) {
+                    mTempModules.clear();
                     mTempModules.addAll(mModules.subList(mCurrentPage * 8, mCurrentPage * 8 + 8));
                 } else {
+                    mTempModules.clear();
                     mTempModules.addAll(mModules.subList(mCurrentPage * 8, CollectionsUtil.size(mModules)));
                 }
             }
             mAdapter.setModules(mTempModules);
         } else {
-            mModules.clear();
-            mModules.addAll(module.getData());
-            initCache();
-            initSpan();
-            initPeopleCount();
-            mTempModules.clear();
-            if (mTotalPage < 1) {
-                mTempModules.addAll(mModules);
+            if (mIsAnimator) {
+                postDelay(() -> updateAll(module.getData()), 1000);
             } else {
-                if (mCurrentPage < mTotalPage) {
-                    mTempModules.addAll(mModules.subList(mCurrentPage * 8, mCurrentPage * 8 + 8));
-                } else {
-                    mTempModules.addAll(mModules.subList(mCurrentPage * 8, CollectionsUtil.size(mModules)));
-                }
+                updateAll(module.getData());
             }
-            mAdapter.notifyItemRangeChanged(0, CollectionsUtil.size(mTempModules));
         }
+    }
+
+    private void updateAll(List<HomeRemoteModule> modules) {
+
+        mModules.clear();
+        mModules.addAll(modules);
+
+        initCache();
+        initSpan();
+        initPeopleCount();
+        if (mTotalPage < 1) {
+            mTempModules.clear();
+            mTempModules.addAll(mModules);
+        } else {
+            if (mCurrentPage < mTotalPage) {
+                mTempModules.clear();
+                mTempModules.addAll(mModules.subList(mCurrentPage * 8, mCurrentPage * 8 + 8));
+            } else {
+                mTempModules.clear();
+                mTempModules.addAll(mModules.subList(mCurrentPage * 8, CollectionsUtil.size(mModules)));
+            }
+        }
+        mAdapter.setModules(mTempModules);
     }
 
     private void initCache() {
@@ -408,7 +426,7 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
             initPeopleCount();
             if (CollectionsUtil.size(mTempModules) < 8) {
                 mTempModules.add(module);
-                mAdapter.notifyItemRangeChanged(0, CollectionsUtil.size(mModules) - 1);
+                mAdapter.setModules(mTempModules);
             }
         }
     }
@@ -435,18 +453,21 @@ public class HomeActivity extends FrameworkBaseActivity<HomeContract.View, HomeC
                 initPeopleCount();
             }
         }
-        mTempModules.clear();
+
         if (mTotalPage < 1) {
+            mTempModules.clear();
             mTempModules.addAll(mModules);
         } else {
             if (mCurrentPage < mTotalPage) {
+                mTempModules.clear();
                 mTempModules.addAll(mModules.subList(mCurrentPage * 8, mCurrentPage * 8 + 8));
             } else {
+                mTempModules.clear();
                 mTempModules.addAll(mModules.subList(mCurrentPage * 8, CollectionsUtil.size(mModules)));
             }
         }
         initSpan();
-        mAdapter.notifyItemRangeChanged(0, CollectionsUtil.size(mTempModules));
+        mAdapter.setModules(mTempModules);
     }
 
     private boolean isContain(RemoveRemoteModule module) {
