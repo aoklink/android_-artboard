@@ -15,6 +15,7 @@ import com.link.feeling.framework.component.image.LinkImageLoader;
 import com.link.feeling.framework.component.image.transformation.CircleTransform;
 import com.link.feeling.framework.utils.ThreadUtils;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
+import com.link.feeling.framework.utils.data.StringUtils;
 import com.link.feeling.mvp.common.MvpPresenter;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
@@ -182,7 +183,7 @@ public class RankFragment extends FrameworkBaseFragment {
 
         ThreadUtils.runOnMainThread(() -> {
             LinkImageLoader.INSTANCE.load(item.getHead_icon(), avatar, mCircleTransform);
-            holder.setText(unit);
+            holder.setText(StringUtils.isEmpty(item.getValue()) ? "" : unit);
             name.setText(item.getUser_name());
             value.setText(item.getValue());
         });

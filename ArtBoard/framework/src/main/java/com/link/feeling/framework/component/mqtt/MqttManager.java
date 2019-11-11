@@ -38,7 +38,6 @@ public final class MqttManager {
             mqttAndroidClient = new MqttAndroidClient(BaseApplication.getAppContext(), KeysConstants.SERVER_URL, KeysConstants.GID + DeviceUtils.getMac());
         }
         mqttAndroidClient.setCallback(callback);
-
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setConnectionTimeout(10);
         mqttConnectOptions.setKeepAliveInterval(15);
