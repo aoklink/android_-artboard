@@ -116,7 +116,7 @@ public class RankFragment extends FrameworkBaseFragment {
         ((SimpleItemAnimator) mRv1.getItemAnimator()).setSupportsChangeAnimations(false);
         ((SimpleItemAnimator) mRv2.getItemAnimator()).setSupportsChangeAnimations(false);
         ((SimpleItemAnimator) mRv3.getItemAnimator()).setSupportsChangeAnimations(false);
-        mControllerIn = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.item_rank_in_holder);
+        mControllerIn = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.item_rank_in_holder1);
         mCircleTransform = new CircleTransform();
         mRv1.setAdapter(mItemAdapter1);
         mRv2.setAdapter(mItemAdapter2);
