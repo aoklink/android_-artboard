@@ -13,14 +13,14 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.link.feeling.framework.base.FrameworkBaseActivity;
-import com.link.feeling.framework.base.FrameworkBaseFragment;
 import com.link.feeling.framework.bean.MqttRequest;
 import com.link.feeling.framework.component.mqtt.MqttManager;
 import com.link.feeling.framework.utils.ThreadUtils;
+import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.L;
-import com.link.feeling.framework.utils.data.StringUtils;
 import com.link.feeling.framework.utils.ui.ViewUtils;
 import com.linkfeeling.android.art.board.R;
+import com.linkfeeling.android.art.board.data.bean.rank.RankModule;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteModule;
 import com.linkfeeling.android.art.board.data.bean.rank.RankUpdateModule;
@@ -55,21 +55,18 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
     ImageView mIvReal;
     @BindView(R.id.rank_timer)
     TextView mTvTimer;
-    @BindView(R.id.ex)
-    TextView mTvBack;
     @BindView(R.id.rk_holder)
     ImageView mIvHolder;
 
     private int mCurrentPageIndex = 0;
 
-    private List<FrameworkBaseFragment> mFragments;
-    private RankFragment mRankFm1;
-    private RankFragment mRankFm2;
-    private RankFragment mRankFm3;
-    private RankPagerAdapter mPagerAdapter;
+    private List<RankFragment> mFragments;
 
     private MqttManager mMqttManager;
 
+    private List<Integer> mIds;
+
+    private int mFmSize;
 
     @Override
     protected int getLayoutRes() {
@@ -79,38 +76,18 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
         mFragments = new ArrayList<>();
-        mRankFm1 = RankFragment.newInstance(0);
-        mRankFm2 = RankFragment.newInstance(1);
-        mRankFm3 = RankFragment.newInstance(2);
-
-        mFragments.add(mRankFm1);
-        mFragments.add(mRankFm2);
-        mFragments.add(mRankFm3);
-        mPagerAdapter = new RankPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, mFragments);
-
-        mRankVp.setAdapter(mPagerAdapter);
-        mRankVp.setOffscreenPageLimit(3);
-        mRankVp.addOnPageChangeListener(this);
+        mIds = new ArrayList<>();
         mMqttManager = MqttManager.newInstance();
-        ViewPagerScroller pagerScroller = new ViewPagerScroller(this);
-        pagerScroller.setScrollDuration(1250);
-        pagerScroller.initViewPagerScroll(mRankVp);
-
-        request();
+        mMqttManager.connect(this, 101);
         getPresenter().count();
-        mIvHolder.requestFocus();
         getPresenter().countPage();
+        mIvHolder.requestFocus();
     }
 
     @NotNull
     @Override
     public RankContract.Presenter createPresenter() {
         return new RankPresenter();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -127,7 +104,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     @Override
     public void scrollPage() {
-        if (mCurrentPageIndex < 2) {
+        if (mCurrentPageIndex < (mFmSize - 1)) {
             mCurrentPageIndex++;
         } else {
             mCurrentPageIndex = 0;
@@ -137,16 +114,8 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     @Override
     public void scrollRank() {
-        switch (mCurrentPageIndex) {
-            case 0:
-                mRankFm1.notifyRank1();
-                break;
-            case 1:
-                mRankFm2.notifyRank2();
-                break;
-            case 2:
-                mRankFm3.notifyRank3();
-                break;
+        if (CollectionsUtil.size(mFragments) > mCurrentPageIndex) {
+            mFragments.get(mCurrentPageIndex).switchPage();
         }
     }
 
@@ -155,10 +124,8 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         if (ViewUtils.isQuickClick()) {
             return;
         }
-        switch (v.getId()) {
-            case R.id.rk_real:
-                HomeActivity.launch(this);
-                break;
+        if (v.getId() == R.id.rk_real) {
+            HomeActivity.launch(this);
         }
     }
 
@@ -203,7 +170,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
                 break;
             case 210:
                 L.e("RankActivity210", "messageArrived:" + body);
-                notifyRankChanged(JSON.parseObject(body, RankRemoteModule.class));
+                notifyRankChanged(JSON.parseObject(body, RankModule.class));
                 getPresenter().interval();
                 break;
         }
@@ -214,86 +181,44 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
 
     }
 
-    private void notifyRankChanged(RankRemoteModule rankRemoteModule) {
-        if (rankRemoteModule == null) {
-            rankRemoteModule = new RankRemoteModule();
-        }
-        mRankFm1.initRank1(rankRemoteModule.getCalorie(), rankRemoteModule.getDay(), rankRemoteModule.getDuration());
-        getPresenter().countRank();
-        mRankFm2.initRank2(rankRemoteModule.getPbj_distance(), rankRemoteModule.getDc_distance(), rankRemoteModule.getTyj_distance());
-        mRankFm3.initRank3(rankRemoteModule.getTotal_capacity(), rankRemoteModule.getSingle_max_capacity(), rankRemoteModule.getHdj_max_weight());
-    }
 
-    private void notifyUpdateChanged(RankUpdateModule update) {
-        if (update == null || StringUtils.isEmpty(update.getUid()) || StringUtils.isEmpty(update.getHead_icon()) || StringUtils.isEmpty(update.getUser_name())) {
+    private void notifyRankChanged(RankModule remoteModule) {
+        if (remoteModule == null || CollectionsUtil.isEmpty(remoteModule.getData())) {
             return;
         }
+        mFragments.clear();
+        mIds.clear();
+        List<RankRemoteModule> modules = remoteModule.getData();
+        for (RankRemoteModule module : modules) {
+            mIds.add(module.getId());
+        }
+        int size = CollectionsUtil.size(modules);
+        mFmSize = (size % 3) == 0 ? (size / 3) : (size / 3 + 1);
+        for (int i = 0; i < mFmSize; i++) {
+            mFragments.add(RankFragment.newInstance(modules.get(i * 3), modules.get(i * 3 + 1), modules.get(i * 3 + 2)));
+        }
+        mRankVp.setOffscreenPageLimit(mFmSize);
+        RankPagerAdapter mPagerAdapter = new RankPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, mFragments);
+        mRankVp.setAdapter(mPagerAdapter);
+        mRankVp.addOnPageChangeListener(this);
+        ViewPagerScroller pagerScroller = new ViewPagerScroller(this);
+        pagerScroller.setScrollDuration(1250);
+        pagerScroller.initViewPagerScroll(mRankVp);
 
-        if (StringUtils.isNotEmpty(update.getCalorie())) {
-            mRankFm1.updateRank1(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getCalorie()));
-        }
-        if (StringUtils.isNotEmpty(update.getDay())) {
-            mRankFm1.updateRank2(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getDay()));
-        }
-        if (StringUtils.isNotEmpty(update.getDuration())) {
-            mRankFm1.updateRank3(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getDuration()));
-        }
-
-
-        if (StringUtils.isNotEmpty(update.getPbj_distance())) {
-            mRankFm2.updateRank4(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getPbj_distance()));
-        }
-        if (StringUtils.isNotEmpty(update.getDc_distance())) {
-            mRankFm2.updateRank5(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getDc_distance()));
-        }
-        if (StringUtils.isNotEmpty(update.getTyj_distance())) {
-            mRankFm2.updateRank6(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getTyj_distance()));
-        }
-
-
-        if (StringUtils.isNotEmpty(update.getTotal_capacity())) {
-            mRankFm3.updateRank7(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getTotal_capacity()));
-        }
-        if (StringUtils.isNotEmpty(update.getSingle_max_capacity())) {
-            mRankFm3.updateRank8(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getSingle_max_capacity()));
-        }
-        if (StringUtils.isNotEmpty(update.getHdj_max_weight())) {
-            mRankFm3.updateRank9(new RankRemoteItem(update.getUser_name(), update.getHead_icon(), update.getUid(), update.getHdj_max_weight()));
-        }
+        getPresenter().countRank();
     }
 
 
-    public static void launch(Context context) {
-        Intent intent = new Intent(context, RankActivity.class);
-        context.startActivity(intent);
-    }
-
-    public static final int REQUEST_CODE_PERMISSION_WRITE = 0x201;
-
-    private void request() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {//未开启存储权限
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION_WRITE);
-            } else {
-                mMqttManager.connect(this, 101);
+    private void notifyUpdateChanged(RankUpdateModule module) {
+        if (module == null || module.getData() == null || module.getData().isEmpty()) {
+            return;
+        }
+        for (Integer key : module.getData().keySet()) {
+            if (mIds.contains(key) && module.getData().get(key) != null) {
+                int position = mIds.indexOf(key);
+                int index = position / 3;
+                mFragments.get(index).updateItem(new RankRemoteItem(module.getUser_name(), module.getHead_icon(), module.getUid(), module.getData().get(key).getValue(), module.getData().get(key).getIndex()), position - index * 3);
             }
-        }
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_CODE_PERMISSION_WRITE:
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    showToast("未开启存储权限,请手动到设置去开启权限");
-                } else {
-                    mMqttManager.connect(this, 101);
-                }
-                break;
         }
     }
 

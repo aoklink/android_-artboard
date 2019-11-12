@@ -1,9 +1,11 @@
 package com.linkfeeling.android.art.board.data.bean;
 
 import android.animation.Animator;
-import android.animation.ObjectAnimator;
+import android.animation.AnimatorInflater;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.linkfeeling.android.art.board.MainApplication;
+import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.widget.Base64Utils;
 
 import java.util.Objects;
@@ -39,12 +41,78 @@ public final class HomeRemoteModule {
     private int ratio;
     @JSONField(name = "status")
     private boolean status;
+    @JSONField(name = "ratio_warn")
+    private boolean ratio_warn;
 
     private int type;
 
     private float alpha = 0.8f;
-    private Animator animator;
+    private Animator animatorOffline;
+    private Animator animatorOnline;
+    private long millis;
+    private Animator animatorBpm;
+    private Animator animatorBpmNormal;
 
+    private Animator animatorWarn;
+    private Animator animatorWarnNormal;
+
+    public long getMillis() {
+        return millis;
+    }
+
+    public void setMillis(long millis) {
+        this.millis = millis;
+    }
+
+    public Animator getAnimatorOffline() {
+        if (animatorOffline == null) {
+            animatorOffline = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.off_line_tip);
+        }
+        return animatorOffline;
+    }
+
+    public Animator getAnimatorOnline() {
+        if (animatorOnline == null) {
+            animatorOnline = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.on_line_tip);
+        }
+        return animatorOnline;
+    }
+
+    public Animator getAnimatorBpm() {
+        if (animatorBpm == null) {
+            animatorBpm = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.heart_rate);
+        }
+        return animatorBpm;
+    }
+
+    public Animator getAnimatorBpmNormal() {
+        if (animatorBpmNormal == null) {
+            animatorBpmNormal = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.heart_rate_normal);
+        }
+        return animatorBpmNormal;
+    }
+
+    public Animator getAnimatorWarn() {
+        if (animatorWarn == null) {
+            animatorWarn = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.warn_tip);
+        }
+        return animatorWarn;
+    }
+
+    public Animator getAnimatorWarnNormal() {
+        if (animatorWarnNormal == null) {
+            animatorWarnNormal = AnimatorInflater.loadAnimator(MainApplication.getAppContext(), R.animator.warn_tip_normal);
+        }
+        return animatorWarnNormal;
+    }
+
+    public boolean isRatio_warn() {
+        return ratio_warn;
+    }
+
+    public void setRatio_warn(boolean ratio_warn) {
+        this.ratio_warn = ratio_warn;
+    }
 
     public int getType() {
         return type;
@@ -60,14 +128,6 @@ public final class HomeRemoteModule {
 
     public void setAlpha(float alpha) {
         this.alpha = alpha;
-    }
-
-    public ObjectAnimator getAnimator() {
-        return (ObjectAnimator) animator;
-    }
-
-    public void setAnimator(Animator animator) {
-        this.animator = animator;
     }
 
     public String getCalorie() {
@@ -163,5 +223,32 @@ public final class HomeRemoteModule {
     @Override
     public int hashCode() {
         return Objects.hash(calorie, uid, heart_rate, user_name, head_icon, ratio, status);
+    }
+
+    public void clearAnimator() {
+        if (animatorOnline != null) {
+            animatorOnline.cancel();
+        }
+        if (animatorOffline != null) {
+            animatorOffline.cancel();
+        }
+        if (animatorBpm != null) {
+            animatorBpm.cancel();
+        }
+        if (animatorBpmNormal != null) {
+            animatorBpmNormal.cancel();
+        }
+        if (animatorWarn != null) {
+            animatorWarn.cancel();
+        }
+        if (animatorWarnNormal != null) {
+            animatorWarnNormal.cancel();
+        }
+        animatorOnline = null;
+        animatorOffline = null;
+        animatorBpm = null;
+        animatorBpmNormal = null;
+        animatorWarn = null;
+        animatorWarnNormal = null;
     }
 }

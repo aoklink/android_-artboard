@@ -70,9 +70,9 @@ subprojects {
                                 variant.outputs.each { output ->
                                     // 格式化输出 apk 名称
                                     if (!variant.buildType.debuggable) {
-                                        output.outputFileName = "心率系统_${output.name.replaceAll("-", "_")}_${variant.versionName}_" + releaseTime() + ".apk"
+                                        output.outputFileName = "单车系统_${output.name.replaceAll("-", "_")}_${variant.versionName}_" + releaseTime() + ".apk"
                                     } else {
-                                        output.outputFileName = "心率系统_${output.name.replaceAll("-", "_")}_${variant.versionName}" + ".apk"
+                                        output.outputFileName = "单车系统_${output.name.replaceAll("-", "_")}_${variant.versionName}" + ".apk"
                                     }
                                 }
                             }

@@ -18,6 +18,16 @@ public final class HeartRemoteModule {
     private String heart_rate;
     private String calorie;
     private int ratio;
+    private boolean ratio_warn;
+
+    public boolean isRatio_warn() {
+        return ratio_warn;
+    }
+
+    public void setRatio_warn(boolean ratio_warn) {
+        this.ratio_warn = ratio_warn;
+    }
+
 
     public int getRatio() {
         return ratio;

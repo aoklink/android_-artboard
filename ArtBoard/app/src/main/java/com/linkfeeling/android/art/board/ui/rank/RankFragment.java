@@ -16,18 +16,14 @@ import com.link.feeling.framework.component.image.transformation.CircleTransform
 import com.link.feeling.framework.utils.ThreadUtils;
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.StringUtils;
-import com.link.feeling.framework.widgets.NumParseUtil;
 import com.link.feeling.mvp.common.MvpPresenter;
 import com.linkfeeling.android.art.board.R;
-import com.linkfeeling.android.art.board.constants.ImageConstants;
-import com.linkfeeling.android.art.board.constants.StringConstants;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
+import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteModule;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -65,18 +61,14 @@ public class RankFragment extends FrameworkBaseFragment {
     private List<RankRemoteItem> mRankList1;
     private List<RankRemoteItem> mRankList2;
     private List<RankRemoteItem> mRankList3;
-    private List<RankRemoteItem> mRankList4;
-    private List<RankRemoteItem> mRankList5;
-    private List<RankRemoteItem> mRankList6;
-    private List<RankRemoteItem> mRankList7;
-    private List<RankRemoteItem> mRankList8;
-    private List<RankRemoteItem> mRankList9;
 
     private RankItemAdapter mItemAdapter1;
     private RankItemAdapter mItemAdapter2;
     private RankItemAdapter mItemAdapter3;
 
-    private int mIndex;
+    private RankRemoteModule mRankModule1;
+    private RankRemoteModule mRankModule2;
+    private RankRemoteModule mRankModule3;
 
     private int mNextPage = 0;
     private int mCurrentPage = 0;
@@ -85,10 +77,12 @@ public class RankFragment extends FrameworkBaseFragment {
 
     private CircleTransform mCircleTransform;
 
-    static RankFragment newInstance(int index) {
+    static RankFragment newInstance(RankRemoteModule module1, RankRemoteModule module2, RankRemoteModule module3) {
         RankFragment fragment = new RankFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(KeysConstants.INDEX, index);
+        bundle.putParcelable(KeysConstants.INDEX1, module1);
+        bundle.putParcelable(KeysConstants.INDEX2, module2);
+        bundle.putParcelable(KeysConstants.INDEX3, module3);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -100,30 +94,55 @@ public class RankFragment extends FrameworkBaseFragment {
 
     @Override
     protected void init(@Nullable Bundle savedInstanceState) {
-        mIndex = getArguments() == null ? 0 : getArguments().getInt(KeysConstants.INDEX);
-        mLogo1.setImageResource(ImageConstants.matchRankLogo(mIndex * 3 + 1));
-        mLogo2.setImageResource(ImageConstants.matchRankLogo(mIndex * 3 + 2));
-        mLogo3.setImageResource(ImageConstants.matchRankLogo(mIndex * 3 + 3));
+        if (getArguments() == null) {
+            return;
+        }
+        mRankModule1 = getArguments().getParcelable(KeysConstants.INDEX1);
+        mRankModule2 = getArguments().getParcelable(KeysConstants.INDEX2);
+        mRankModule3 = getArguments().getParcelable(KeysConstants.INDEX3);
 
+        LinkImageLoader.INSTANCE.load(mRankModule1.getImg(), mLogo1);
+        LinkImageLoader.INSTANCE.load(mRankModule2.getImg(), mLogo2);
+        LinkImageLoader.INSTANCE.load(mRankModule3.getImg(), mLogo3);
+//
         mRv1.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         mRv2.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         mRv3.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-
-        mItemAdapter1 = new RankItemAdapter(getContext(), mIndex * 3 + 1);
-        mItemAdapter2 = new RankItemAdapter(getContext(), mIndex * 3 + 2);
-        mItemAdapter3 = new RankItemAdapter(getContext(), mIndex * 3 + 3);
-
-        ((SimpleItemAnimator) Objects.requireNonNull(mRv1.getItemAnimator())).setSupportsChangeAnimations(false);
-        ((SimpleItemAnimator) Objects.requireNonNull(mRv2.getItemAnimator())).setSupportsChangeAnimations(false);
-        ((SimpleItemAnimator) Objects.requireNonNull(mRv3.getItemAnimator())).setSupportsChangeAnimations(false);
-
-
-        mControllerIn = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.item_rank_in_holder);
+//
+        mItemAdapter1 = new RankItemAdapter(getContext(), mRankModule1.getUnit());
+        mItemAdapter2 = new RankItemAdapter(getContext(), mRankModule2.getUnit());
+        mItemAdapter3 = new RankItemAdapter(getContext(), mRankModule3.getUnit());
+//
+        ((SimpleItemAnimator) mRv1.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) mRv2.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) mRv3.getItemAnimator()).setSupportsChangeAnimations(false);
+        mControllerIn = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.item_rank_in_holder1);
         mCircleTransform = new CircleTransform();
-
         mRv1.setAdapter(mItemAdapter1);
         mRv2.setAdapter(mItemAdapter2);
         mRv3.setAdapter(mItemAdapter3);
+
+        mRankList1 = mRankModule1.getData();
+        mRankList2 = mRankModule2.getData();
+        mRankList3 = mRankModule3.getData();
+
+        if (CollectionsUtil.isNotEmpty(mRankList1)) {
+            mRv1.setLayoutAnimation(mControllerIn);
+            fillRankTop(mRankList1.get(0), mRank1View, mRankModule1.getUnit());
+            mItemAdapter1.setItems(mRankList1.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
+        }
+
+        if (CollectionsUtil.isNotEmpty(mRankList2)) {
+            mRv2.setLayoutAnimation(mControllerIn);
+            fillRankTop(mRankList2.get(0), mRank2View, mRankModule2.getUnit());
+            mItemAdapter2.setItems(mRankList2.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
+        }
+
+        if (CollectionsUtil.isNotEmpty(mRankList3)) {
+            mRv3.setLayoutAnimation(mControllerIn);
+            fillRankTop(mRankList3.get(0), mRank3View, mRankModule3.getUnit());
+            mItemAdapter3.setItems(mRankList3.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
+        }
     }
 
     @NotNull
@@ -133,116 +152,30 @@ public class RankFragment extends FrameworkBaseFragment {
     }
 
 
-    private void switchPage() {
-        if (mIndex == 0 && (CollectionsUtil.isEmpty(mRankList1) || CollectionsUtil.isEmpty(mRankList2) || CollectionsUtil.isEmpty(mRankList3))) {
-            return;
-        }
-
-        if (mIndex == 1 && (CollectionsUtil.isEmpty(mRankList4) || CollectionsUtil.isEmpty(mRankList5) || CollectionsUtil.isEmpty(mRankList6))) {
-            return;
-        }
-
-        if (mIndex == 2 && (CollectionsUtil.isEmpty(mRankList7) || CollectionsUtil.isEmpty(mRankList8) || CollectionsUtil.isEmpty(mRankList9))) {
-            return;
-        }
-
+    void switchPage() {
         mCurrentPage = mNextPage;
-        mItemAdapter1.setPage(mNextPage);
-        mItemAdapter2.setPage(mNextPage);
-        mItemAdapter3.setPage(mNextPage);
-
-        mRv1.setLayoutAnimation(mControllerIn);
-        mRv2.setLayoutAnimation(mControllerIn);
-        mRv3.setLayoutAnimation(mControllerIn);
-
-        if (mIndex == 0) {
+        if (CollectionsUtil.isNotEmpty(mRankList1)) {
+            mItemAdapter1.setPage(mNextPage);
+            mRv1.setLayoutAnimation(mControllerIn);
             mItemAdapter1.setItems(mRankList1.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-            mItemAdapter2.setItems(mRankList2.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-            mItemAdapter3.setItems(mRankList3.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-        } else if (mIndex == 1) {
-            mItemAdapter1.setItems(mRankList4.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-            mItemAdapter2.setItems(mRankList5.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-            mItemAdapter3.setItems(mRankList6.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-        } else if (mIndex == 2) {
-            mItemAdapter1.setItems(mRankList7.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-            mItemAdapter2.setItems(mRankList8.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-            mItemAdapter3.setItems(mRankList9.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
         }
-
+        if (CollectionsUtil.isNotEmpty(mRankList2)) {
+            mItemAdapter2.setPage(mNextPage);
+            mRv2.setLayoutAnimation(mControllerIn);
+            mItemAdapter2.setItems(mRankList2.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
+        }
+        if (CollectionsUtil.isNotEmpty(mRankList3)) {
+            mItemAdapter3.setPage(mNextPage);
+            mRv3.setLayoutAnimation(mControllerIn);
+            mItemAdapter3.setItems(mRankList3.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
+        }
         mNextPage++;
         if (mNextPage >= 2) {
             mNextPage = 0;
         }
     }
 
-    void initRank1(List<RankRemoteItem> list1, List<RankRemoteItem> list2, List<RankRemoteItem> list3) {
-        mRankList1 = list1;
-        mRankList2 = list2;
-        mRankList3 = list3;
-
-        mRv1.setLayoutAnimation(mControllerIn);
-        mRv2.setLayoutAnimation(mControllerIn);
-        mRv3.setLayoutAnimation(mControllerIn);
-
-        fillRankTop(mRankList1.get(0), mRank1View, 1);
-        fillRankTop(mRankList2.get(0), mRank2View, 2);
-        fillRankTop(mRankList3.get(0), mRank3View, 3);
-
-        mItemAdapter1.setItems(mRankList1.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-        mItemAdapter2.setItems(mRankList2.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-        mItemAdapter3.setItems(mRankList3.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-    }
-
-    void initRank2(List<RankRemoteItem> list4, List<RankRemoteItem> list5, List<RankRemoteItem> list6) {
-        mRankList4 = list4;
-        mRankList5 = list5;
-        mRankList6 = list6;
-
-        mRv1.setLayoutAnimation(mControllerIn);
-        mRv2.setLayoutAnimation(mControllerIn);
-        mRv3.setLayoutAnimation(mControllerIn);
-
-        fillRankTop(mRankList4.get(0), mRank1View, 4);
-        fillRankTop(mRankList5.get(0), mRank2View, 5);
-        fillRankTop(mRankList6.get(0), mRank3View, 6);
-
-        mItemAdapter1.setItems(mRankList4.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-        mItemAdapter2.setItems(mRankList5.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-        mItemAdapter3.setItems(mRankList6.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-    }
-
-    void initRank3(List<RankRemoteItem> list7, List<RankRemoteItem> list8, List<RankRemoteItem> list9) {
-        mRankList7 = list7;
-        mRankList8 = list8;
-        mRankList9 = list9;
-
-        mRv1.setLayoutAnimation(mControllerIn);
-        mRv2.setLayoutAnimation(mControllerIn);
-        mRv3.setLayoutAnimation(mControllerIn);
-
-        fillRankTop(mRankList7.get(0), mRank1View, 7);
-        fillRankTop(mRankList8.get(0), mRank2View, 8);
-        fillRankTop(mRankList9.get(0), mRank3View, 9);
-
-        mItemAdapter1.setItems(mRankList7.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-        mItemAdapter2.setItems(mRankList8.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-        mItemAdapter3.setItems(mRankList9.subList(mNextPage * 5 + 1, mNextPage * 5 + 6));
-    }
-
-
-    void notifyRank1() {
-        switchPage();
-    }
-
-    void notifyRank2() {
-        switchPage();
-    }
-
-    void notifyRank3() {
-        switchPage();
-    }
-
-    private void fillRankTop(RankRemoteItem item, View view, int index) {
+    private void fillRankTop(RankRemoteItem item, View view, String unit) {
         ImageView avatar = view.findViewById(R.id.item_rank_avatar1);
         TextView holder = view.findViewById(R.id.item_rank_holder1);
         TextView name = view.findViewById(R.id.item_rank_name1);
@@ -250,208 +183,53 @@ public class RankFragment extends FrameworkBaseFragment {
 
         ThreadUtils.runOnMainThread(() -> {
             LinkImageLoader.INSTANCE.load(item.getHead_icon(), avatar, mCircleTransform);
-            holder.setText(StringUtils.isEmpty(item.getUid()) ? "" : StringConstants.matchHolder(index));
+            holder.setText(StringUtils.isEmpty(item.getValue()) ? "" : unit);
             name.setText(item.getUser_name());
-            value.setText(item.getFormatValue(index));
+            value.setText(item.getValue());
         });
     }
 
-    void updateRank1(RankRemoteItem item) {
-        if (CollectionsUtil.isEmpty(mRankList1)) {
-            return;
-        }
-        for (RankRemoteItem remote : mRankList1) {
-            if (remote.getUid().equals(item.getUid())) {
-                remote.setValue(item.getValue());
-                Collections.sort(mRankList1, (o1, o2) -> NumParseUtil.parseInt(o2.getValue()) - NumParseUtil.parseInt(o1.getValue()));
-                fillRankTop(mRankList1.get(0), mRank1View, 1);
+    void updateItem(RankRemoteItem item, int index) {
+        switch (index) {
+            case 0:
+                RankRemoteItem local1 = matchContainer(item.getUid(), mRankList1);
+                if (local1 != null) {
+                    mRankList1.remove(local1);
+                }
+                mRankList1.add(item.getIndex(), item);
+                fillRankTop(mRankList1.get(0), mRank1View, mRankModule1.getUnit());
                 ThreadUtils.runOnMainThread(() -> mItemAdapter1.setItems(mRankList1.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-                return;
-            }
-        }
-        mRankList1.add(item);
-        Collections.sort(mRankList1, (o1, o2) -> NumParseUtil.parseInt(o2.getValue()) - NumParseUtil.parseInt(o1.getValue()));
-        if (CollectionsUtil.size(mRankList1) > KeysConstants.RANK_ITEM) {
-            mRankList1 = mRankList1.subList(0, KeysConstants.RANK_ITEM);
-        }
-        fillRankTop(mRankList1.get(0), mRank1View, 1);
-        ThreadUtils.runOnMainThread(() -> mItemAdapter1.setItems(mRankList1.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-    }
-
-    void updateRank2(RankRemoteItem item) {
-        if (CollectionsUtil.isEmpty(mRankList2)) {
-            return;
-        }
-        for (RankRemoteItem remote : mRankList2) {
-            if (remote.getUid().equals(item.getUid())) {
-                remote.setValue(item.getValue());
-                Collections.sort(mRankList2, (o1, o2) -> NumParseUtil.parseInt(o2.getValue()) - NumParseUtil.parseInt(o1.getValue()));
-                fillRankTop(mRankList2.get(0), mRank2View, 2);
+                break;
+            case 1:
+                RankRemoteItem local2 = matchContainer(item.getUid(), mRankList2);
+                if (local2 != null) {
+                    mRankList2.remove(local2);
+                }
+                mRankList2.add(item.getIndex(), item);
+                fillRankTop(mRankList2.get(0), mRank2View, mRankModule2.getUnit());
                 ThreadUtils.runOnMainThread(() -> mItemAdapter2.setItems(mRankList2.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-                return;
-            }
-        }
-        mRankList2.add(item);
-        Collections.sort(mRankList2, (o1, o2) -> NumParseUtil.parseInt(o2.getValue()) - NumParseUtil.parseInt(o1.getValue()));
-        if (CollectionsUtil.size(mRankList2) > KeysConstants.RANK_ITEM) {
-            mRankList2 = mRankList2.subList(0, KeysConstants.RANK_ITEM);
-        }
-        fillRankTop(mRankList2.get(0), mRank2View, 2);
-        ThreadUtils.runOnMainThread(() -> mItemAdapter2.setItems(mRankList2.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-    }
-
-    void updateRank3(RankRemoteItem item) {
-        if (CollectionsUtil.isEmpty(mRankList3)) {
-            return;
-        }
-        for (RankRemoteItem remote : mRankList3) {
-            if (remote.getUid().equals(item.getUid())) {
-                remote.setValue(item.getValue());
-                Collections.sort(mRankList3, (o1, o2) -> Long.compare(NumParseUtil.parseLong(o2.getValue()), NumParseUtil.parseLong(o1.getValue())));
-                fillRankTop(mRankList3.get(0), mRank3View, 3);
+                break;
+            case 2:
+                RankRemoteItem local3 = matchContainer(item.getUid(), mRankList3);
+                if (local3 != null) {
+                    mRankList3.remove(local3);
+                }
+                mRankList3.add(item.getIndex(), item);
+                fillRankTop(mRankList3.get(0), mRank3View, mRankModule3.getUnit());
                 ThreadUtils.runOnMainThread(() -> mItemAdapter3.setItems(mRankList3.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-                return;
-            }
+                break;
         }
-        mRankList3.add(item);
-        Collections.sort(mRankList3, (o1, o2) -> Long.compare(NumParseUtil.parseLong(o2.getValue()), NumParseUtil.parseLong(o1.getValue())));
-        if (CollectionsUtil.size(mRankList3) > KeysConstants.RANK_ITEM) {
-            mRankList3 = mRankList3.subList(0, KeysConstants.RANK_ITEM);
-        }
-        fillRankTop(mRankList3.get(0), mRank3View, 3);
-        ThreadUtils.runOnMainThread(() -> mItemAdapter3.setItems(mRankList3.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
     }
 
-
-    void updateRank4(RankRemoteItem item) {
-        if (CollectionsUtil.isEmpty(mRankList4)) {
-            return;
+    private RankRemoteItem matchContainer(String uid, List<RankRemoteItem> modules) {
+        if (CollectionsUtil.isEmpty(modules)) {
+            return null;
         }
-        for (RankRemoteItem remote : mRankList4) {
-            if (remote.getUid().equals(item.getUid())) {
-                remote.setValue(item.getValue());
-                Collections.sort(mRankList4, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-                fillRankTop(mRankList4.get(0), mRank1View, 4);
-                ThreadUtils.runOnMainThread(() -> mItemAdapter1.setItems(mRankList4.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-                return;
+        for (RankRemoteItem item : modules) {
+            if (item.getUid().equals(uid)) {
+                return item;
             }
         }
-        mRankList4.add(item);
-        Collections.sort(mRankList4, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList4) > KeysConstants.RANK_ITEM) {
-            mRankList4 = mRankList4.subList(0, KeysConstants.RANK_ITEM);
-        }
-        fillRankTop(mRankList4.get(0), mRank1View, 4);
-        ThreadUtils.runOnMainThread(() -> mItemAdapter1.setItems(mRankList4.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-    }
-
-    void updateRank5(RankRemoteItem item) {
-        if (CollectionsUtil.isEmpty(mRankList5)) {
-            return;
-        }
-        for (RankRemoteItem remote : mRankList5) {
-            if (remote.getUid().equals(item.getUid())) {
-                remote.setValue(item.getValue());
-                Collections.sort(mRankList5, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-                fillRankTop(mRankList5.get(0), mRank2View, 5);
-                ThreadUtils.runOnMainThread(() -> mItemAdapter2.setItems(mRankList5.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-                return;
-            }
-        }
-        mRankList5.add(item);
-        Collections.sort(mRankList5, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList5) > KeysConstants.RANK_ITEM) {
-            mRankList5 = mRankList5.subList(0, KeysConstants.RANK_ITEM);
-        }
-        fillRankTop(mRankList5.get(0), mRank2View, 5);
-        ThreadUtils.runOnMainThread(() -> mItemAdapter2.setItems(mRankList5.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-    }
-
-    void updateRank6(RankRemoteItem item) {
-        if (CollectionsUtil.isEmpty(mRankList6)) {
-            return;
-        }
-        for (RankRemoteItem remote : mRankList6) {
-            if (remote.getUid().equals(item.getUid())) {
-                remote.setValue(item.getValue());
-                Collections.sort(mRankList6, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-                fillRankTop(mRankList6.get(0), mRank3View, 6);
-                ThreadUtils.runOnMainThread(() -> mItemAdapter3.setItems(mRankList6.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-                return;
-            }
-        }
-        mRankList6.add(item);
-        Collections.sort(mRankList6, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList6) > KeysConstants.RANK_ITEM) {
-            mRankList6 = mRankList6.subList(0, KeysConstants.RANK_ITEM);
-        }
-        fillRankTop(mRankList6.get(0), mRank3View, 6);
-        ThreadUtils.runOnMainThread(() -> mItemAdapter3.setItems(mRankList6.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-    }
-
-    void updateRank7(RankRemoteItem item) {
-        if (CollectionsUtil.isEmpty(mRankList7)) {
-            return;
-        }
-        for (RankRemoteItem remote : mRankList7) {
-            if (remote.getUid().equals(item.getUid())) {
-                remote.setValue(item.getValue());
-                Collections.sort(mRankList7, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-                fillRankTop(mRankList7.get(0), mRank1View, 7);
-                ThreadUtils.runOnMainThread(() -> mItemAdapter1.setItems(mRankList7.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-                return;
-            }
-        }
-        mRankList7.add(item);
-        Collections.sort(mRankList7, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList7) > KeysConstants.RANK_ITEM) {
-            mRankList7 = mRankList7.subList(0, KeysConstants.RANK_ITEM);
-        }
-        fillRankTop(mRankList7.get(0), mRank1View, 7);
-        ThreadUtils.runOnMainThread(() -> mItemAdapter1.setItems(mRankList7.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-    }
-
-    void updateRank8(RankRemoteItem item) {
-        if (CollectionsUtil.isEmpty(mRankList8)) {
-            return;
-        }
-        for (RankRemoteItem remote : mRankList8) {
-            if (remote.getUid().equals(item.getUid())) {
-                remote.setValue(item.getValue());
-                Collections.sort(mRankList8, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-                fillRankTop(mRankList8.get(0), mRank2View, 8);
-                ThreadUtils.runOnMainThread(() -> mItemAdapter2.setItems(mRankList8.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-                return;
-            }
-        }
-        mRankList8.add(item);
-        Collections.sort(mRankList8, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList8) > KeysConstants.RANK_ITEM) {
-            mRankList8 = mRankList8.subList(0, KeysConstants.RANK_ITEM);
-        }
-        fillRankTop(mRankList8.get(0), mRank2View, 8);
-        ThreadUtils.runOnMainThread(() -> mItemAdapter2.setItems(mRankList8.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-    }
-
-    void updateRank9(RankRemoteItem item) {
-        if (CollectionsUtil.isEmpty(mRankList9)) {
-            return;
-        }
-        for (RankRemoteItem remote : mRankList9) {
-            if (remote.getUid().equals(item.getUid())) {
-                remote.setValue(item.getValue());
-                Collections.sort(mRankList9, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-                fillRankTop(mRankList9.get(0), mRank3View, 9);
-                ThreadUtils.runOnMainThread(() -> mItemAdapter3.setItems(mRankList9.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
-                return;
-            }
-        }
-        mRankList9.add(item);
-        Collections.sort(mRankList9, (o1, o2) -> Float.compare(NumParseUtil.parseFloat(o2.getValue()), NumParseUtil.parseFloat(o1.getValue())));
-        if (CollectionsUtil.size(mRankList9) > KeysConstants.RANK_ITEM) {
-            mRankList9 = mRankList9.subList(0, KeysConstants.RANK_ITEM);
-        }
-        fillRankTop(mRankList9.get(0), mRank3View, 9);
-        ThreadUtils.runOnMainThread(() -> mItemAdapter3.setItems(mRankList9.subList(mCurrentPage * 5 + 1, mCurrentPage * 5 + 6)));
+        return null;
     }
 }

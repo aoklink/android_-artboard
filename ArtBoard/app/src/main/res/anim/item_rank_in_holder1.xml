@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
-    android:animation="@anim/item_rank_in"
-    android:delay="30%"
+    android:animation="@anim/item_rank_in1"
+    android:delay="25%"
     android:animationOrder="normal" />

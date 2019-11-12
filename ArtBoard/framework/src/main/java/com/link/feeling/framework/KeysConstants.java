@@ -44,11 +44,17 @@ public interface KeysConstants {
     String GYM_NAME = "gym_name";
 
     String INDEX = "index";
+    String INDEX1 = "index1";
+    String INDEX2 = "index2";
+    String INDEX3 = "index3";
 
 
     // prod
     String SERVER_URL = "tcp://post-cn-v0h19rdwa01.mqtt.aliyuncs.com";
     String INSTANCE_ID = "post-cn-v0h19rdwa01";
+
+//    String SERVER_URL = "tcp://post-cn-0pp1bk98n05.mqtt.aliyuncs.com";
+//    String INSTANCE_ID = "post-cn-0pp1bk98n05";
 
     String ACCESS_KEY = "LTAI4FeptrQPpNaeBLzsgkMW";
     String SECRET_KEY = "5VNrknvqHVZqFWrPnb3SvQIYqKLrn8";
@@ -60,7 +66,7 @@ public interface KeysConstants {
 
     String SIGNATURE = "Signature|";
     String SEPARATOR = "|";
-    String GID = "GID_LK_HEART_RATE@@@";
+    String GID = "GID_LK_HEART_RATE@@@_" + GYM + "_";
 
 
     int RANK_ITEM = 11;

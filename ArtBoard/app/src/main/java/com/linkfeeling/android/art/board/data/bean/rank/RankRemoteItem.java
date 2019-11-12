@@ -1,5 +1,8 @@
 package com.linkfeeling.android.art.board.data.bean.rank;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.link.feeling.framework.utils.data.StringUtils;
 import com.link.feeling.framework.widgets.NumParseUtil;
 import com.linkfeeling.android.art.board.utils.CalculateUtils;
@@ -12,7 +15,7 @@ import java.util.Locale;
  * chenpan pan.chen@linkfeeling.cn
  */
 @SuppressWarnings("unused")
-public final class RankRemoteItem {
+public final class RankRemoteItem implements Parcelable {
 
     /**
      * user_name :
@@ -25,15 +28,17 @@ public final class RankRemoteItem {
     private String head_icon;
     private String uid;
     private String value;
+    private int index;
 
     public RankRemoteItem() {
     }
 
-    public RankRemoteItem(String user_name, String head_icon, String uid, String value) {
+    public RankRemoteItem(String user_name, String head_icon, String uid, String value ,int index) {
         this.user_name = user_name;
         this.head_icon = head_icon;
         this.uid = uid;
         this.value = value;
+        this.index = index;
     }
 
     public String getUser_name() {
@@ -100,4 +105,44 @@ public final class RankRemoteItem {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.user_name);
+        dest.writeString(this.head_icon);
+        dest.writeString(this.uid);
+        dest.writeString(this.value);
+    }
+
+    protected RankRemoteItem(Parcel in) {
+        this.user_name = in.readString();
+        this.head_icon = in.readString();
+        this.uid = in.readString();
+        this.value = in.readString();
+    }
+
+    public static final Creator<RankRemoteItem> CREATOR = new Creator<RankRemoteItem>() {
+        @Override
+        public RankRemoteItem createFromParcel(Parcel source) {
+            return new RankRemoteItem(source);
+        }
+
+        @Override
+        public RankRemoteItem[] newArray(int size) {
+            return new RankRemoteItem[size];
+        }
+    };
 }
