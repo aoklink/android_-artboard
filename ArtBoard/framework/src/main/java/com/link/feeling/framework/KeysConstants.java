@@ -49,18 +49,18 @@ public interface KeysConstants {
     String INDEX3 = "index3";
 
 
-//    // prod
-//    String SERVER_URL = "tcp://post-cn-v0h19rdwa01.mqtt.aliyuncs.com";
-//    String INSTANCE_ID = "post-cn-v0h19rdwa01";
+    // prod
+    String SERVER_URL = "tcp://post-cn-v0h19rdwa01.mqtt.aliyuncs.com";
+    String INSTANCE_ID = "post-cn-v0h19rdwa01";
 
-    String SERVER_URL = "tcp://post-cn-0pp1bk98n05.mqtt.aliyuncs.com";
-    String INSTANCE_ID = "post-cn-0pp1bk98n05";
+//    String SERVER_URL = "tcp://post-cn-0pp1bk98n05.mqtt.aliyuncs.com";
+//    String INSTANCE_ID = "post-cn-0pp1bk98n05";
 
     String ACCESS_KEY = "LTAI4FeptrQPpNaeBLzsgkMW";
     String SECRET_KEY = "5VNrknvqHVZqFWrPnb3SvQIYqKLrn8";
 
-//        String GYM = "rl_jinhua_fitness";
-    String GYM = "link_test";
+        String GYM = "rl_jinhua_fitness";
+//    String GYM = "link_test";
     String TOPIC = "heart_rate_topic/" + GYM;
     String TOPIC_FATHER = "heart_rate_topic";
 
