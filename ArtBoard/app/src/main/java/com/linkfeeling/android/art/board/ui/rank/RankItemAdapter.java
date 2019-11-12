@@ -15,7 +15,6 @@ import com.link.feeling.framework.utils.data.CollectionsUtil;
 import com.link.feeling.framework.utils.data.StringUtils;
 import com.linkfeeling.android.art.board.R;
 import com.linkfeeling.android.art.board.constants.ImageConstants;
-import com.linkfeeling.android.art.board.constants.StringConstants;
 import com.linkfeeling.android.art.board.data.bean.rank.RankRemoteItem;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public final class RankItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 
     private Context mContext;
-    private int mIndex;
+    private String mHolder;
     private int mPage = 0;
 
     private int mColor1 = Color.parseColor("#FF43436F");
@@ -42,9 +41,9 @@ public final class RankItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private CircleTransform mCircleTransform;
 
-    RankItemAdapter(Context mContext, int mIndex) {
+    RankItemAdapter(Context mContext, String holder) {
         this.mContext = mContext;
-        this.mIndex = mIndex;
+        this.mHolder = holder;
         mCircleTransform = new CircleTransform();
     }
 
@@ -76,9 +75,9 @@ public final class RankItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         itemHolder.mTvNum.setText(String.valueOf(mPage * 5 + position + 2));
         LinkImageLoader.INSTANCE.load(item.getHead_icon(), itemHolder.mAvatar, mCircleTransform);
-        itemHolder.mTvHolder.setText(StringUtils.isEmpty(item.getUid()) ? "" : StringConstants.matchHolder(mIndex));
+        itemHolder.mTvHolder.setText(StringUtils.isEmpty(item.getUid()) ? "" : mHolder);
         itemHolder.mTvName.setText(item.getUser_name());
-        itemHolder.mTvValue.setText(item.getFormatValue(mIndex));
+        itemHolder.mTvValue.setText(item.getValue());
     }
 
     @Override

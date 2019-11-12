@@ -1,17 +1,13 @@
 package com.linkfeeling.android.art.board.ui;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.util.SparseArray;
+import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.link.feeling.framework.base.BaseViewHolder;
@@ -50,13 +46,9 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private OffsetModule mCurrentOffset;
     private OffsetModule mInflateOffset;
-    private HomeRemoteModule mModule;
-    private HomeHolder mHolder;
 
     private int mRecyclerViewHeight;
     private int mRecyclerViewWidth;
-
-    private SparseArray<HomeRemoteModule> mSparseArray;
 
     private int DP10 = (int) DisplayUtils.dp2px(10);
     private int DP15 = (int) DisplayUtils.dp2px(15);
@@ -72,15 +64,20 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private CircleTransform mCircleTransform;
 
-    private Animation mOfflineAnimation;
+    int mWarnColor = DisplayUtils.getColor(R.color.color_FFF54646);
+    int mNormalColor = DisplayUtils.getColor(R.color.color_FFF5F5F5);
 
+    Drawable mWarnDrawable = DisplayUtils.getDrawable(R.drawable.icon_warn_bpm);
+    Drawable mNormalDrawable = DisplayUtils.getDrawable(R.drawable.icon_bpm);
+
+    private int mSize;
+
+    private boolean mIsAnimator;
 
     HomeAdapter(Context mContext) {
         this.mContext = mContext;
-        mModules = new ArrayList<>();
+        this.mModules = new ArrayList<>();
         mCircleTransform = new CircleTransform();
-        mOfflineAnimation = AnimationUtils.loadAnimation(mContext, R.anim.fade_in_out);
-        mSparseArray = new SparseArray<>();
     }
 
     void setModules(List<HomeRemoteModule> mModules) {
@@ -89,12 +86,20 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyDataSetChanged();
     }
 
+    public void setIsAnimator(boolean mIsAnimator) {
+        this.mIsAnimator = mIsAnimator;
+    }
+
     void setRecyclerViewHeight(float mRecyclerViewHeight) {
         this.mRecyclerViewHeight = (int) mRecyclerViewHeight;
     }
 
     void setRecyclerViewWidth(float mRecyclerViewWidth) {
         this.mRecyclerViewWidth = (int) mRecyclerViewWidth;
+    }
+
+    public void setSize(int mSize) {
+        this.mSize = mSize;
     }
 
     @NonNull
@@ -106,42 +111,46 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        mModule = mModules.get(position);
-        mHolder = (HomeHolder) holder;
+
+        HomeRemoteModule module = mModules.get(position);
+        HomeHolder homeHolder = (HomeHolder) holder;
+        homeHolder.itemView.setTag(position);
+//
+    //        Random random = new Random();
+    //        module.setPercent(random.nextInt(100));
+    //        module.setRatio_warn(module.getPercent() > 50);
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
-        mHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(mModule.getPercent()), mModule.isStatus());
+        homeHolder.mWaveView.initValueManager(position, HomeAdapter.this, mInflateOffset.getOffset1(), mInflateOffset.getOffset2(), mInflateOffset.getOffset3(), ColorConstants.loadColors(module.getPercent()), module.isStatus());
 
+        LinkImageLoader.INSTANCE.load(module.getHead_icon(), homeHolder.mIvAvatar, mCircleTransform);
 
-        LinkImageLoader.INSTANCE.load(mModule.getHead_icon(), mHolder.mIvAvatar, mCircleTransform);
+        homeHolder.mTvName.setText(module.getUser_name());
 
-        mHolder.mTvName.setText(mModule.getUser_name());
-
-        if (!mHolder.mTvPercent.getText().equals(mModule.getPercentStr())) {
-            mHolder.mTvPercent.setText(mModule.getPercentStr());
+        if (!homeHolder.mTvPercent.getText().equals(module.getPercentStr())) {
+            homeHolder.mTvPercent.setText(module.getPercentStr());
         }
 
-        mHolder.mClTop.setBackgroundColor(ColorConstants.loadColor(mModule.getPercent()));
+        homeHolder.mClTop.setBackgroundColor(ColorConstants.loadColor(module.getPercent()));
 
+        ViewGroup.LayoutParams params = homeHolder.mLlRoot.getLayoutParams();
+        ViewGroup.LayoutParams rootParams = homeHolder.itemView.getLayoutParams();
+        ViewGroup.LayoutParams ivParams = homeHolder.mIvAvatar.getLayoutParams();
 
-        ViewGroup.LayoutParams params = mHolder.mLlRoot.getLayoutParams();
-        ViewGroup.LayoutParams rootParams = mHolder.itemView.getLayoutParams();
-        ViewGroup.LayoutParams ivParams = mHolder.mIvAvatar.getLayoutParams();
+        ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) homeHolder.itemView.getLayoutParams();
+        ViewGroup.MarginLayoutParams nameMarginParams = (ViewGroup.MarginLayoutParams) homeHolder.mTvName.getLayoutParams();
+        ViewGroup.MarginLayoutParams avatarMarginParams = (ViewGroup.MarginLayoutParams) homeHolder.mIvAvatar.getLayoutParams();
 
-        ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) mHolder.itemView.getLayoutParams();
-        ViewGroup.MarginLayoutParams nameMarginParams = (ViewGroup.MarginLayoutParams) mHolder.mTvName.getLayoutParams();
-        ViewGroup.MarginLayoutParams avatarMarginParams = (ViewGroup.MarginLayoutParams) mHolder.mIvAvatar.getLayoutParams();
+        ViewUtils.setGone(homeHolder.mClMiddle);
+        ViewUtils.setGone(homeHolder.mClBottom);
 
-        ViewUtils.setGone(mHolder.mClMiddle);
-        ViewUtils.setGone(mHolder.mClBottom);
-
-        switch (CollectionsUtil.size(mModules)) {
+        switch (mSize) {
             case 1:
-                mHolder.mTvCalorie.setText(mModule.getKc());
-                mHolder.mTvBpm.setText(mModule.getHeart_rate());
-                ViewUtils.setVisible(mHolder.mClMiddle);
-                params.height = (int) (mRecyclerViewHeight * 0.95);
+                homeHolder.mTvCalorie.setText(module.getKc());
+                homeHolder.mTvBpm.setText(module.getHeart_rate());
+                ViewUtils.setVisible(homeHolder.mClMiddle);
+                params.height = (int) (mRecyclerViewHeight * 0.9);
                 params.width = (int) (mRecyclerViewWidth * 0.9);
                 rootParams.height = MATCH_PARENT;
                 marginParams.topMargin = 0;
@@ -150,22 +159,22 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 avatarMarginParams.topMargin = DP30;
                 ivParams.height = DP80;
                 ivParams.width = DP80;
-                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
-                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 88);
-                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
-                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
+                homeHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
+                homeHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 88);
+                homeHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
+                homeHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
 
-                if (!mHolder.mTvBpm.getText().equals(mModule.getHeart_rate())) {
-                    mHolder.mTvBpm.setText(mModule.getHeart_rate());
+                if (!homeHolder.mTvBpm.getText().equals(module.getHeart_rate())) {
+                    homeHolder.mTvBpm.setText(module.getHeart_rate());
                 }
-                if (!mHolder.mTvCalorie.getText().equals(mModule.getKc())) {
-                    mHolder.mTvCalorie.setText(mModule.getKc());
+                if (!homeHolder.mTvCalorie.getText().equals(module.getKc())) {
+                    homeHolder.mTvCalorie.setText(module.getKc());
                 }
                 break;
             case 2:
-                mHolder.mTvCalorie.setText(mModule.getKc());
-                mHolder.mTvBpm.setText(mModule.getHeart_rate());
-                ViewUtils.setVisible(mHolder.mClMiddle);
+                homeHolder.mTvCalorie.setText(module.getKc());
+                homeHolder.mTvBpm.setText(module.getHeart_rate());
+                ViewUtils.setVisible(homeHolder.mClMiddle);
                 rootParams.height = MATCH_PARENT;
                 marginParams.topMargin = 0;
                 params.height = (int) (mRecyclerViewHeight * 0.95);
@@ -175,23 +184,23 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 avatarMarginParams.topMargin = DP30;
                 ivParams.height = DP60;
                 ivParams.width = DP60;
-                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
-                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                if (!mHolder.mTvBpm.getText().equals(mModule.getHeart_rate())) {
-                    mHolder.mTvBpm.setText(mModule.getHeart_rate());
+                homeHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                homeHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 66);
+                homeHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                homeHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                if (!homeHolder.mTvBpm.getText().equals(module.getHeart_rate())) {
+                    homeHolder.mTvBpm.setText(module.getHeart_rate());
                 }
-                if (!mHolder.mTvCalorie.getText().equals(mModule.getKc())) {
-                    mHolder.mTvCalorie.setText(mModule.getKc());
+                if (!homeHolder.mTvCalorie.getText().equals(module.getKc())) {
+                    homeHolder.mTvCalorie.setText(module.getKc());
                 }
                 break;
             case 3:
             case 4:
-                mHolder.mTvCalorie.setText(mModule.getKc());
-                mHolder.mTvBpm.setText(mModule.getHeart_rate());
-                ViewUtils.setVisible(mHolder.mClMiddle);
-                marginParams.topMargin = DP15;
+                homeHolder.mTvCalorie.setText(module.getKc());
+                homeHolder.mTvBpm.setText(module.getHeart_rate());
+                ViewUtils.setVisible(homeHolder.mClMiddle);
+                marginParams.topMargin = DP40;
                 rootParams.height = WRAP_CONTENT;
                 params.height = (int) (mRecyclerViewHeight * 0.46);
                 params.width = (int) (mRecyclerViewWidth * 0.50);
@@ -200,15 +209,15 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 nameMarginParams.leftMargin = DP20;
                 avatarMarginParams.leftMargin = DP20;
                 avatarMarginParams.topMargin = DP15;
-                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
-                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 44);
-                mHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
-                mHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+                homeHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+                homeHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 44);
+                homeHolder.mTvCalorie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+                homeHolder.mTvBpm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
                 break;
             case 5:
             case 6:
             default:
-                ViewUtils.setVisible(mHolder.mClBottom);
+                ViewUtils.setVisible(homeHolder.mClBottom);
                 marginParams.topMargin = DP20;
                 rootParams.height = WRAP_CONTENT;
                 params.height = (int) (mRecyclerViewHeight * 0.47);
@@ -218,41 +227,69 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 nameMarginParams.leftMargin = DP10;
                 avatarMarginParams.leftMargin = DP10;
                 avatarMarginParams.topMargin = DP15;
-                mHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-                mHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                mHolder.mTvCalorie2.setText(mModule.getKc());
-                mHolder.mTvBpm2.setText(mModule.getHeart_rate());
+                homeHolder.mTvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                homeHolder.mTvPercent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                homeHolder.mTvCalorie2.setText(module.getKc());
+                homeHolder.mTvBpm2.setText(module.getHeart_rate());
                 break;
         }
 
-        if (!mModule.isStatus()) {
-            if (mSparseArray.get(position) != null) {
-                return;
-            } else {
-                mModule.setAnimator(ObjectAnimator.ofFloat(mHolder.itemView, "alpha", 0.8f, 0.1f, 0.8f));
+        homeHolder.mIvWarn.setVisibility(module.isRatio_warn() ? View.VISIBLE : View.GONE);
+        homeHolder.mTvBpm.setTextColor(module.isRatio_warn() ? mWarnColor : mNormalColor);
+        homeHolder.mTvBpmHolder.setTextColor(module.isRatio_warn() ? mWarnColor : mNormalColor);
+        ViewUtils.setDrawableLeft(homeHolder.mTvBpm, module.isRatio_warn() ? R.drawable.icon_warn_bpm : R.drawable.icon_bpm);
+
+        homeHolder.mTvBpm2.setTextColor(module.isRatio_warn() ? mWarnColor : mNormalColor);
+        homeHolder.mTvBpm2Holder.setTextColor(module.isRatio_warn() ? mWarnColor : mNormalColor);
+        ViewUtils.setDrawableLeft(homeHolder.mTvBpm2, module.isRatio_warn() ? R.drawable.icon_warn_bpm : R.drawable.icon_bpm);
+        homeHolder.mWarnLayout.setVisibility(module.isRatio_warn() ? View.VISIBLE : View.GONE);
+
+
+        // ********************************离线动画******************************
+        // ********************************离线动画******************************
+        // ********************************离线动画******************************
+        if (!module.isStatus()) {
+            module.getAnimatorOnline().cancel();
+            module.getAnimatorOffline().setTarget(homeHolder.itemView);
+            if (!module.getAnimatorOffline().isStarted()) {
+                module.getAnimatorOffline().start();
             }
-            mModule.getAnimator().setDuration(1000);
-            mModule.getAnimator().setRepeatMode(ValueAnimator.INFINITE);
-            mModule.getAnimator().setRepeatCount(Integer.MAX_VALUE);
-            mSparseArray.put(position, mModule);
-            mModule.getAnimator().addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    if (mSparseArray.get(position) != null) {
-                        mSparseArray.get(position).setAlpha((Float) animation.getAnimatedValue());
-                    }
-                }
-            });
-            mModule.getAnimator().start();
+            return;
         } else {
-            if (mSparseArray.get(position) != null) {
-                mSparseArray.get(position).getAnimator().cancel();
-                mSparseArray.remove(position);
+            module.getAnimatorOffline().cancel();
+            module.getAnimatorOnline().setTarget(homeHolder.itemView);
+            if (!module.getAnimatorOnline().isStarted()) {
+                module.getAnimatorOnline().start();
             }
-            mHolder.itemView.setAlpha(1);
+        }
+
+        // ********************************心率过高动画******************************
+        // ********************************心率过高动画******************************
+        // ********************************心率过高动画******************************
+        if (module.isRatio_warn()) {
+            module.getAnimatorBpmNormal().cancel();
+            module.getAnimatorWarnNormal().cancel();
+            module.getAnimatorBpm().setTarget(CollectionsUtil.size(mModules) < 5 ? homeHolder.mTvBpm : homeHolder.mTvBpm2);
+            if (!module.getAnimatorBpm().isStarted()) {
+                module.getAnimatorBpm().start();
+            }
+            module.getAnimatorWarn().setTarget(homeHolder.mWarnLayout);
+            if (!module.getAnimatorWarn().isStarted()) {
+                module.getAnimatorWarn().start();
+            }
+        } else {
+            module.getAnimatorBpm().cancel();
+            module.getAnimatorWarn().cancel();
+            module.getAnimatorBpmNormal().setTarget(CollectionsUtil.size(mModules) < 5 ? homeHolder.mTvBpm : homeHolder.mTvBpm2);
+            if (!module.getAnimatorBpmNormal().isStarted()) {
+                module.getAnimatorBpmNormal().start();
+            }
+            module.getAnimatorWarnNormal().setTarget(homeHolder.mWarnLayout);
+            if (!module.getAnimatorWarnNormal().isStarted()) {
+                module.getAnimatorWarnNormal().start();
+            }
         }
     }
-
 
     @Override
     public int getItemCount() {
@@ -267,7 +304,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mCurrentOffset.setOffset3(offset3);
     }
 
-    class HomeHolder extends BaseViewHolder {
+    static class HomeHolder extends BaseViewHolder {
 
         @BindView(R.id.item1_avatar)
         ImageView mIvAvatar;
@@ -281,8 +318,10 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView mTvCalorie;
         @BindView(R.id.item1_bpm)
         TextView mTvBpm;
+        @BindView(R.id.item1_bpm_holder)
+        TextView mTvBpmHolder;
         @BindView(R.id.item1_root)
-        LinearLayout mLlRoot;
+        FrameLayout mLlRoot;
 
         @BindView(R.id.item1_top_layout)
         ConstraintLayout mClTop;
@@ -297,9 +336,17 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView mTvCalorie2;
         @BindView(R.id.item2_bpm)
         TextView mTvBpm2;
+        @BindView(R.id.item2_bpm_holder)
+        TextView mTvBpm2Holder;
+
+        @BindView(R.id.item1_warn)
+        ImageView mIvWarn;
+        @BindView(R.id.iv_warn)
+        ImageView mWarnLayout;
 
         HomeHolder(View itemView) {
             super(itemView);
+
         }
     }
 

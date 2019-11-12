@@ -1,6 +1,7 @@
 package com.linkfeeling.android.art.board.ui.rank;
 
-import com.link.feeling.framework.base.FrameworkBaseFragment;
+import android.view.ViewGroup;
+
 import com.link.feeling.framework.utils.data.CollectionsUtil;
 
 import java.util.ArrayList;
@@ -18,11 +19,11 @@ import androidx.viewpager.widget.PagerAdapter;
  */
 public final class RankPagerAdapter extends FragmentStatePagerAdapter {
 
-    private List<FrameworkBaseFragment> mFragments;
+    private List<RankFragment> mFragments;
 
     private FragmentManager mFragmentManager;
 
-    RankPagerAdapter(@NonNull FragmentManager fm, int behavior, List<FrameworkBaseFragment> mFragments) {
+    RankPagerAdapter(@NonNull FragmentManager fm, int behavior, List<RankFragment> mFragments) {
         super(fm, behavior);
         this.mFragments = new ArrayList<>();
         this.mFragments.clear();
@@ -49,7 +50,9 @@ public final class RankPagerAdapter extends FragmentStatePagerAdapter {
         return CollectionsUtil.size(mFragments);
     }
 
-
-
-
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        return super.instantiateItem(container, position);
+    }
 }

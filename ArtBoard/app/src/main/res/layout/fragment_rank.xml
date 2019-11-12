@@ -11,27 +11,27 @@
 
     <ImageView
         android:id="@+id/rk_logo1"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@id/rk_rv1"
         app:layout_constraintStart_toStartOf="@id/rk_rv1"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription,MissingConstraints" />
 
     <ImageView
         android:id="@+id/rk_logo2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@id/rk_rv2"
         app:layout_constraintStart_toStartOf="@id/rk_rv2"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription,MissingConstraints" />
 
     <ImageView
         android:id="@+id/rk_logo3"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@id/rk_rv3"
         app:layout_constraintStart_toStartOf="@id/rk_rv3"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription,MissingConstraints" />
 
     <include
         android:id="@+id/rank1_root"

@@ -23,7 +23,6 @@ ext {
             "desigin"                 : "com.google.android.material:material:${dependVersion.support}",
             "recyclerview"            : "androidx.recyclerview:recyclerview:${dependVersion.support}",
             "constraintlayout"        : "androidx.constraintlayout:constraintlayout:1.1.3",
-            "multidex"                : "androidx.multidex.MultiDex",
             "multidex"                : "androidx.multidex:multidex:2.0.0",
             "bugly-crashreport"       : "com.tencent.bugly:crashreport:latest.release",
             "bugly-native"            : "com.tencent.bugly:nativecrashreport:latest.release",
@@ -46,8 +45,8 @@ ext {
             //utils or view
             "fastjson"                : 'com.alibaba:fastjson:1.2.37',
             "logger"                  : 'com.orhanobut:logger:2.2.0',
-            "butterknife"             : 'com.jakewharton:butterknife:9.0.0-rc1',
-            "butterknife-compiler"    : 'com.jakewharton:butterknife-compiler:9.0.0-rc1',
+            "butterknife"             : 'com.jakewharton:butterknife:10.0.0',
+            "butterknife-compiler"    : 'com.jakewharton:butterknife-compiler:10.0.0',
 
             // other
             "junit"                   : 'junit:junit:4.12',
