@@ -24,7 +24,6 @@ import com.linkfeeling.android.art.board.widget.WaveView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -122,9 +121,9 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         HomeHolder homeHolder = (HomeHolder) holder;
         homeHolder.itemView.setTag(position);
 //
-        Random random = new Random();
-        module.setPercent(random.nextInt(100));
-        module.setRatio_warn(module.getPercent() > 50);
+    //        Random random = new Random();
+    //        module.setPercent(random.nextInt(100));
+    //        module.setRatio_warn(module.getPercent() > 50);
 
         mInflateOffset = HomeActivity.sOffsetCache.get(position);
 
