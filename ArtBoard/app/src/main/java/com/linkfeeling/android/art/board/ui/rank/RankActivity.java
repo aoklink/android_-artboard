@@ -1,5 +1,8 @@
 package com.linkfeeling.android.art.board.ui.rank;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,7 +34,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -70,7 +76,8 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         mFragments = new ArrayList<>();
         mIds = new ArrayList<>();
         mMqttManager = MqttManager.newInstance();
-        mMqttManager.connect(this, 101);
+
+        request();
         getPresenter().count();
         getPresenter().countPage();
         mIvHolder.requestFocus();
@@ -187,7 +194,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         int size = CollectionsUtil.size(modules);
         mFmSize = (size % 3) == 0 ? (size / 3) : (size / 3 + 1);
         for (int i = 0; i < mFmSize; i++) {
-            mFragments.add(RankFragment.newInstance(modules.get(i * 3), modules.get(i * 3 + 1), modules.get(i * 3 + 2)));
+            mFragments.add(RankFragment.newInstance((i * 3) < CollectionsUtil.size(modules) ? modules.get(i * 3 ) : null, (i * 3 + 1) < CollectionsUtil.size(modules) ? modules.get(i * 3 + 1) : null, (i * 3 + 2) < CollectionsUtil.size(modules) ? modules.get(i * 3 + 2) : null));
         }
         mRankVp.setOffscreenPageLimit(mFmSize);
         RankPagerAdapter mPagerAdapter = new RankPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, mFragments);
@@ -211,6 +218,37 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
                 int index = position / 3;
                 mFragments.get(index).updateItem(new RankRemoteItem(module.getUser_name(), module.getHead_icon(), module.getUid(), module.getData().get(key).getValue(), module.getData().get(key).getIndex()), position - index * 3);
             }
+        }
+    }
+
+
+
+    public static final int REQUEST_CODE_PERMISSION_WRITE = 0x201;
+
+    private void request() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {//未开启存储权限
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION_WRITE);
+            } else {
+                mMqttManager.connect(this, 101);
+            }
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE_PERMISSION_WRITE:
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    showToast("未开启存储权限,请手动到设置去开启权限");
+                } else {
+                    mMqttManager.connect(this, 101);
+                }
+                break;
         }
     }
 
