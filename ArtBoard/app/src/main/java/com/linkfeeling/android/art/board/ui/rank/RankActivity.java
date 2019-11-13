@@ -1,10 +1,5 @@
 package com.linkfeeling.android.art.board.ui.rank;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,10 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -195,7 +187,7 @@ public class RankActivity extends FrameworkBaseActivity<RankContract.View, RankC
         int size = CollectionsUtil.size(modules);
         mFmSize = (size % 3) == 0 ? (size / 3) : (size / 3 + 1);
         for (int i = 0; i < mFmSize; i++) {
-            mFragments.add(RankFragment.newInstance(modules.get(i * 3), modules.get(i * 3 + 1), modules.get(i * 3 + 2)));
+            mFragments.add(RankFragment.newInstance((i * 3) < CollectionsUtil.size(modules) ? modules.get(i * 3) : null, (i * 3 + 1) < CollectionsUtil.size(modules) ? modules.get(i * 3) : null, (i * 3) < CollectionsUtil.size(modules) ? modules.get(i * 3 + 2) : null));
         }
         mRankVp.setOffscreenPageLimit(mFmSize);
         RankPagerAdapter mPagerAdapter = new RankPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, mFragments);
