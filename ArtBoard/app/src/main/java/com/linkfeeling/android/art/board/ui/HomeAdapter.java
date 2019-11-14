@@ -150,7 +150,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 homeHolder.mTvCalorie.setText(module.getKc());
                 homeHolder.mTvBpm.setText(module.getHeart_rate());
                 ViewUtils.setVisible(homeHolder.mClMiddle);
-                params.height = (int) (mRecyclerViewHeight * 0.9);
+                params.height = (int) (mRecyclerViewHeight * 0.95);
                 params.width = (int) (mRecyclerViewWidth * 0.9);
                 rootParams.height = MATCH_PARENT;
                 marginParams.topMargin = 0;
@@ -200,7 +200,7 @@ public final class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 homeHolder.mTvCalorie.setText(module.getKc());
                 homeHolder.mTvBpm.setText(module.getHeart_rate());
                 ViewUtils.setVisible(homeHolder.mClMiddle);
-                marginParams.topMargin = DP40;
+                marginParams.topMargin = DP15;
                 rootParams.height = WRAP_CONTENT;
                 params.height = (int) (mRecyclerViewHeight * 0.46);
                 params.width = (int) (mRecyclerViewWidth * 0.50);
