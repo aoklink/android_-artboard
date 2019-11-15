@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 @SuppressWarnings("all")
 public final class DateUtils {
 
-    public static String PATTERN = "HH:mm";
+    public static String PATTERN = "HH:mm:ss";
     private static SimpleDateFormat sdf = new SimpleDateFormat(PATTERN);
 
     /**
